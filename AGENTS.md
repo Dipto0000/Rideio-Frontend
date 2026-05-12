@@ -19,6 +19,8 @@ Rules:
 
 so, the logic is like this:
 
+It's a ride sharing app. The rider can create ride post. A driver can accept a ride post. The driver must be subscribed to our system by paying 700 bdt per month to accept rides. 
+
 a user or rider both can see all the other ride posts with only name, any sensitive information like where's he going or phone number etc are hidden even if he is logged in. When a user tries to create his own post for a travel journey, he must log in with necessary info. a rider can see people's posts with only limited info, but when he tries to accept a ride, he mush log in/ subscribe. 
 
 The rider can select info when creating ride post like from - to, when should the driver arrive. no time limit for posts, the posts stays until a driver accepts. it stays even after the ride accepted by driver, but with a tag ride accepted. A rider can cancel the ride if he's not interested. But cancellation must happen before the ride started. All the ride history should be preserved for both driver and rider. Driver may have the total earning, his overall review etc on his dashboard. Rider sees his travel history in dashboard. An admin can see all the thing a rider and driver can. While creating a ride post, rider can use maps to select places. Not providing any live location support during ride now. I'll use sslcommerz for payment integration. It's bangladesh based. 
@@ -27,6 +29,6 @@ I've given you a high level overview from a user perspective.
 
 
 
-Maintain proper folder structure, DRY principles. Use tailwind css for styling. Use typescript. Use shadcn ui.
+Maintain standard folder structure. Maintain maintainability. Don't write a big chunk of code. write modular, component based code, DRY principles. Use tailwind css for styling. Use typescript. Use shadcn ui.
 
 
