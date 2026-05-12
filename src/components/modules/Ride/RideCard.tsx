@@ -1,0 +1,101 @@
+"use client"
+
+import { Calendar, Clock, MapPin, Bike, Car, DollarSign } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import type { Ride } from "@/types"
+
+interface RideCardProps {
+  ride: Ride
+  onAccept?: (rideId: string) => void
+  acceptLoading?: boolean
+}
+
+export function RideCard({ ride, onAccept, acceptLoading }: RideCardProps) {
+  const date = new Date(ride.arrivalTime)
+  const formattedDate = date.toLocaleDateString("en-BD", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  })
+  const formattedTime = date.toLocaleTimeString("en-BD", {
+    hour: "2-digit",
+    minute: "2-digit",
+  })
+
+  return (
+    <Card className="hover:shadow-md transition-shadow">
+      <CardContent className="p-5">
+        <div className="flex flex-col gap-4">
+          <div className="flex items-start justify-between">
+            <div className="flex flex-col gap-2 flex-1">
+              <div className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 mt-1 text-secondary shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-foreground">
+                    {ride.from.address}
+                  </p>
+                  <p className="text-xs text-muted-foreground">→ {ride.to.address}</p>
+                </div>
+              </div>
+            </div>
+            <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
+              {ride.riderId?.name || "Anonymous"}
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <Calendar className="w-3.5 h-3.5" />
+              {formattedDate}
+            </span>
+            <span className="flex items-center gap-1">
+              <Clock className="w-3.5 h-3.5" />
+              {formattedTime}
+            </span>
+            <span className="flex items-center gap-1">
+              {ride.vehicleType === "CAR" ? (
+                <Car className="w-3.5 h-3.5" />
+              ) : (
+                <Bike className="w-3.5 h-3.5" />
+              )}
+              {ride.vehicleType === "CAR" ? "Car" : "Bike"}
+            </span>
+            <span className="flex items-center gap-1 font-semibold text-primary">
+              <DollarSign className="w-3.5 h-3.5" />
+              ৳{ride.proposedFare}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between pt-2 border-t border-border">
+            <span
+              className={`text-xs font-medium px-2 py-1 rounded-full ${
+                ride.status === "PENDING"
+                  ? "bg-amber-50 text-amber-700"
+                  : ride.status === "ACCEPTED"
+                  ? "bg-blue-50 text-blue-700"
+                  : "bg-green-50 text-green-700"
+              }`}
+            >
+              {ride.status === "PENDING"
+                ? "Available"
+                : ride.status === "ACCEPTED"
+                ? "Accepted"
+                : ride.status}
+            </span>
+            {ride.status === "PENDING" && onAccept && (
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => onAccept(ride._id)}
+                disabled={acceptLoading}
+              >
+                {acceptLoading ? "Accepting..." : "Accept Ride"}
+              </Button>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}

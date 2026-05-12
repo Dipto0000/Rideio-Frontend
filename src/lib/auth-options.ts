@@ -55,17 +55,47 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id
-        token.accessToken = user.accessToken
-        token.refreshToken = user.refreshToken
-        token.role = user.role
-        token.subRole = user.subRole
-        token.phone = user.phone
-        token.address = user.address
-        token.isVerified = user.isVerified
-        token.isSubscribed = user.isSubscribed
+    async jwt({ token, user, account }) {
+      if (account && user) {
+        if (account.provider === "google") {
+          try {
+            const res = await fetch(`${BACKEND}/api/v1/auth/google-auth`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                email: user.email,
+                name: user.name,
+                picture: user.image,
+                providerId: account.providerAccountId,
+              }),
+            })
+            const data = await res.json()
+            if (data.success) {
+              const u = data.data.user
+              token.id = u._id || u.id
+              token.accessToken = data.data.accessToken
+              token.refreshToken = data.data.refreshToken
+              token.role = u.role
+              token.subRole = u.subRole
+              token.phone = u.phone
+              token.address = u.address
+              token.isVerified = u.isVerified
+              token.isSubscribed = u.subscription?.isSubscribed ?? false
+            }
+          } catch {
+            /* backend unreachable — token stays minimal */
+          }
+        } else {
+          token.id = user.id
+          token.accessToken = user.accessToken
+          token.refreshToken = user.refreshToken
+          token.role = user.role
+          token.subRole = user.subRole
+          token.phone = user.phone
+          token.address = user.address
+          token.isVerified = user.isVerified
+          token.isSubscribed = user.isSubscribed
+        }
       }
       return token
     },

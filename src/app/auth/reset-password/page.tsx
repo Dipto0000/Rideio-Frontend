@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { resetPassword } from "@/lib/actions/auth.actions"
 
 export default function ResetPasswordPage() {
   const router = useRouter()
@@ -26,23 +27,13 @@ export default function ResetPasswordPage() {
       return
     }
 
-    try {
-      const res = await fetch("/api/backend/auth/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, password }),
-      })
-      const data = await res.json()
-      if (!res.ok || !data.success) {
-        setError(data.message || "Reset failed")
-        return
-      }
-      router.push("/auth/login?reset=success")
-    } catch {
-      setError("Something went wrong. Please try again.")
-    } finally {
+    const res = await resetPassword(token, password)
+    if (!res.success) {
+      setError(res.message || "Reset failed")
       setLoading(false)
+      return
     }
+    router.push("/auth/login?reset=success")
   }
 
   return (

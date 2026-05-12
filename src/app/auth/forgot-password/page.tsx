@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { forgotPassword } from "@/lib/actions/auth.actions"
 
 export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false)
@@ -17,23 +18,13 @@ export default function ForgotPasswordPage() {
     const form = new FormData(e.currentTarget)
     const email = form.get("email") as string
 
-    try {
-      const res = await fetch("/api/backend/auth/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      })
-      const data = await res.json()
-      if (!res.ok || !data.success) {
-        setError(data.message || "Request failed")
-        return
-      }
-      setSent(true)
-    } catch {
-      setError("Something went wrong. Please try again.")
-    } finally {
+    const res = await forgotPassword(email)
+    if (!res.success) {
+      setError(res.message || "Request failed")
       setLoading(false)
+      return
     }
+    setSent(true)
   }
 
   if (sent) {

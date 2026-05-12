@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { SocialButtons } from "./SocialButtons"
+import { registerRider } from "@/lib/actions/auth.actions"
 
 export function RiderSignupForm() {
   const router = useRouter()
@@ -17,7 +18,7 @@ export function RiderSignupForm() {
     setError("")
 
     const form = new FormData(e.currentTarget)
-    const payload = {
+    const data = {
       name: form.get("name") as string,
       email: form.get("email") as string,
       password: form.get("password") as string,
@@ -25,23 +26,13 @@ export function RiderSignupForm() {
       address: (form.get("address") as string) || undefined,
     }
 
-    try {
-      const res = await fetch("/api/backend/auth/register/rider", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      })
-      const data = await res.json()
-      if (!res.ok || !data.success) {
-        setError(data.message || "Registration failed")
-        return
-      }
-      router.push("/auth/verify?email=" + encodeURIComponent(payload.email))
-    } catch {
-      setError("Something went wrong. Please try again.")
-    } finally {
+    const res = await registerRider(data)
+    if (!res.success) {
+      setError(res.message || "Registration failed")
       setLoading(false)
+      return
     }
+    router.push("/auth/verify?email=" + encodeURIComponent(data.email))
   }
 
   return (

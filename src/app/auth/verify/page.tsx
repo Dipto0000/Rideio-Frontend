@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { verifyEmail, resendVerification } from "@/lib/actions/auth.actions"
 
 export default function VerifyPage() {
   const router = useRouter()
@@ -16,44 +17,26 @@ export default function VerifyPage() {
 
   useEffect(() => {
     if (token) {
-      verifyEmail()
+      verify()
     }
   }, [token])
 
-  async function verifyEmail() {
+  async function verify() {
     setStatus("verifying")
-    try {
-      const res = await fetch("/api/backend/auth/verify-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
-      })
-      const data = await res.json()
-      if (res.ok && data.success) {
-        setStatus("success")
-        setMessage("Email verified successfully!")
-      } else {
-        setStatus("error")
-        setMessage(data.message || "Verification failed")
-      }
-    } catch {
+    const res = await verifyEmail(token!)
+    if (res.success) {
+      setStatus("success")
+      setMessage("Email verified successfully!")
+    } else {
       setStatus("error")
-      setMessage("Something went wrong")
+      setMessage(res.message || "Verification failed")
     }
   }
 
-  async function resendVerification() {
+  async function resend() {
     if (!email) return
-    try {
-      await fetch("/api/backend/auth/resend-confirmation", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      })
-      setMessage("Verification email resent!")
-    } catch {
-      setMessage("Failed to resend")
-    }
+    const res = await resendVerification(email)
+    setMessage(res.success ? "Verification email resent!" : "Failed to resend")
   }
 
   return (
@@ -95,7 +78,7 @@ export default function VerifyPage() {
           <h1 className="text-2xl font-bold text-primary">Verification Failed</h1>
           <p className="text-muted-foreground">{message || "Please check your email for the verification link."}</p>
           {email && (
-            <Button variant="outline" onClick={resendVerification}>
+            <Button variant="outline" onClick={resend}>
               Resend Verification Email
             </Button>
           )}

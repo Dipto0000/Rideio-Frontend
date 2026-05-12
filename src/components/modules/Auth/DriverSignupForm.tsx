@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { registerDriver } from "@/lib/actions/auth.actions"
 
 export function DriverSignupForm() {
   const router = useRouter()
@@ -16,7 +17,7 @@ export function DriverSignupForm() {
     setError("")
 
     const form = new FormData(e.currentTarget)
-    const payload = {
+    const data = {
       name: form.get("name") as string,
       email: form.get("email") as string,
       password: form.get("password") as string,
@@ -28,23 +29,13 @@ export function DriverSignupForm() {
       dob: form.get("dob") as string,
     }
 
-    try {
-      const res = await fetch("/api/backend/auth/register/driver", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      })
-      const data = await res.json()
-      if (!res.ok || !data.success) {
-        setError(data.message || "Registration failed")
-        return
-      }
-      router.push("/auth/verify?email=" + encodeURIComponent(payload.email))
-    } catch {
-      setError("Something went wrong. Please try again.")
-    } finally {
+    const res = await registerDriver(data)
+    if (!res.success) {
+      setError(res.message || "Registration failed")
       setLoading(false)
+      return
     }
+    router.push("/auth/verify?email=" + encodeURIComponent(data.email))
   }
 
   return (

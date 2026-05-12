@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { updateProfile } from "@/lib/actions/auth.actions"
 
 export function CompleteProfileForm() {
   const router = useRouter()
@@ -18,36 +19,37 @@ export function CompleteProfileForm() {
     setError("")
 
     const form = new FormData(e.currentTarget)
-    const payload = {
-      phone: form.get("phone") as string,
-      address: form.get("address") as string,
-    }
+    const data: {
+      subRole?: "RIDER" | "DRIVER"
+      phone?: string
+      address?: string
+    } = {}
 
-    try {
-      const res = await fetch(`/api/backend/user/${session?.user.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.user.accessToken}`,
-        },
-        body: JSON.stringify(payload),
-      })
-      const data = await res.json()
-      if (!res.ok || !data.success) {
-        setError(data.message || "Update failed")
-        return
-      }
-      await update()
+    const role = form.get("subRole") as string
+    if (role) data.subRole = role as "RIDER" | "DRIVER"
+    const phone = form.get("phone") as string
+    if (phone) data.phone = phone
+    const address = form.get("address") as string
+    if (address) data.address = address
+
+    if (!data.subRole && !data.phone && !data.address) {
       router.push("/")
       router.refresh()
-    } catch {
-      setError("Something went wrong. Please try again.")
-    } finally {
-      setLoading(false)
+      return
     }
+
+    const res = await updateProfile(data)
+    if (!res.success) {
+      setError(res.message || "Update failed")
+      setLoading(false)
+      return
+    }
+    await update()
+    router.push("/")
+    router.refresh()
   }
 
-  async function handleSkip() {
+  function handleSkip() {
     router.push("/")
     router.refresh()
   }
@@ -57,13 +59,43 @@ export function CompleteProfileForm() {
       <div className="text-center">
         <h2 className="text-xl font-semibold text-primary">Complete Your Profile</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Add your phone number and address (optional)
+          Choose your role and add optional contact details
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <Input name="phone" type="tel" placeholder="Phone Number" />
-        <Input name="address" placeholder="Your Address" />
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-primary">I want to join as</label>
+          <div className="grid grid-cols-2 gap-3">
+            <label
+              className={`flex flex-col items-center gap-1 p-4 rounded-lg border-2 cursor-pointer transition-colors ${
+                session?.user.subRole === "RIDER"
+                  ? "border-secondary bg-secondary/5"
+                  : "border-border hover:border-secondary/50"
+              }`}
+            >
+              <input type="radio" name="subRole" value="RIDER" className="sr-only" defaultChecked={session?.user.subRole === "RIDER"} />
+              <span className="text-2xl">🚗</span>
+              <span className="text-sm font-medium">Rider</span>
+              <span className="text-xs text-muted-foreground text-center">I need rides</span>
+            </label>
+            <label
+              className={`flex flex-col items-center gap-1 p-4 rounded-lg border-2 cursor-pointer transition-colors ${
+                session?.user.subRole === "DRIVER"
+                  ? "border-secondary bg-secondary/5"
+                  : "border-border hover:border-secondary/50"
+              }`}
+            >
+              <input type="radio" name="subRole" value="DRIVER" className="sr-only" defaultChecked={session?.user.subRole === "DRIVER"} />
+              <span className="text-2xl">🏍️</span>
+              <span className="text-sm font-medium">Driver</span>
+              <span className="text-xs text-muted-foreground text-center">I give rides</span>
+            </label>
+          </div>
+        </div>
+
+        <Input name="phone" type="tel" placeholder="Phone Number (optional)" />
+        <Input name="address" placeholder="Your Address (optional)" />
 
         {error && <p className="text-sm text-red-500">{error}</p>}
 

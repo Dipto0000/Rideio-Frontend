@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect, type ReactNode } from "react"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function ProtectedLayout({ children }: { children: ReactNode }) {
   const { data: session, status } = useSession()
@@ -16,8 +17,12 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
 
   if (status === "loading") {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-8 h-8 border-4 border-secondary border-t-transparent rounded-full animate-spin" />
+      <div className="max-w-4xl mx-auto p-8 space-y-4">
+        <Skeleton className="h-9 w-48" />
+        <Skeleton className="h-5 w-64" />
+        <Skeleton className="h-32 w-full rounded-xl" />
+        <Skeleton className="h-32 w-full rounded-xl" />
+        <Skeleton className="h-32 w-full rounded-xl" />
       </div>
     )
   }
