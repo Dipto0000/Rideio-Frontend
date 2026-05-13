@@ -11,6 +11,41 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
     CredentialsProvider({
+      id: "token",
+      name: "token",
+      credentials: {
+        accessToken: { label: "Access Token", type: "text" },
+        refreshToken: { label: "Refresh Token", type: "text" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.accessToken) return null
+        try {
+          const res = await fetch(`${BACKEND}/api/v1/user/me`, {
+            headers: { Authorization: `Bearer ${credentials.accessToken}` },
+          })
+          const data = await res.json()
+          if (!res.ok || !data.success) return null
+          const u = data.data
+          return {
+            id: u._id || u.id,
+            email: u.email,
+            name: u.name,
+            image: u.picture,
+            accessToken: credentials.accessToken,
+            refreshToken: credentials.refreshToken,
+            role: u.role,
+            subRole: u.subRole,
+            phone: u.phone,
+            address: u.address,
+            isVerified: u.isVerified,
+            isSubscribed: u.subscription?.isSubscribed ?? false,
+          }
+        } catch {
+          return null
+        }
+      },
+    }),
+    CredentialsProvider({
       id: "credentials",
       name: "credentials",
       credentials: {
