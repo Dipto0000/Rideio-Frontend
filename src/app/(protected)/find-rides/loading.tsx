@@ -1,4 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton"
+import { RideCardGridSkeleton } from "@/components/modules/Ride/RideCardSkeleton"
 
 export default function FindRidesLoading() {
   return (
@@ -7,25 +8,19 @@ export default function FindRidesLoading() {
         <Skeleton className="h-9 w-40" />
         <Skeleton className="h-5 w-64" />
       </div>
-      <div className="space-y-3">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="rounded-xl border border-border p-5 space-y-3">
-            <div className="flex justify-between">
-              <Skeleton className="h-4 w-3/4" />
-              <Skeleton className="h-3 w-20" />
-            </div>
-            <div className="flex gap-3">
-              <Skeleton className="h-3 w-24" />
-              <Skeleton className="h-3 w-16" />
-              <Skeleton className="h-3 w-12" />
-              <Skeleton className="h-3 w-16" />
-            </div>
-            <div className="flex justify-between pt-2 border-t border-border">
-              <Skeleton className="h-5 w-20 rounded-full" />
-              <Skeleton className="h-8 w-28 rounded-md" />
-            </div>
-          </div>
-        ))}
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Sidebar skeleton - desktop */}
+        <aside className="hidden lg:block w-72 shrink-0 space-y-3">
+          <Skeleton className="h-10 w-full rounded-lg" />
+          <Skeleton className="h-10 w-full rounded-lg" />
+          <Skeleton className="h-10 w-full rounded-lg" />
+          <Skeleton className="h-10 w-full rounded-lg" />
+          <Skeleton className="h-10 w-24 rounded-lg" />
+        </aside>
+        {/* Main content */}
+        <div className="flex-1">
+          <RideCardGridSkeleton count={5} />
+        </div>
       </div>
     </div>
   )

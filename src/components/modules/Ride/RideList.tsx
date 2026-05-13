@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { RideCard } from "./RideCard"
 import { RideCardGridSkeleton } from "./RideCardSkeleton"
@@ -11,8 +11,8 @@ import { ChevronLeft, ChevronRight, AlertCircle } from "lucide-react"
 import type { Ride, PaginationMeta } from "@/types"
 
 interface RideListProps {
-  initialRides: Ride[]
-  initialMeta: PaginationMeta
+  initialRides?: Ride[]
+  initialMeta?: PaginationMeta
 }
 
 interface FilterValues {
@@ -25,11 +25,19 @@ interface FilterValues {
 
 export function RideList({ initialRides, initialMeta }: RideListProps) {
   const { data: session } = useSession()
-  const [rides, setRides] = useState<Ride[]>(initialRides)
-  const [meta, setMeta] = useState<PaginationMeta>(initialMeta)
+  const [rides, setRides] = useState<Ride[]>(initialRides ?? [])
+  const [meta, setMeta] = useState<PaginationMeta>(initialMeta ?? { page: 1, limit: 10, total: 0, totalPage: 0 })
   const [loading, setLoading] = useState(false)
   const [acceptLoading, setAcceptLoading] = useState<string | null>(null)
   const [filterValues, setFilterValues] = useState<FilterValues>({})
+
+  // Fetch on mount if no initial data provided
+  useEffect(() => {
+    if (!initialRides && !initialMeta) {
+      fetchWithFilters({}, 1)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   function buildParams(filters: FilterValues, page: number) {
     const params = new URLSearchParams()

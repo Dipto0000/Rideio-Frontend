@@ -36,8 +36,8 @@ export interface User {
 
 export interface Ride {
   _id: string
-  riderId: Pick<User, "_id" | "name" | "picture">
-  driverId?: Pick<User, "_id" | "name" | "picture" | "phone">
+  riderId: Pick<User, "_id" | "name" | "picture" | "phone">
+  driverId?: Pick<User, "_id" | "name" | "picture" | "phone" | "numberplate" | "vehicleType">
   from: ILocation
   to: ILocation
   arrivalTime: string

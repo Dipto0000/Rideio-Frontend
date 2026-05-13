@@ -2,36 +2,18 @@
 
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL
 
-export async function registerRider(data: {
-  name: string
-  email: string
-  password: string
-  phone?: string
-  address?: string
-}) {
+export async function registerRider(formData: FormData) {
   const res = await fetch(`${BACKEND}/api/v1/auth/register/rider`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: formData,
   })
   return res.json()
 }
 
-export async function registerDriver(data: {
-  name: string
-  email: string
-  password: string
-  phone: string
-  address: string
-  licenseNumber: string
-  numberplate: string
-  vehicleType: string
-  dob: string
-}) {
+export async function registerDriver(formData: FormData) {
   const res = await fetch(`${BACKEND}/api/v1/auth/register/driver`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: formData,
   })
   return res.json()
 }

@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { ImageUpload } from "@/components/ui/ImageUpload"
 import { SocialButtons } from "./SocialButtons"
 import { registerRider } from "@/lib/actions/auth.actions"
 
@@ -11,6 +12,7 @@ export function RiderSignupForm() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [profilePicture, setProfilePicture] = useState<File | null>(null)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -18,21 +20,20 @@ export function RiderSignupForm() {
     setError("")
 
     const form = new FormData(e.currentTarget)
-    const data = {
-      name: form.get("name") as string,
-      email: form.get("email") as string,
-      password: form.get("password") as string,
-      phone: (form.get("phone") as string) || undefined,
-      address: (form.get("address") as string) || undefined,
+    // Override/add the profile picture file if selected
+    if (profilePicture) {
+      form.set("profilePicture", profilePicture)
+    } else {
+      form.delete("profilePicture")
     }
 
-    const res = await registerRider(data)
+    const res = await registerRider(form)
     if (!res.success) {
       setError(res.message || "Registration failed")
       setLoading(false)
       return
     }
-    router.push("/auth/verify?email=" + encodeURIComponent(data.email))
+    router.push("/auth/verify?email=" + encodeURIComponent(form.get("email") as string))
   }
 
   return (
@@ -49,6 +50,11 @@ export function RiderSignupForm() {
       </div>
 
       <div className="grid grid-cols-1 gap-4">
+        <ImageUpload
+          name="profilePicture"
+          onFileChange={(file) => setProfilePicture(file)}
+        />
+
         <Input name="name" placeholder="Full Name" required />
         <Input name="email" type="email" placeholder="Email Address" required />
         <Input name="password" type="password" placeholder="Password" required minLength={6} />

@@ -4,43 +4,55 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { ImageUpload } from "@/components/ui/ImageUpload"
 import { registerDriver } from "@/lib/actions/auth.actions"
 
 export function DriverSignupForm() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [profilePicture, setProfilePicture] = useState<File | null>(null)
+  const [profilePicError, setProfilePicError] = useState("")
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
     setError("")
+    setProfilePicError("")
 
-    const form = new FormData(e.currentTarget)
-    const data = {
-      name: form.get("name") as string,
-      email: form.get("email") as string,
-      password: form.get("password") as string,
-      phone: form.get("phone") as string,
-      address: form.get("address") as string,
-      licenseNumber: form.get("licenseNumber") as string,
-      numberplate: form.get("numberplate") as string,
-      vehicleType: form.get("vehicleType") as string,
-      dob: form.get("dob") as string,
+    // Validate profile picture (mandatory for drivers)
+    if (!profilePicture) {
+      setProfilePicError("Profile picture is required")
+      setLoading(false)
+      return
     }
 
-    const res = await registerDriver(data)
+    const form = new FormData(e.currentTarget)
+    // Override/add the profile picture file
+    form.set("profilePicture", profilePicture)
+
+    const res = await registerDriver(form)
     if (!res.success) {
       setError(res.message || "Registration failed")
       setLoading(false)
       return
     }
-    router.push("/auth/verify?email=" + encodeURIComponent(data.email))
+    router.push("/auth/verify?email=" + encodeURIComponent(form.get("email") as string))
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
       <div className="grid grid-cols-1 gap-4">
+        <ImageUpload
+          name="profilePicture"
+          required
+          error={profilePicError}
+          onFileChange={(file) => {
+            setProfilePicture(file)
+            if (file) setProfilePicError("")
+          }}
+        />
+
         <Input name="name" placeholder="Full Name" required />
         <Input name="email" type="email" placeholder="Email Address" required />
         <Input name="password" type="password" placeholder="Password" required minLength={6} />

@@ -7,16 +7,13 @@ import { RideList } from "@/components/modules/Ride/RideList"
 import { RideCardGridSkeleton } from "@/components/modules/Ride/RideCardSkeleton"
 import { Button } from "@/components/ui/button"
 import { getSubscriptionStatus } from "@/lib/actions/subscription.actions"
-import type { Ride, PaginationMeta } from "@/types"
 
-export function FindRidesView() {
+export function RideListingView() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const isDriver = session?.user.subRole === "DRIVER"
   const isRider = session?.user.subRole === "RIDER"
-  const [rides, setRides] = useState<Ride[]>([])
-  const [meta, setMeta] = useState<PaginationMeta | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loadingSubscription, setLoadingSubscription] = useState(true)
   const [subscribed, setSubscribed] = useState<boolean | null>(null)
 
   useEffect(() => {
@@ -25,29 +22,19 @@ export function FindRidesView() {
       router.replace("/create-ride")
       return
     }
-    loadAll()
-  }, [status, isRider, router])
 
-  async function loadAll() {
-    const [ridesRes] = await Promise.all([
-      fetch("/api/backend/rides?page=1&limit=10").then((r) => r.json()),
-      isDriver && session?.user.accessToken
-        ? getSubscriptionStatus(session.user.accessToken)
-        : Promise.resolve(null),
-    ])
-    if (ridesRes.success) {
-      setRides(ridesRes.data)
-      setMeta(ridesRes.meta)
+    if (isDriver && session?.user.accessToken) {
+      getSubscriptionStatus(session.user.accessToken).then((res) => {
+        setSubscribed(res.isSubscribed ?? false)
+        setLoadingSubscription(false)
+      })
+    } else {
+      setSubscribed(false)
+      setLoadingSubscription(false)
     }
-    setLoading(false)
-  }
+  }, [status, isRider, isDriver, session, router])
 
-  useEffect(() => {
-    if (status !== "authenticated") return
-    setSubscribed(session?.user.isSubscribed ?? false)
-  }, [session, status])
-
-  if (status === "loading" || loading) {
+  if (status === "loading" || loadingSubscription) {
     return <RideCardGridSkeleton count={5} />
   }
 
@@ -67,10 +54,10 @@ export function FindRidesView() {
             Subscribe Now
           </Button>
         </div>
-        <RideList initialRides={rides} initialMeta={meta!} />
+        <RideList />
       </div>
     )
   }
 
-  return <RideList initialRides={rides} initialMeta={meta!} />
+  return <RideList />
 }

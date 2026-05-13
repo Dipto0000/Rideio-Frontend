@@ -1,6 +1,7 @@
 "use client"
 
-import { Calendar, Clock, MapPin, Bike, Car, DollarSign } from "lucide-react"
+import Link from "next/link"
+import { Calendar, Clock, MapPin, Bike, Car, DollarSign, ChevronRight } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import type { Ride } from "@/types"
@@ -83,16 +84,25 @@ export function RideCard({ ride, onAccept, acceptLoading }: RideCardProps) {
                 ? "Accepted"
                 : ride.status}
             </span>
-            {ride.status === "PENDING" && onAccept && (
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => onAccept(ride._id)}
-                disabled={acceptLoading}
+            <div className="flex items-center gap-2">
+              <Link
+                href={`/rides/${ride._id}`}
+                className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                {acceptLoading ? "Accepting..." : "Accept Ride"}
-              </Button>
-            )}
+                Details
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+              {ride.status === "PENDING" && onAccept && (
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => onAccept(ride._id)}
+                  disabled={acceptLoading}
+                >
+                  {acceptLoading ? "Accepting..." : "Accept Ride"}
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </CardContent>

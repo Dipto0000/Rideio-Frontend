@@ -44,6 +44,16 @@ export async function cancelRide(rideId: string, accessToken: string) {
   return res.json()
 }
 
+export async function getRideById(rideId: string, accessToken?: string) {
+  const res = await fetch(
+    `${BACKEND}/api/v1/rides/${rideId}`,
+    {
+      headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+    }
+  )
+  return res.json()
+}
+
 export async function getMyRides(accessToken: string, page = 1, limit = 10) {
   if (!accessToken) return { success: false, message: "Unauthorized" }
 
