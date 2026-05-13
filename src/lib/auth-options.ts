@@ -56,8 +56,8 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user, account }) {
-      if (account && user) {
-        if (account.provider === "google") {
+      if (user) {
+        if (account?.provider === "google") {
           try {
             const res = await fetch(`${BACKEND}/api/v1/auth/google-auth`, {
               method: "POST",
@@ -66,7 +66,7 @@ export const authOptions: NextAuthOptions = {
                 email: user.email,
                 name: user.name,
                 picture: user.image,
-                providerId: account.providerAccountId,
+                googleId: account.providerAccountId,
               }),
             })
             const data = await res.json()
@@ -83,7 +83,7 @@ export const authOptions: NextAuthOptions = {
               token.isSubscribed = u.subscription?.isSubscribed ?? false
             }
           } catch {
-            /* backend unreachable — token stays minimal */
+            /* backend unreachable */
           }
         } else {
           token.id = user.id

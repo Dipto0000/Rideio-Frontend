@@ -2,16 +2,24 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Navigation, MapPin } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useSession } from "next-auth/react"
 import { Input } from "@/components/ui/input"
-import { LocationPicker } from "./LocationPicker"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { RideMapPicker } from "./RideMapPicker"
 import { createRide } from "@/lib/actions/ride.actions"
+import { DollarSign, Ruler, CheckCircle } from "lucide-react"
 
 export function CreateRideForm() {
   const router = useRouter()
+  const { data: session } = useSession()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [success, setSuccess] = useState<{
+    proposedFare: number
+    systemSuggestedFare: number
+    distanceInKm: number
+  } | null>(null)
 
   const [from, setFrom] = useState<{ address: string; lat: number; lng: number } | null>(null)
   const [to, setTo] = useState<{ address: string; lat: number; lng: number } | null>(null)
@@ -22,59 +30,93 @@ export function CreateRideForm() {
       setError("Please select both pickup and drop-off locations")
       return
     }
+    if (!session?.user.accessToken) {
+      setError("Session not ready. Try refreshing the page.")
+      return
+    }
     setLoading(true)
     setError("")
 
     const form = new FormData(e.currentTarget)
-    const data = {
-      from: { address: from.address, lat: from.lat, lng: from.lng },
-      to: { address: to.address, lat: to.lat, lng: to.lng },
-      arrivalTime: form.get("arrivalTime") as string,
-      vehicleType: (form.get("vehicleType") as "BIKE" | "CAR") || "CAR",
-      proposedFare: parseFloat(form.get("proposedFare") as string) || 0,
-    }
-
-    if (!data.arrivalTime) {
+    const arrivalTime = form.get("arrivalTime") as string
+    if (!arrivalTime) {
       setError("Please select arrival time")
       setLoading(false)
       return
     }
-    if (data.proposedFare < 1) {
-      setError("Please enter a valid fare amount")
-      setLoading(false)
-      return
-    }
 
-    const res = await createRide(data)
+    const res = await createRide(
+      {
+        from: { address: from.address, lat: from.lat, lng: from.lng },
+        to: { address: to.address, lat: to.lat, lng: to.lng },
+        arrivalTime,
+        vehicleType: (form.get("vehicleType") as "BIKE" | "CAR") || "CAR",
+      },
+      session.user.accessToken
+    )
+
     if (!res.success) {
       setError(res.message || "Failed to create ride")
       setLoading(false)
       return
     }
-    router.push("/find-rides")
+
+    const ride = res.data
+    setSuccess({
+      proposedFare: ride.proposedFare,
+      systemSuggestedFare: ride.systemSuggestedFare,
+      distanceInKm: ride.distanceInKm,
+    })
+  }
+
+  if (success) {
+    return (
+      <Card>
+        <CardContent className="p-8 text-center space-y-6">
+          <div className="w-16 h-16 rounded-full bg-secondary/10 flex items-center justify-center mx-auto">
+            <CheckCircle className="w-8 h-8 text-secondary" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-primary">Ride Posted!</h2>
+            <p className="text-muted-foreground mt-1">
+              Your ride request is now visible to drivers.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-4 max-w-xs mx-auto">
+            <div className="bg-muted/30 rounded-lg p-4 space-y-1">
+              <Ruler className="w-5 h-5 text-muted-foreground mx-auto" />
+              <p className="text-lg font-bold text-primary">
+                {success.distanceInKm.toFixed(1)} km
+              </p>
+              <p className="text-xs text-muted-foreground">Distance</p>
+            </div>
+            <div className="bg-muted/30 rounded-lg p-4 space-y-1">
+              <DollarSign className="w-5 h-5 text-muted-foreground mx-auto" />
+              <p className="text-lg font-bold text-primary">
+                ৳{success.proposedFare}
+              </p>
+              <p className="text-xs text-muted-foreground">Est. Fare</p>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Fare is system-calculated based on distance. Riders and drivers cannot modify it.
+          </p>
+          <Button variant="primary" onClick={() => router.push("/find-rides")}>
+            View Available Rides
+          </Button>
+        </CardContent>
+      </Card>
+    )
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-      <div className="space-y-4">
-        <label className="text-sm font-medium text-primary">Pickup Location</label>
-        <LocationPicker
-          value={from?.address || ""}
-          onChange={(loc) => setFrom(loc)}
-          placeholder="Enter pickup location..."
-          icon={<MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary w-5 h-5" />}
-        />
-      </div>
-
-      <div className="space-y-4">
-        <label className="text-sm font-medium text-primary">Drop-off Location</label>
-        <LocationPicker
-          value={to?.address || ""}
-          onChange={(loc) => setTo(loc)}
-          placeholder="Enter destination..."
-          icon={<Navigation className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary w-5 h-5" />}
-        />
-      </div>
+      <RideMapPicker
+        from={from}
+        to={to}
+        onFromChange={setFrom}
+        onToChange={setTo}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
@@ -97,18 +139,6 @@ export function CreateRideForm() {
             <option value="BIKE">Bike</option>
           </select>
         </div>
-      </div>
-
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-primary">Proposed Fare (BDT)</label>
-        <Input
-          name="proposedFare"
-          type="number"
-          min={1}
-          placeholder="e.g. 500"
-          className="h-12 bg-muted/30"
-          required
-        />
       </div>
 
       {error && <p className="text-sm text-red-500">{error}</p>}

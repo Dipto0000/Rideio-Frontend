@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import { useSession } from "next-auth/react"
 import { RideCard } from "./RideCard"
 import { RideCardGridSkeleton } from "./RideCardSkeleton"
 import { RideFilters } from "./RideFilters"
@@ -15,6 +16,7 @@ interface RideListProps {
 }
 
 export function RideList({ initialRides, initialMeta }: RideListProps) {
+  const { data: session } = useSession()
   const [rides, setRides] = useState<Ride[]>(initialRides)
   const [meta, setMeta] = useState<PaginationMeta>(initialMeta)
   const [loading, setLoading] = useState(false)
@@ -66,8 +68,9 @@ export function RideList({ initialRides, initialMeta }: RideListProps) {
   }, [])
 
   async function handleAccept(rideId: string) {
+    if (!session?.user.accessToken) return
     setAcceptLoading(rideId)
-    const res = await acceptRide(rideId)
+    const res = await acceptRide(rideId, session.user.accessToken)
     if (res.success) {
       setRides((prev) => prev.filter((r) => r._id !== rideId))
     }

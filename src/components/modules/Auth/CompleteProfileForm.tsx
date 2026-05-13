@@ -38,7 +38,7 @@ export function CompleteProfileForm() {
       return
     }
 
-    const res = await updateProfile(data)
+    const res = await updateProfile(data, session?.user.accessToken || "", session?.user.id || "")
     if (!res.success) {
       setError(res.message || "Update failed")
       setLoading(false)

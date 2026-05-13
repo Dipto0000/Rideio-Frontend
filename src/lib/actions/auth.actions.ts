@@ -1,8 +1,5 @@
 "use server"
 
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth-options"
-
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL
 
 export async function registerRider(data: {
@@ -75,21 +72,22 @@ export async function resendVerification(email: string) {
   return res.json()
 }
 
-export async function updateProfile(data: {
-  subRole?: "RIDER" | "DRIVER"
-  phone?: string
-  address?: string
-}) {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.accessToken) {
-    return { success: false, message: "Unauthorized" }
-  }
+export async function updateProfile(
+  data: {
+    subRole?: "RIDER" | "DRIVER"
+    phone?: string
+    address?: string
+  },
+  accessToken: string,
+  userId: string
+) {
+  if (!accessToken) return { success: false, message: "Unauthorized" }
 
-  const res = await fetch(`${BACKEND}/api/v1/user/${session.user.id}`, {
+  const res = await fetch(`${BACKEND}/api/v1/user/${userId}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${session.user.accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify(data),
   })
