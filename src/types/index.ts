@@ -57,6 +57,37 @@ export interface PaginationMeta {
   totalPage: number
 }
 
+export type PaymentStatus = "PENDING" | "SUCCESS" | "FAILED" | "CANCELLED" | "REFUNDED"
+export type PlanType = "MONTHLY"
+
+export interface PaymentRecord {
+  _id: string
+  userId: string
+  paymentId: string
+  planType: PlanType
+  amount: number
+  currency: string
+  status: PaymentStatus
+  sslcommerzTxnNo?: string
+  method: string
+  startDate: string
+  endDate: string
+  createdAt: string
+}
+
+export interface SubscriptionStatus {
+  isSubscribed: boolean
+  expiryDate?: string
+  latestPayment: PaymentRecord | null
+}
+
+export interface InitPaymentResult {
+  gatewayUrl: string
+  paymentId: string
+  amount: number
+  currency: string
+}
+
 export interface ApiResponse<T = unknown> {
   success: boolean
   message?: string

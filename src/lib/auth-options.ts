@@ -90,7 +90,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger }) {
       if (user) {
         if (account?.provider === "google") {
           try {
@@ -132,6 +132,23 @@ export const authOptions: NextAuthOptions = {
           token.isSubscribed = user.isSubscribed
         }
       }
+
+      if (trigger === "update" && token.accessToken) {
+        try {
+          const res = await fetch(`${BACKEND}/api/v1/subscription/status`, {
+            headers: { Authorization: `Bearer ${token.accessToken}` },
+          })
+          const data = await res.json()
+          if (data.success) {
+            token.isSubscribed = data.data.isSubscribed
+            token.phone = data.data.phone ?? token.phone
+            token.address = data.data.address ?? token.address
+          }
+        } catch {
+          /* backend unreachable */
+        }
+      }
+
       return token
     },
     async session({ session, token }) {
