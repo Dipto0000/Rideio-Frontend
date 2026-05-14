@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
+import { Suspense } from "react"
 import Image from "next/image"
 import { LoginForm } from "@/components/modules/Auth/LoginForm"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export const metadata: Metadata = {
   title: "Log In - Rideio",
@@ -15,7 +17,17 @@ export default function LoginPage() {
             <h1 className="text-3xl font-bold text-primary">Welcome Back</h1>
             <p className="text-muted-foreground mt-2">Sign in to your Rideio account</p>
           </div>
-          <LoginForm />
+          <Suspense
+            fallback={
+              <div className="space-y-4">
+                <Skeleton className="h-10 w-full rounded-lg" />
+                <Skeleton className="h-10 w-full rounded-lg" />
+                <Skeleton className="h-10 w-full rounded-lg" />
+              </div>
+            }
+          >
+            <LoginForm />
+          </Suspense>
         </div>
       </div>
 

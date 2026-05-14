@@ -1,8 +1,10 @@
 "use client"
 
+import { Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 
 const errorMap: Record<string, string> = {
   CredentialsSignin: "Invalid email or password. Please try again.",
@@ -13,7 +15,7 @@ const errorMap: Record<string, string> = {
   Default: "An unexpected error occurred. Please try again.",
 }
 
-export default function AuthErrorPage() {
+function AuthErrorContent() {
   const searchParams = useSearchParams()
   const errorType = searchParams.get("error") || "Default"
   const errorMessage = errorMap[errorType] || errorMap.Default
@@ -41,5 +43,27 @@ export default function AuthErrorPage() {
         </Link>
       </div>
     </div>
+  )
+}
+
+function AuthErrorFallback() {
+  return (
+    <div className="flex flex-col items-center gap-6 p-8 max-w-md mx-auto text-center">
+      <Skeleton className="w-16 h-16 rounded-full" />
+      <Skeleton className="h-8 w-64" />
+      <Skeleton className="h-5 w-80" />
+      <div className="flex gap-4">
+        <Skeleton className="h-10 w-28 rounded-lg" />
+        <Skeleton className="h-10 w-28 rounded-lg" />
+      </div>
+    </div>
+  )
+}
+
+export default function AuthErrorPage() {
+  return (
+    <Suspense fallback={<AuthErrorFallback />}>
+      <AuthErrorContent />
+    </Suspense>
   )
 }

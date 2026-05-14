@@ -44,6 +44,26 @@ export async function cancelRide(rideId: string, accessToken: string) {
   return res.json()
 }
 
+export async function startRide(rideId: string, accessToken: string) {
+  if (!accessToken) return { success: false, message: "Unauthorized" }
+
+  const res = await fetch(`${BACKEND}/api/v1/rides/${rideId}/start`, {
+    method: "PATCH",
+    headers: { Authorization: `Bearer ${accessToken}` },
+  })
+  return res.json()
+}
+
+export async function completeRide(rideId: string, accessToken: string) {
+  if (!accessToken) return { success: false, message: "Unauthorized" }
+
+  const res = await fetch(`${BACKEND}/api/v1/rides/${rideId}/complete`, {
+    method: "PATCH",
+    headers: { Authorization: `Bearer ${accessToken}` },
+  })
+  return res.json()
+}
+
 export async function getRideById(rideId: string, accessToken?: string) {
   const res = await fetch(
     `${BACKEND}/api/v1/rides/${rideId}`,

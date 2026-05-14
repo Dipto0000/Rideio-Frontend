@@ -42,6 +42,14 @@ export function Navbar() {
                 Find Rides
               </Link>
             )}
+            {session && (
+              <Link
+                href="/dashboard"
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+              >
+                Dashboard
+              </Link>
+            )}
             {!session && (
               <Link
                 href="/find-rides"

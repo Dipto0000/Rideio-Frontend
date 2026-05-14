@@ -1,13 +1,14 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { signIn } from "next-auth/react"
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 import { verifyEmail, resendVerification } from "@/lib/actions/auth.actions"
 import { Mail, CheckCircle, XCircle, Loader2 } from "lucide-react"
 
-export default function VerifyPage() {
+function VerifyContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const email = searchParams.get("email")
@@ -124,5 +125,28 @@ export default function VerifyPage() {
         </>
       )}
     </div>
+  )
+}
+
+function VerifyFallback() {
+  return (
+    <div className="flex flex-col items-center gap-6 p-8 max-w-md mx-auto text-center">
+      <Skeleton className="w-16 h-16 rounded-full" />
+      <Skeleton className="h-8 w-48" />
+      <Skeleton className="h-5 w-72" />
+      <Skeleton className="h-5 w-56" />
+      <div className="flex gap-3">
+        <Skeleton className="h-10 w-28 rounded-lg" />
+        <Skeleton className="h-10 w-32 rounded-lg" />
+      </div>
+    </div>
+  )
+}
+
+export default function VerifyPage() {
+  return (
+    <Suspense fallback={<VerifyFallback />}>
+      <VerifyContent />
+    </Suspense>
   )
 }

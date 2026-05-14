@@ -1,5 +1,6 @@
 "use client"
 
+import { Suspense } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
@@ -7,6 +8,14 @@ import { RideList } from "@/components/modules/Ride/RideList"
 import { RideCardGridSkeleton } from "@/components/modules/Ride/RideCardSkeleton"
 import { Button } from "@/components/ui/button"
 import { getSubscriptionStatus } from "@/lib/actions/subscription.actions"
+
+function RideListContent() {
+  return (
+    <Suspense fallback={<RideCardGridSkeleton count={5} />}>
+      <RideList />
+    </Suspense>
+  )
+}
 
 export function RideListingView() {
   const { data: session, status } = useSession()
@@ -25,7 +34,7 @@ export function RideListingView() {
 
     if (isDriver && session?.user.accessToken) {
       getSubscriptionStatus(session.user.accessToken).then((res) => {
-        setSubscribed(res.isSubscribed ?? false)
+        setSubscribed(res.data?.isSubscribed ?? false)
         setLoadingSubscription(false)
       })
     } else {
@@ -54,10 +63,10 @@ export function RideListingView() {
             Subscribe Now
           </Button>
         </div>
-        <RideList />
+        <RideListContent />
       </div>
     )
   }
 
-  return <RideList />
+  return <RideListContent />
 }
