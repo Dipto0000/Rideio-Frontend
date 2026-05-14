@@ -16,6 +16,7 @@ import {
   AlertTriangle,
   RefreshCw,
   Crosshair,
+  Bell,
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -32,6 +33,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { StatsCard } from "@/components/modules/Dashboard/StatsCard"
 import { getRiderDashboard } from "@/lib/actions/dashboard.actions"
 import { cancelRide } from "@/lib/actions/ride.actions"
+import { ReviewDialog } from "@/components/modules/Review/ReviewDialog"
+import { RecentNotificationsCard } from "@/components/modules/Notifications/RecentNotificationsCard"
 import type { RideStatus } from "@/types"
 
 interface RideItem {
@@ -238,6 +241,9 @@ export default function RiderDashboardPage() {
         />
       </div>
 
+      {/* Notification Card */}
+      <RecentNotificationsCard accessToken={session?.user?.accessToken || ""} />
+
       {/* Create Ride Quick Card */}
       <Card>
         <CardContent className="p-5 flex flex-col sm:flex-row items-center gap-4">
@@ -343,6 +349,13 @@ export default function RiderDashboardPage() {
                               <XCircle className="w-3.5 h-3.5 mr-1" />
                               {actionLoading === ride._id ? "..." : "Cancel"}
                             </Button>
+                          )}
+                          {ride.status === "COMPLETED" && session?.user.accessToken && (
+                            <ReviewDialog
+                              rideId={ride._id}
+                              driverName={ride.driverName}
+                              accessToken={session.user.accessToken}
+                            />
                           )}
                           <Button
                             variant="ghost"

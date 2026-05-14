@@ -160,7 +160,7 @@ export default function SubscriptionPage() {
               </ul>
 
               {error && (
-                <p className="text-sm text-red-500 text-center">{error}</p>
+                <p className="text-sm text-red-500 dark:text-red-400 text-center">{error}</p>
               )}
 
               <Button
@@ -210,10 +210,10 @@ export default function SubscriptionPage() {
                         </p>
                       </div>
                       <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${
-                        p.status === "SUCCESS" ? "bg-green-50 text-green-700" :
-                        p.status === "CANCELLED" ? "bg-gray-50 text-gray-500" :
-                        p.status === "FAILED" ? "bg-red-50 text-red-600" :
-                        "bg-amber-50 text-amber-700"
+                        p.status === "SUCCESS" ? "bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-400" :
+                        p.status === "CANCELLED" ? "bg-gray-50 text-gray-500 dark:bg-gray-900/30 dark:text-gray-400" :
+                        p.status === "FAILED" ? "bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400" :
+                        "bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400"
                       }`}>
                         {p.status}
                       </span>

@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { updateProfile } from "@/lib/actions/auth.actions"
+import { Phone, MapPin, Loader2, User, Car, ArrowRight } from "lucide-react"
 
 export function CompleteProfileForm() {
   const router = useRouter()
@@ -57,57 +58,93 @@ export function CompleteProfileForm() {
   return (
     <div className="flex flex-col gap-6 w-full">
       <div className="text-center">
-        <h2 className="text-xl font-semibold text-primary">Complete Your Profile</h2>
-        <p className="text-sm text-muted-foreground mt-1">
+        <h1 className="text-xl md:text-2xl font-bold text-primary">Complete Your Profile</h1>
+        <p className="text-sm text-muted-foreground mt-1.5">
           Choose your role and add optional contact details
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-primary">I want to join as</label>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <div className="space-y-3">
+          <label className="text-sm font-semibold text-foreground">I want to join as</label>
           <div className="grid grid-cols-2 gap-3">
             <label
-              className={`flex flex-col items-center gap-1 p-4 rounded-lg border-2 cursor-pointer transition-colors ${
+              className={`flex flex-col items-center gap-2 p-5 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
                 session?.user.subRole === "RIDER"
-                  ? "border-secondary bg-secondary/5"
-                  : "border-border hover:border-secondary/50"
+                  ? "border-primary bg-primary/5"
+                  : "border-border/50 hover:border-primary/30 bg-card"
               }`}
             >
               <input type="radio" name="subRole" value="RIDER" className="sr-only" defaultChecked={session?.user.subRole === "RIDER"} />
-              <span className="text-2xl">🚗</span>
-              <span className="text-sm font-medium">Rider</span>
-              <span className="text-xs text-muted-foreground text-center">I need rides</span>
+              <User className={`w-6 h-6 ${session?.user.subRole === "RIDER" ? "text-primary" : "text-muted-foreground"}`} />
+              <span className="text-sm font-semibold">Rider</span>
+              <span className="text-xs text-muted-foreground">I need rides</span>
             </label>
             <label
-              className={`flex flex-col items-center gap-1 p-4 rounded-lg border-2 cursor-pointer transition-colors ${
+              className={`flex flex-col items-center gap-2 p-5 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
                 session?.user.subRole === "DRIVER"
-                  ? "border-secondary bg-secondary/5"
-                  : "border-border hover:border-secondary/50"
+                  ? "border-primary bg-primary/5"
+                  : "border-border/50 hover:border-primary/30 bg-card"
               }`}
             >
               <input type="radio" name="subRole" value="DRIVER" className="sr-only" defaultChecked={session?.user.subRole === "DRIVER"} />
-              <span className="text-2xl">🏍️</span>
-              <span className="text-sm font-medium">Driver</span>
-              <span className="text-xs text-muted-foreground text-center">I give rides</span>
+              <Car className={`w-6 h-6 ${session?.user.subRole === "DRIVER" ? "text-primary" : "text-muted-foreground"}`} />
+              <span className="text-sm font-semibold">Driver</span>
+              <span className="text-xs text-muted-foreground">I give rides</span>
             </label>
           </div>
         </div>
 
-        <Input name="phone" type="tel" placeholder="Phone Number (optional)" />
-        <Input name="address" placeholder="Your Address (optional)" />
+        <div className="space-y-3">
+          <div className="relative">
+            <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              name="phone"
+              type="tel"
+              placeholder="Phone Number (optional)"
+              className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+            />
+          </div>
+          <div className="relative">
+            <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              name="address"
+              placeholder="Your Address (optional)"
+              className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+            />
+          </div>
+        </div>
 
-        {error && <p className="text-sm text-red-500">{error}</p>}
+        {error && (
+          <div className="p-3.5 rounded-xl text-sm bg-red-50 border border-red-200 text-red-700 dark:bg-red-950/30 dark:border-red-900/50 dark:text-red-400">
+            {error}
+          </div>
+        )}
 
-        <Button type="submit" variant="primary" className="w-full" disabled={loading}>
-          {loading ? "Saving..." : "Save & Continue"}
+        <Button
+          type="submit"
+          variant="primary"
+          className="w-full h-11 rounded-xl text-base font-bold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200"
+          disabled={loading}
+        >
+          {loading ? (
+            <span className="flex items-center gap-2">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Saving...
+            </span>
+          ) : (
+            <span className="flex items-center justify-center gap-2">
+              Save & Continue
+              <ArrowRight className="w-4 h-4" />
+            </span>
+          )}
         </Button>
       </form>
 
       <button
         type="button"
         onClick={handleSkip}
-        className="text-sm text-muted-foreground hover:text-secondary text-center"
+        className="text-sm text-muted-foreground hover:text-secondary transition-colors text-center underline-offset-2 hover:underline"
       >
         Skip for now
       </button>

@@ -1,9 +1,11 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { forgotPassword } from "@/lib/actions/auth.actions"
+import { Mail, Loader2, AlertCircle, ArrowLeft, CheckCircle2 } from "lucide-react"
 
 export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false)
@@ -29,38 +31,87 @@ export default function ForgotPasswordPage() {
 
   if (sent) {
     return (
-      <div className="flex flex-col items-center gap-4 p-8 text-center max-w-md mx-auto">
-        <div className="w-16 h-16 rounded-full bg-secondary/10 flex items-center justify-center">
-          <svg className="w-8 h-8 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
+      <div className="w-full">
+        <div className="rounded-2xl border border-border/40 bg-card p-8 sm:p-10 shadow-sm text-center">
+          <div className="w-16 h-16 rounded-full bg-green-50 border border-green-200 dark:bg-green-950/30 dark:border-green-900/50 flex items-center justify-center mx-auto mb-5">
+            <CheckCircle2 className="w-8 h-8 text-green-600 dark:text-green-400" />
+          </div>
+          <h1 className="text-xl font-bold text-primary mb-2">Check Your Email</h1>
+          <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6">
+            We&apos;ve sent a password reset link to your email address. It may take a
+            few minutes to arrive.
+          </p>
+          <Link href="/auth/login">
+            <Button variant="outline" className="rounded-xl">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to login
+            </Button>
+          </Link>
         </div>
-        <h1 className="text-2xl font-bold text-primary">Check Your Email</h1>
-        <p className="text-muted-foreground">
-          We&apos;ve sent a password reset link to your email address.
-        </p>
       </div>
     )
   }
 
   return (
-    <div className="flex flex-col gap-6 p-8 max-w-md mx-auto w-full">
-      <div>
+    <div className="w-full">
+      <div className="mb-8">
+        <Link
+          href="/"
+          className="text-2xl font-bold text-primary tracking-tight inline-block mb-6"
+        >
+          Rideio
+        </Link>
         <h1 className="text-2xl font-bold text-primary">Forgot Password</h1>
-        <p className="text-muted-foreground mt-1 text-sm">
+        <p className="text-sm text-muted-foreground mt-1.5">
           Enter your email and we&apos;ll send you a reset link.
         </p>
       </div>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <Input name="email" type="email" placeholder="Email Address" required />
-        {error && <p className="text-sm text-red-500">{error}</p>}
-        <Button type="submit" variant="primary" className="w-full" disabled={loading}>
-          {loading ? "Sending..." : "Send Reset Link"}
-        </Button>
-      </form>
-      <a href="/auth/login" className="text-sm text-secondary hover:underline text-center">
-        Back to login
-      </a>
+      <div className="rounded-2xl border border-border/40 bg-card p-6 sm:p-8 shadow-sm">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="relative">
+            <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              name="email"
+              type="email"
+              placeholder="Email Address"
+              required
+              className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+            />
+          </div>
+
+          {error && (
+            <div className="p-3.5 rounded-xl text-sm flex items-start gap-2.5 bg-red-50 border border-red-200 dark:bg-red-950/30 dark:border-red-900/50 dark:text-red-400">
+              <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+              <p>{error}</p>
+            </div>
+          )}
+
+          <Button
+            type="submit"
+            variant="primary"
+            className="w-full h-11 rounded-xl text-base font-bold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200"
+            disabled={loading}
+          >
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Sending...
+              </span>
+            ) : (
+              "Send Reset Link"
+            )}
+          </Button>
+        </form>
+      </div>
+      <p className="text-sm text-center mt-6">
+        <Link
+          href="/auth/login"
+          className="text-secondary hover:underline font-semibold inline-flex items-center gap-1"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Back to login
+        </Link>
+      </p>
     </div>
   )
 }

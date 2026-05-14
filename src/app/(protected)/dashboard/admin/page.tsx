@@ -283,7 +283,7 @@ export default function AdminDashboardPage() {
                       <p className="text-sm font-medium text-foreground truncate">{driver.name}</p>
                       <p className="text-xs text-muted-foreground">{driver.totalReviews} reviews</p>
                     </div>
-                    <div className="flex items-center gap-1 text-sm font-medium text-amber-600">
+                    <div className="flex items-center gap-1 text-sm font-medium text-amber-600 dark:text-amber-400">
                       <span>★</span>
                       <span>{driver.averageRating.toFixed(1)}</span>
                     </div>

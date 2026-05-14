@@ -2,10 +2,11 @@
 
 import { Suspense, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Skeleton } from "@/components/ui/skeleton"
 import { resetPassword } from "@/lib/actions/auth.actions"
+import { Lock, Loader2, AlertCircle, ArrowLeft } from "lucide-react"
 
 function ResetPasswordContent() {
   const router = useRouter()
@@ -38,38 +39,67 @@ function ResetPasswordContent() {
   }
 
   return (
-    <div className="flex flex-col gap-6 p-8 max-w-md mx-auto w-full">
-      <div>
+    <div className="w-full">
+      <div className="mb-8">
+        <Link
+          href="/"
+          className="text-2xl font-bold text-primary tracking-tight inline-block mb-6"
+        >
+          Rideio
+        </Link>
         <h1 className="text-2xl font-bold text-primary">Reset Password</h1>
-        <p className="text-muted-foreground mt-1 text-sm">Enter your new password.</p>
+        <p className="text-sm text-muted-foreground mt-1.5">
+          Enter your new password below.
+        </p>
       </div>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <Input name="password" type="password" placeholder="New Password" required minLength={6} />
-        <Input
-          name="confirmPassword"
-          type="password"
-          placeholder="Confirm Password"
-          required
-          minLength={6}
-        />
-        {error && <p className="text-sm text-red-500">{error}</p>}
-        <Button type="submit" variant="primary" className="w-full" disabled={loading}>
-          {loading ? "Resetting..." : "Reset Password"}
-        </Button>
-      </form>
-    </div>
-  )
-}
+      <div className="rounded-2xl border border-border/40 bg-card p-6 sm:p-8 shadow-sm">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="relative">
+            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              name="password"
+              type="password"
+              placeholder="New Password"
+              required
+              minLength={6}
+              className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+            />
+          </div>
+          <div className="relative">
+            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              name="confirmPassword"
+              type="password"
+              placeholder="Confirm Password"
+              required
+              minLength={6}
+              className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+            />
+          </div>
 
-function ResetPasswordFallback() {
-  return (
-    <div className="flex flex-col gap-6 p-8 max-w-md mx-auto w-full">
-      <Skeleton className="h-8 w-48" />
-      <Skeleton className="h-4 w-64" />
-      <div className="flex flex-col gap-4">
-        <Skeleton className="h-10 w-full rounded-lg" />
-        <Skeleton className="h-10 w-full rounded-lg" />
-        <Skeleton className="h-10 w-full rounded-lg" />
+          {error && (
+            <div className="p-3.5 rounded-xl text-sm flex items-start gap-2.5 bg-red-50 border border-red-200 dark:bg-red-950/30 dark:border-red-900/50 dark:text-red-400">
+              <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+              <p>{error}</p>
+            </div>
+          )}
+
+          <Button
+            type="submit"
+            variant="primary"
+            className="w-full h-11 rounded-xl text-base font-bold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200"
+            disabled={loading}
+          >
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Resetting...
+              </span>
+            ) : (
+              "Reset Password"
+            )}
+          </Button>
+        </form>
       </div>
     </div>
   )
@@ -77,7 +107,19 @@ function ResetPasswordFallback() {
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={<ResetPasswordFallback />}>
+    <Suspense
+      fallback={
+        <div className="w-full">
+          <div className="rounded-2xl border border-border/40 bg-card p-6 sm:p-8 shadow-sm">
+            <div className="flex flex-col gap-4">
+              <div className="h-11 rounded-xl bg-muted/30 animate-pulse" />
+              <div className="h-11 rounded-xl bg-muted/30 animate-pulse" />
+              <div className="h-11 rounded-xl bg-muted/30 animate-pulse" />
+            </div>
+          </div>
+        </div>
+      }
+    >
       <ResetPasswordContent />
     </Suspense>
   )

@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
-import Image from "next/image"
 import { LoginForm } from "@/components/modules/Auth/LoginForm"
 import { Skeleton } from "@/components/ui/skeleton"
+import Link from "next/link"
 
 export const metadata: Metadata = {
   title: "Log In - Rideio",
@@ -10,37 +10,41 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="w-full min-h-[calc(100vh-4rem)] grid grid-cols-1 lg:grid-cols-3">
-      <div className="lg:col-span-2 flex items-center justify-center p-8 md:p-12 order-2 lg:order-1">
-        <div className="w-full max-w-md">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-primary">Welcome Back</h1>
-            <p className="text-muted-foreground mt-2">Sign in to your Rideio account</p>
-          </div>
-          <Suspense
-            fallback={
-              <div className="space-y-4">
-                <Skeleton className="h-10 w-full rounded-lg" />
-                <Skeleton className="h-10 w-full rounded-lg" />
-                <Skeleton className="h-10 w-full rounded-lg" />
-              </div>
-            }
-          >
-            <LoginForm />
-          </Suspense>
-        </div>
+    <div className="w-full">
+      <div className="mb-8 text-center">
+        <Link
+          href="/"
+          className="text-2xl font-bold text-primary tracking-tight inline-block mb-6"
+        >
+          Rideio
+        </Link>
+        <h1 className="text-2xl md:text-3xl font-bold text-primary">Welcome Back</h1>
+        <p className="text-sm text-muted-foreground mt-1.5">
+          Sign in to your Rideio account to continue
+        </p>
       </div>
-
-      <div className="relative hidden lg:block h-full min-h-[calc(100vh-4rem)] order-1 lg:order-2">
-        <Image
-          src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=800&q=80"
-          alt="Motorcycle"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-l from-black/40 to-transparent" />
+      <div className="rounded-2xl border border-border/40 bg-card p-6 sm:p-8 shadow-sm">
+        <Suspense
+          fallback={
+            <div className="space-y-4">
+              <Skeleton className="h-11 w-full rounded-xl" />
+              <Skeleton className="h-11 w-full rounded-xl" />
+              <Skeleton className="h-11 w-full rounded-xl" />
+            </div>
+          }
+        >
+          <LoginForm />
+        </Suspense>
       </div>
+      <p className="text-sm text-center text-muted-foreground mt-6">
+        Don&apos;t have an account?{" "}
+        <Link
+          href="/auth/role"
+          className="text-secondary hover:underline font-semibold"
+        >
+          Sign up
+        </Link>
+      </p>
     </div>
   )
 }

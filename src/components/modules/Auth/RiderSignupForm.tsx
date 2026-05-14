@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { ImageUpload } from "@/components/ui/ImageUpload"
 import { SocialButtons } from "./SocialButtons"
 import { registerRider } from "@/lib/actions/auth.actions"
+import { Mail, Lock, User, Phone, MapPin, Loader2, AlertCircle } from "lucide-react"
 
 export function RiderSignupForm() {
   const router = useRouter()
@@ -20,7 +21,6 @@ export function RiderSignupForm() {
     setError("")
 
     const form = new FormData(e.currentTarget)
-    // Override/add the profile picture file if selected
     if (profilePicture) {
       form.set("profilePicture", profilePicture)
     } else {
@@ -37,35 +37,98 @@ export function RiderSignupForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
       <SocialButtons role="RIDER" />
 
-      <div className="relative my-2">
+      <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-border" />
+          <span className="w-full border-t border-border/60" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-card px-2 text-muted-foreground">or sign up with email</span>
+          <span className="bg-card px-3 text-muted-foreground font-medium">
+            or sign up with email
+          </span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4">
+      <div className="flex justify-center">
         <ImageUpload
           name="profilePicture"
           onFileChange={(file) => setProfilePicture(file)}
         />
-
-        <Input name="name" placeholder="Full Name" required />
-        <Input name="email" type="email" placeholder="Email Address" required />
-        <Input name="password" type="password" placeholder="Password" required minLength={6} />
-        <Input name="phone" type="tel" placeholder="Phone Number (optional)" />
-        <Input name="address" placeholder="Your Address (optional)" />
       </div>
 
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      <div className="space-y-3">
+        <div className="relative">
+          <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Input
+            name="name"
+            placeholder="Full Name"
+            required
+            className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+          />
+        </div>
+        <div className="relative">
+          <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Input
+            name="email"
+            type="email"
+            placeholder="Email Address"
+            required
+            className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+          />
+        </div>
+        <div className="relative">
+          <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Input
+            name="password"
+            type="password"
+            placeholder="Password (min 6 characters)"
+            required
+            minLength={6}
+            className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+          />
+        </div>
+        <div className="relative">
+          <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Input
+            name="phone"
+            type="tel"
+            placeholder="Phone Number (optional)"
+            className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+          />
+        </div>
+        <div className="relative">
+          <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Input
+            name="address"
+            placeholder="Your Address (optional)"
+            className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+          />
+        </div>
+      </div>
 
-      <Button type="submit" variant="primary" className="w-full" disabled={loading}>
-        {loading ? "Creating account..." : "Create Rider Account"}
+      {error && (
+        <div className="p-3.5 rounded-xl text-sm flex items-start gap-2.5 bg-red-50 border border-red-200 dark:bg-red-950/30 dark:border-red-900/50 dark:text-red-400">
+          <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+          <p>{error}</p>
+        </div>
+      )}
+
+      <Button
+        type="submit"
+        variant="primary"
+        className="w-full h-11 rounded-xl text-base font-bold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200"
+        disabled={loading}
+      >
+        {loading ? (
+          <span className="flex items-center gap-2">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            Creating account...
+          </span>
+        ) : (
+          "Create Rider Account"
+        )}
       </Button>
     </form>
   )

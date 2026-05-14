@@ -136,7 +136,7 @@ export default function AdminSubscriptionsPage() {
                               size="sm"
                               disabled={actionLoading === p._id}
                               onClick={() => handleStatusUpdate(p._id, "SUCCESS")}
-                              className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                              className="text-green-600 hover:text-green-700 hover:bg-green-50 dark:text-green-400 dark:hover:text-green-300 dark:hover:bg-green-950/30"
                             >
                               Approve
                             </Button>
@@ -145,7 +145,7 @@ export default function AdminSubscriptionsPage() {
                               size="sm"
                               disabled={actionLoading === p._id}
                               onClick={() => handleStatusUpdate(p._id, "FAILED")}
-                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-950/30"
                             >
                               Fail
                             </Button>

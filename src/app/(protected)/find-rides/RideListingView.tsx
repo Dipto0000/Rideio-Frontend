@@ -52,11 +52,11 @@ export function RideListingView() {
   if (!subscribed) {
     return (
       <div className="space-y-6">
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center">
-          <p className="text-amber-800 font-medium mb-3">
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center dark:bg-amber-950/30 dark:border-amber-900/50">
+          <p className="text-amber-800 dark:text-amber-300 font-medium mb-3">
             Subscribe to start accepting rides — 700 BDT/month
           </p>
-          <p className="text-amber-700 text-sm mb-4">
+          <p className="text-amber-700 dark:text-amber-400 text-sm mb-4">
             You can still browse available rides. Subscribe when you&apos;re ready to accept.
           </p>
           <Button variant="primary" onClick={() => router.push("/subscription")}>

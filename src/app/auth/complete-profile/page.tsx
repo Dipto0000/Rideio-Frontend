@@ -7,10 +7,8 @@ export const metadata: Metadata = {
 
 export default function CompleteProfilePage() {
   return (
-    <div className="flex items-center justify-center p-8 w-full">
-      <div className="w-full max-w-md">
-        <CompleteProfileForm />
-      </div>
+    <div className="rounded-2xl border border-border/40 bg-card p-6 sm:p-8 shadow-sm">
+      <CompleteProfileForm />
     </div>
   )
 }

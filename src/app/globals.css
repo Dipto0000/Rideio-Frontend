@@ -4,24 +4,50 @@
 :root {
   --background: #f7f9fb;
   --foreground: #191c1e;
-  
+
   --primary: #070235;
   --primary-foreground: #ffffff;
-  
+
   --secondary: #006b5f;
   --secondary-foreground: #ffffff;
-  
+
   --muted: #e6e8ea;
   --muted-foreground: #47464f;
-  
+
   --accent: #006b5f;
   --accent-foreground: #ffffff;
-  
+
   --card: #ffffff;
   --card-foreground: #191c1e;
-  
+
   --border: #c8c5d0;
   --input: #eceef0;
+  --ring: #070235;
+  --radius: 0.625rem;
+}
+
+.dark {
+  --background: #0d0d14;
+  --foreground: #e8e8ed;
+
+  --primary: #e8e8ed;
+  --primary-foreground: #0d0d14;
+
+  --secondary: #00a89a;
+  --secondary-foreground: #0d0d14;
+
+  --muted: #1c1c26;
+  --muted-foreground: #9e9eb0;
+
+  --accent: #00a89a;
+  --accent-foreground: #0d0d14;
+
+  --card: #14141e;
+  --card-foreground: #e8e8ed;
+
+  --border: #2a2a38;
+  --input: #1c1c26;
+  --ring: #00a89a;
 }
 
 @theme inline {
@@ -39,8 +65,21 @@
   --color-card-foreground: var(--card-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
-  
+  --color-ring: var(--ring);
+
   --font-inter: "Inter", sans-serif;
+  --animate-fade-slide-up: fade-slide-up 0.5s ease-out;
+}
+
+@keyframes fade-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 body {
@@ -50,6 +89,6 @@ body {
 }
 
 @utility bg-dotted {
-  background-image: radial-gradient(#c8c5d0 1px, transparent 1px);
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
   background-size: 24px 24px;
 }

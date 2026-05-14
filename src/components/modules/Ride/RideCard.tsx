@@ -72,10 +72,10 @@ export function RideCard({ ride, onAccept, acceptLoading }: RideCardProps) {
             <span
               className={`text-xs font-medium px-2 py-1 rounded-full ${
                 ride.status === "PENDING"
-                  ? "bg-amber-50 text-amber-700"
+                  ? "bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400"
                   : ride.status === "ACCEPTED"
-                  ? "bg-blue-50 text-blue-700"
-                  : "bg-green-50 text-green-700"
+                  ? "bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400"
+                  : "bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-400"
               }`}
             >
               {ride.status === "PENDING"

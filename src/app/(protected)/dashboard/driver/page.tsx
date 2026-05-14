@@ -16,6 +16,7 @@ import {
   TrendingUp,
   ArrowRight,
   RefreshCw,
+  Bell,
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -33,7 +34,10 @@ import { StatsCard } from "@/components/modules/Dashboard/StatsCard"
 import { getDriverDashboard } from "@/lib/actions/dashboard.actions"
 import { getSubscriptionStatus } from "@/lib/actions/subscription.actions"
 import { startRide, completeRide, getRideById } from "@/lib/actions/ride.actions"
-import type { RideStatus } from "@/types"
+import { getNotifications } from "@/lib/actions/notification.actions"
+import { RecentNotificationsCard } from "@/components/modules/Notifications/RecentNotificationsCard"
+import { RecentReviewsCard } from "@/components/modules/Review/RecentReviewsCard"
+import type { RideStatus, AppNotification } from "@/types"
 
 interface RideItem {
   _id: string
@@ -385,6 +389,14 @@ export default function DriverDashboardPage() {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Notification Card */}
+      <RecentNotificationsCard accessToken={session?.user?.accessToken || ""} />
+
+      {/* Recent Reviews */}
+      {session?.user.id && session?.user.accessToken && (
+        <RecentReviewsCard driverId={session.user.id} accessToken={session.user.accessToken} />
       )}
 
       {/* Recent Rides */}

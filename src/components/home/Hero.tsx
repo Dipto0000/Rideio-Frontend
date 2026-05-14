@@ -1,39 +1,122 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { BookingCard } from "./BookingCard"
+import { Shield, Star, Users } from "lucide-react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+
+const STATS = [
+  { icon: Users, value: "10K+", label: "Active Users" },
+  { icon: Star, value: "4.8", label: "Average Rating" },
+  { icon: Shield, value: "100%", label: "Verified" },
+]
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-background py-16 md:py-24 px-6 md:px-12 bg-dotted">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div className="flex flex-col gap-8">
-          <div className="flex flex-col gap-4">
-            <h1 className="text-4xl md:text-6xl font-bold text-primary leading-[1.1] tracking-tight">
-              Your Journey, Shared.<br />
-              Your Earnings, Simplified.
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-md">
-              The most reliable community-driven transport network in Bangladesh.
-            </p>
-          </div>
-          
-          <div className="flex items-center gap-4">
-            <div className="flex -space-x-3">
-              {[1, 2, 3].map((i) => (
-                <Avatar key={i} className="border-2 border-background w-10 h-10">
-                  <AvatarImage src={`https://i.pravatar.cc/100?u=${i}`} />
-                  <AvatarFallback>U{i}</AvatarFallback>
-                </Avatar>
-              ))}
+    <section className="relative overflow-hidden bg-gradient-to-b from-primary/[0.04] via-background to-background py-20 md:py-28 px-6 md:px-12">
+      {/* Decorative gradient blobs */}
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-secondary/5 blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto relative">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Left: Text Content */}
+          <div className="flex flex-col gap-8">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 w-fit">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+              </span>
+              <span className="text-xs font-semibold text-primary tracking-wide">
+                Now Available in Dhaka & Chattogram
+              </span>
             </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-bold text-primary">Join The Fast Growing Community</span>
-              <span className="text-xs text-secondary font-medium">✓ Trusted by many</span>
+
+            <div className="flex flex-col gap-4">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-primary leading-[1.05] tracking-tight">
+                Your Journey,{" "}
+                <span className="text-secondary">Shared.</span>
+                <br />
+                Your Earnings,{" "}
+                <span className="text-secondary">Simplified.</span>
+              </h1>
+              <p className="text-base md:text-lg text-muted-foreground max-w-lg leading-relaxed">
+                The most reliable community-driven transport network in Bangladesh.
+                Connect with verified riders and drivers heading your way.
+              </p>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-wrap items-center gap-3">
+              <Link href="/auth/role">
+                <Button variant="primary" size="lg" className="text-base px-8 h-12">
+                  Get Started Free
+                </Button>
+              </Link>
+              <Link href="/how-it-works">
+                <Button variant="outline" size="lg" className="text-base px-8 h-12">
+                  How It Works
+                </Button>
+              </Link>
+            </div>
+
+            {/* Community avatars */}
+            <div className="flex items-center gap-4 pt-2">
+              <div className="flex -space-x-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <Avatar
+                    key={i}
+                    className="border-2 border-background w-10 h-10 ring-2 ring-background"
+                  >
+                    <AvatarImage
+                      src={`https://i.pravatar.cc/100?u=${i + 10}`}
+                      alt={`User ${i}`}
+                    />
+                    <AvatarFallback className="text-xs font-bold bg-primary/10 text-primary">
+                      U{i}
+                    </AvatarFallback>
+                  </Avatar>
+                ))}
+              </div>
+              <div className="flex flex-col">
+                <span className="text-sm font-bold text-foreground">
+                  Join 10,000+ Riders
+                </span>
+                <span className="text-xs text-muted-foreground font-medium">
+                  Growing community every day
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: BookingCard */}
+          <div className="flex justify-center lg:justify-end">
+            <div className="relative">
+              {/* Glow behind card */}
+              <div className="absolute -inset-8 bg-gradient-to-b from-primary/10 via-secondary/5 to-transparent rounded-3xl blur-2xl opacity-60" />
+              <div className="relative">
+                <BookingCard />
+              </div>
             </div>
           </div>
         </div>
-        
-        <div className="flex justify-center lg:justify-end">
-          <BookingCard />
+
+        {/* Stats bar */}
+        <div className="mt-16 md:mt-20 grid grid-cols-3 gap-6 md:gap-8 max-w-2xl mx-auto">
+          {STATS.map((stat) => (
+            <div
+              key={stat.label}
+              className="flex flex-col items-center gap-1.5 p-4 rounded-xl bg-card/50 border border-border/30"
+            >
+              <stat.icon className="w-4 h-4 text-primary" />
+              <span className="text-lg md:text-xl font-bold text-primary">
+                {stat.value}
+              </span>
+              <span className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
+                {stat.label}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
     </section>

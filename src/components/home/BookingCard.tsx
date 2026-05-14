@@ -1,6 +1,6 @@
 "use client"
 
-import { MapPin, ArrowRight } from "lucide-react"
+import { MapPin, ArrowRight, Navigation, Car } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
@@ -31,61 +31,86 @@ export function BookingCard() {
   }
 
   return (
-    <Card className="w-full max-w-md shadow-xl border-none">
-      <CardContent className="p-8">
+    <Card className="w-full max-w-md shadow-2xl border border-border/40 bg-card/95 backdrop-blur-sm">
+      <CardContent className="p-6 sm:p-8">
         <Tabs defaultValue="ride" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-4 bg-muted/20 rounded-lg">
+          <TabsList className="grid w-full grid-cols-2 mb-6 bg-muted/40 rounded-xl p-1">
             <TabsTrigger
               value="ride"
-              className="px-4 py-2 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=inactive]:text-muted-foreground rounded-md transition-colors"
+              className="px-4 py-2.5 text-sm font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=inactive]:text-muted-foreground rounded-lg transition-all duration-200"
             >
+              <Navigation className="w-4 h-4 mr-2 inline-block" />
               I need a Ride
             </TabsTrigger>
             <TabsTrigger
               value="drive"
-              className="px-4 py-2 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=inactive]:text-muted-foreground rounded-md transition-colors"
+              className="px-4 py-2.5 text-sm font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=inactive]:text-muted-foreground rounded-lg transition-all duration-200"
             >
+              <Car className="w-4 h-4 mr-2 inline-block" />
               I want to Drive
             </TabsTrigger>
           </TabsList>
 
-          <div className="min-h-[280px]">
-            <TabsContent value="ride" className="space-y-6 h-[280px] overflow-y-auto">
-              <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-primary w-5 h-5" />
-                <Input
-                  placeholder="Where to?"
-                  className="pl-10 h-14 bg-muted/30 border-none placeholder:text-muted-foreground/60 text-base font-medium"
-                />
+          <TabsContent value="ride" className="space-y-5">
+            <div className="relative group">
+              <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 text-primary w-5 h-5 transition-colors group-focus-within:text-secondary" />
+              <Input
+                placeholder="Where are you going?"
+                className="pl-11 h-12 bg-muted/20 border-border/50 focus:border-secondary/50 placeholder:text-muted-foreground/50 text-base font-medium rounded-xl transition-all duration-200"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <p className="text-xs text-muted-foreground font-medium px-1">
+                Popular routes
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {["Gulshan → Motijheel", "Banani → Dhanmondi", "Uttara → Mohakhali"].map(
+                  (route) => (
+                    <button
+                      key={route}
+                      className="px-3 py-1.5 text-xs font-medium text-muted-foreground bg-muted/30 hover:bg-muted/60 rounded-lg border border-border/30 transition-all duration-200"
+                    >
+                      {route}
+                    </button>
+                  )
+                )}
               </div>
+            </div>
 
-              <Button
-                variant="primary"
-                className="w-full h-14 text-lg font-bold"
-                onClick={handleFindRide}
-              >
-                Find A Ride
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </TabsContent>
+            <Button
+              variant="primary"
+              className="w-full h-12 text-base font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200"
+              onClick={handleFindRide}
+            >
+              Find a Ride
+              <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
+          </TabsContent>
 
-            <TabsContent value="drive" className="space-y-6 h-[280px] overflow-y-auto">
-              <div className="text-center pt-8">
-                <p className="text-xl font-medium text-muted-foreground">
-                  Plenty of rides waiting for you
-                </p>
+          <TabsContent value="drive" className="space-y-5">
+            <div className="text-center py-6">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                <Car className="w-7 h-7 text-primary" />
               </div>
+              <p className="text-lg font-semibold text-foreground mb-1">
+                Ready to earn?
+              </p>
+              <p className="text-sm text-muted-foreground max-w-xs mx-auto">
+                Plenty of riders are looking for a ride right now. Start earning
+                on your schedule.
+              </p>
+            </div>
 
-              <Button
-                variant="primary"
-                className="w-full h-14 text-lg font-bold"
-                onClick={handleAcceptRide}
-              >
-                Accept Ride
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </TabsContent>
-          </div>
+            <Button
+              variant="primary"
+              className="w-full h-12 text-base font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200"
+              onClick={handleAcceptRide}
+            >
+              Find Passengers
+              <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
+          </TabsContent>
         </Tabs>
       </CardContent>
     </Card>

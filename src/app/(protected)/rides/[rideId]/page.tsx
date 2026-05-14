@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { getRideById, acceptRide, cancelRide } from "@/lib/actions/ride.actions"
 import { getSubscriptionStatus } from "@/lib/actions/subscription.actions"
+import { ReviewDialog } from "@/components/modules/Review/ReviewDialog"
 import type { Ride } from "@/types"
 
 const fromIcon = L.divIcon({
@@ -216,11 +217,11 @@ export default function RideDetailPage() {
   const center: [number, number] = points.length > 0 ? points[0] : [23.8103, 90.4125]
 
   const statusColors: Record<string, string> = {
-    PENDING: "bg-amber-50 text-amber-700 border-amber-200",
-    ACCEPTED: "bg-blue-50 text-blue-700 border-blue-200",
-    IN_PROGRESS: "bg-purple-50 text-purple-700 border-purple-200",
-    COMPLETED: "bg-green-50 text-green-700 border-green-200",
-    CANCELLED: "bg-gray-50 text-gray-500 border-gray-200",
+    PENDING: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-900/50",
+    ACCEPTED: "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-900/50",
+    IN_PROGRESS: "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/30 dark:text-purple-400 dark:border-purple-900/50",
+    COMPLETED: "bg-green-50 text-green-700 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-900/50",
+    CANCELLED: "bg-gray-50 text-gray-500 border-gray-200 dark:bg-gray-900/30 dark:text-gray-400 dark:border-gray-800",
   }
   const statusLabels: Record<string, string> = {
     PENDING: "Available",
@@ -250,7 +251,7 @@ export default function RideDetailPage() {
           </p>
         </div>
         <span
-          className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium border ${statusColors[ride.status] || "bg-gray-50 text-gray-700 border-gray-200"}`}
+          className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium border ${statusColors[ride.status] || "bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-900/30 dark:text-gray-400 dark:border-gray-800"}`}
         >
           {statusLabels[ride.status] || ride.status}
         </span>
@@ -458,12 +459,12 @@ export default function RideDetailPage() {
                     {actionLoading === "accept" ? "Accepting..." : "Accept This Ride"}
                   </Button>
                 ) : (
-                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-center">
-                    <ShieldCheck className="w-5 h-5 text-amber-600 mx-auto mb-2" />
-                    <p className="text-sm text-amber-800 font-medium mb-2">
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-center dark:bg-amber-950/30 dark:border-amber-900/50">
+                    <ShieldCheck className="w-5 h-5 text-amber-600 dark:text-amber-400 mx-auto mb-2" />
+                    <p className="text-sm text-amber-800 dark:text-amber-300 font-medium mb-2">
                       Subscription Required
                     </p>
-                    <p className="text-xs text-amber-700 mb-3">
+                    <p className="text-xs text-amber-700 dark:text-amber-400 mb-3">
                       You need an active subscription (700 BDT/month) to accept rides.
                     </p>
                     <Button variant="primary" size="sm" onClick={() => router.push("/subscription")}>
@@ -484,6 +485,16 @@ export default function RideDetailPage() {
               >
                 {actionLoading === "cancel" ? "Cancelling..." : "Cancel Ride"}
               </Button>
+            )}
+
+            {/* Review - for rider on completed rides */}
+            {ride.status === "COMPLETED" && isRider && accessToken && (
+              <ReviewDialog
+                rideId={ride._id}
+                driverName={ride.driverId?.name}
+                accessToken={accessToken}
+                onReviewSubmitted={() => loadRide()}
+              />
             )}
 
             {error && (
