@@ -134,7 +134,7 @@ export function Navbar() {
                   onClick={() => setProfileMenuOpen(!profileMenuOpen)}
                 >
                   <Avatar className="w-6 h-6">
-                    <AvatarImage src={(session.user as any)?.picture || ""} />
+                    <AvatarImage src={session.user?.image || ""} />
                     <AvatarFallback className="text-[10px]">{initials}</AvatarFallback>
                   </Avatar>
                   <span className="text-sm font-medium max-w-[100px] truncate hidden lg:inline">

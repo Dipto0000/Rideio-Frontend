@@ -2,6 +2,8 @@ import { Users, Shield, Sparkles, Globe, Heart, Target } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
+export const dynamic = "force-static"
+
 const VALUES = [
   {
     icon: Shield,

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useActionState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -8,25 +8,23 @@ import { forgotPassword } from "@/lib/actions/auth.actions"
 import { Mail, Loader2, AlertCircle, ArrowLeft, CheckCircle2 } from "lucide-react"
 
 export default function ForgotPasswordForm() {
-  const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
-  const [error, setError] = useState("")
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const [formState, formAction, isPending] = useActionState(
+    async (_prevState: { error?: string } | null, formData: FormData) => {
+      const email = formData.get("email") as string
+      const res = await forgotPassword(email)
+      if (!res.success) return { error: res.message || "Request failed" }
+      setSent(true)
+      return { error: undefined }
+    },
+    { error: undefined }
+  )
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setLoading(true)
-    setError("")
-
     const form = new FormData(e.currentTarget)
-    const email = form.get("email") as string
-
-    const res = await forgotPassword(email)
-    if (!res.success) {
-      setError(res.message || "Request failed")
-      setLoading(false)
-      return
-    }
-    setSent(true)
+    formAction(form)
   }
 
   if (sent) {
@@ -79,10 +77,10 @@ export default function ForgotPasswordForm() {
             />
           </div>
 
-          {error && (
+          {formState.error && (
             <div className="p-3.5 rounded-xl text-sm flex items-start gap-2.5 bg-red-50 border border-red-200 dark:bg-red-950/60 dark:border-red-800/50 dark:text-red-300">
               <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
-              <p>{error}</p>
+              <p>{formState.error}</p>
             </div>
           )}
 
@@ -90,9 +88,9 @@ export default function ForgotPasswordForm() {
             type="submit"
             variant="primary"
             className="w-full h-11 rounded-xl text-base font-bold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200"
-            disabled={loading}
+            disabled={isPending}
           >
-            {loading ? (
+            {isPending ? (
               <span className="flex items-center gap-2">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 Sending...

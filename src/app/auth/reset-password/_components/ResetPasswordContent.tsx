@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useActionState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -11,31 +11,24 @@ import { Lock, Loader2, AlertCircle, ArrowLeft } from "lucide-react"
 export default function ResetPasswordContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const [formState, formAction, isPending] = useActionState(
+    async (_prevState: { error?: string } | null, formData: FormData) => {
+      const password = formData.get("password") as string
+      const token = searchParams.get("token")
+      if (!token) return { error: "Invalid reset link" }
+      const res = await resetPassword(token, password)
+      if (!res.success) return { error: res.message || "Reset failed" }
+      router.push("/auth/login?reset=success")
+      return { error: undefined }
+    },
+    { error: undefined }
+  )
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setLoading(true)
-    setError("")
-
     const form = new FormData(e.currentTarget)
-    const password = form.get("password") as string
-    const token = searchParams.get("token")
-
-    if (!token) {
-      setError("Invalid reset link")
-      setLoading(false)
-      return
-    }
-
-    const res = await resetPassword(token, password)
-    if (!res.success) {
-      setError(res.message || "Reset failed")
-      setLoading(false)
-      return
-    }
-    router.push("/auth/login?reset=success")
+    formAction(form)
   }
 
   return (
@@ -77,10 +70,10 @@ export default function ResetPasswordContent() {
             />
           </div>
 
-          {error && (
+          {formState.error && (
             <div className="p-3.5 rounded-xl text-sm flex items-start gap-2.5 bg-red-50 border border-red-200 dark:bg-red-950/60 dark:border-red-800/50 dark:text-red-300">
               <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
-              <p>{error}</p>
+              <p>{formState.error}</p>
             </div>
           )}
 
@@ -88,9 +81,9 @@ export default function ResetPasswordContent() {
             type="submit"
             variant="primary"
             className="w-full h-11 rounded-xl text-base font-bold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200"
-            disabled={loading}
+            disabled={isPending}
           >
-            {loading ? (
+            {isPending ? (
               <span className="flex items-center gap-2">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 Resetting...
