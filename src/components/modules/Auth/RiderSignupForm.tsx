@@ -109,7 +109,7 @@ export function RiderSignupForm() {
       </div>
 
       {error && (
-        <div className="p-3.5 rounded-xl text-sm flex items-start gap-2.5 bg-red-50 border border-red-200 dark:bg-red-950/30 dark:border-red-900/50 dark:text-red-400">
+        <div className="p-3.5 rounded-xl text-sm flex items-start gap-2.5 bg-red-50 border border-red-200 dark:bg-red-950/60 dark:border-red-800/50 dark:text-red-300">
           <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
           <p>{error}</p>
         </div>

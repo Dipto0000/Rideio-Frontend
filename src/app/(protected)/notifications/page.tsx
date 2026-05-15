@@ -42,16 +42,16 @@ const NOTIFICATION_LABELS: Record<string, string> = {
 }
 
 const NOTIFICATION_ICONS: Record<string, string> = {
-  RIDE_ACCEPTED: "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400",
-  RIDE_CANCELLED: "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400",
-  RIDE_CANCELLED_BY_DRIVER: "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400",
-  RIDE_STARTED: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400",
-  RIDE_COMPLETED: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400",
-  NEW_RIDE_AVAILABLE: "bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400",
-  SUBSCRIPTION_EXPIRING: "bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400",
-  SUBSCRIPTION_EXPIRED: "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400",
-  NEW_USER_REGISTERED: "bg-sky-100 text-sky-600 dark:bg-sky-900/30 dark:text-sky-400",
-  PAYMENT_RECEIVED: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400",
+  RIDE_ACCEPTED: "bg-green-100 text-green-600 dark:bg-green-900/60 dark:text-green-300",
+  RIDE_CANCELLED: "bg-red-100 text-red-600 dark:bg-red-900/60 dark:text-red-300",
+  RIDE_CANCELLED_BY_DRIVER: "bg-red-100 text-red-600 dark:bg-red-900/60 dark:text-red-300",
+  RIDE_STARTED: "bg-blue-100 text-blue-600 dark:bg-blue-900/60 dark:text-blue-300",
+  RIDE_COMPLETED: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/60 dark:text-emerald-300",
+  NEW_RIDE_AVAILABLE: "bg-purple-100 text-purple-600 dark:bg-purple-900/60 dark:text-purple-300",
+  SUBSCRIPTION_EXPIRING: "bg-amber-100 text-amber-600 dark:bg-amber-900/60 dark:text-amber-300",
+  SUBSCRIPTION_EXPIRED: "bg-red-100 text-red-600 dark:bg-red-900/60 dark:text-red-300",
+  NEW_USER_REGISTERED: "bg-sky-100 text-sky-600 dark:bg-sky-900/60 dark:text-sky-300",
+  PAYMENT_RECEIVED: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/60 dark:text-emerald-300",
 }
 
 function getNotificationIcon(type: string) {
@@ -178,8 +178,17 @@ export default function NotificationsPage() {
       <Card>
         <CardContent className="p-0 divide-y">
           {loading ? (
-            <div className="flex items-center justify-center py-16">
-              <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+            <div className="divide-y">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="flex items-start gap-3 p-4">
+                  <Skeleton className="w-9 h-9 rounded-full shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-3 w-full" />
+                    <Skeleton className="h-3 w-20" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : notifications.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center px-4">

@@ -5,6 +5,8 @@ export const metadata: Metadata = {
   title: "Complete Profile - Rideio",
 }
 
+export const dynamic = 'force-static'
+
 export default function CompleteProfilePage() {
   return (
     <div className="rounded-2xl border border-border/40 bg-card p-6 sm:p-8 shadow-sm">

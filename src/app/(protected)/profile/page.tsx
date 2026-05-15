@@ -236,9 +236,8 @@ export default function ProfilePage() {
       {message && (
         <div
           className={`flex items-center gap-2 px-4 py-3 rounded-lg text-sm ${
-            message.type === "success"
-              ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400"
-              : "bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-400"
+            message.type === "success"               ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300"
+              : "bg-red-50 text-red-700 dark:bg-red-950/60 dark:text-red-300"
           }`}
         >
           {message.type === "success" ? (

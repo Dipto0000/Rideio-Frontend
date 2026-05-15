@@ -52,6 +52,11 @@ export function DriverSignupForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
+      {/* Note explaining why Google signup is not available for drivers */}
+      <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs dark:bg-blue-950/60 dark:border-blue-800/60 dark:text-blue-200">
+        Drivers must sign up with email and password. Google sign-up is not available for driver accounts.
+      </div>
+
       <div className="flex justify-center">
         <ImageUpload
           name="profilePicture"
@@ -164,7 +169,7 @@ export function DriverSignupForm() {
       </div>
 
       {error && (
-        <div className="p-3.5 rounded-xl text-sm flex items-start gap-2.5 bg-red-50 border border-red-200 dark:bg-red-950/30 dark:border-red-900/50 dark:text-red-400">
+        <div className="p-3.5 rounded-xl text-sm flex items-start gap-2.5 bg-red-50 border border-red-200 dark:bg-red-950/60 dark:border-red-800/50 dark:text-red-300">
           <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
           <p>{error}</p>
         </div>

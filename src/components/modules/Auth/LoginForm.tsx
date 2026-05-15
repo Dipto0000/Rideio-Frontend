@@ -17,6 +17,8 @@ export function LoginForm() {
   const [resending, setResending] = useState(false)
 
   const callbackUrl = searchParams.get("callbackUrl") || "/"
+  const urlError = searchParams.get("error")
+  const [showGooglePrompt, setShowGooglePrompt] = useState(false)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -40,6 +42,11 @@ export function LoginForm() {
         if (data.message?.toLowerCase().includes("verify your email")) {
           setNeedsVerification(true)
           setError("Please verify your email before signing in.")
+          return
+        }
+        if (data.message?.toLowerCase().includes("google") || data.message?.toLowerCase().includes("set a password")) {
+          setShowGooglePrompt(true)
+          setError("This account was created with Google. Sign in with Google or set a password in your profile.")
           return
         }
         setError(data.message || "Invalid email or password")
@@ -87,6 +94,13 @@ export function LoginForm() {
 
   return (
     <div className="flex flex-col gap-6 w-full">
+      {/* Error banner from URL params (e.g. Google auth failure for drivers) */}
+      {urlError && (          <div className="p-3.5 rounded-xl text-sm flex items-start gap-2.5 bg-red-50 border border-red-200 text-red-700 dark:bg-red-950/70 dark:border-red-800/50 dark:text-red-300">
+          <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+          <p>{urlError}</p>
+        </div>
+      )}
+
       <form id="login-form" onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="relative">
           <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -123,8 +137,8 @@ export function LoginForm() {
           <div
             className={`p-3.5 rounded-xl text-sm flex items-start gap-2.5 ${
               needsVerification
-                ? "bg-amber-50 border border-amber-200 text-amber-800 dark:bg-amber-950/30 dark:border-amber-900/50 dark:text-amber-300"
-                : "bg-red-50 border border-red-200 text-red-700 dark:bg-red-950/30 dark:border-red-900/50 dark:text-red-400"
+                ? "bg-amber-50 border border-amber-200 text-amber-800 dark:bg-amber-950/70 dark:border-amber-700/40 dark:text-amber-200"
+                : "bg-red-50 border border-red-200 text-red-700 dark:bg-red-950/70 dark:border-red-800/50 dark:text-red-300"
             }`}
           >
             <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
@@ -143,6 +157,15 @@ export function LoginForm() {
                     <Mail className="w-3 h-3" />
                   )}
                   Resend verification email
+                </button>
+              )}
+              {showGooglePrompt && (
+                <button
+                  type="button"
+                  onClick={() => signIn("google", { callbackUrl: callbackUrl })}
+                  className="mt-2 flex items-center gap-1.5 text-secondary hover:underline font-semibold text-xs"
+                >
+                  Sign in with Google instead
                 </button>
               )}
             </div>

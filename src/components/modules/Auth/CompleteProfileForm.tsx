@@ -116,7 +116,7 @@ export function CompleteProfileForm() {
         </div>
 
         {error && (
-          <div className="p-3.5 rounded-xl text-sm bg-red-50 border border-red-200 text-red-700 dark:bg-red-950/30 dark:border-red-900/50 dark:text-red-400">
+          <div className="p-3.5 rounded-xl text-sm bg-red-50 border border-red-200 text-red-700 dark:bg-red-950/60 dark:border-red-800/50 dark:text-red-300">
             {error}
           </div>
         )}

@@ -90,6 +90,30 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async signIn({ account, profile }) {
+      if (account?.provider === "google") {
+        try {
+          const res = await fetch(`${BACKEND}/api/v1/auth/google-auth`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: profile?.email,
+              name: profile?.name,
+              picture: (profile as any)?.picture || (profile as any)?.image,
+              googleId: account.providerAccountId,
+            }),
+          })
+          const data = await res.json()
+          if (!data.success) {
+            return `/auth/login?error=${encodeURIComponent(data.message || "Google sign-in failed")}`
+          }
+          return true
+        } catch {
+          return `/auth/login?error=${encodeURIComponent("Could not connect to the server. Please try again.")}`
+        }
+      }
+      return true
+    },
     async jwt({ token, user, account, trigger }) {
       if (user) {
         if (account?.provider === "google") {
@@ -116,6 +140,7 @@ export const authOptions: NextAuthOptions = {
               token.address = u.address
               token.isVerified = u.isVerified
               token.isSubscribed = u.subscription?.isSubscribed ?? false
+              token.picture = u.picture
             }
           } catch {
             /* backend unreachable */
@@ -130,6 +155,7 @@ export const authOptions: NextAuthOptions = {
           token.address = user.address
           token.isVerified = user.isVerified
           token.isSubscribed = user.isSubscribed
+          token.picture = user.image
         }
       }
 
@@ -160,6 +186,7 @@ export const authOptions: NextAuthOptions = {
       session.user.address = token.address as string | undefined
       session.user.isVerified = token.isVerified as boolean
       session.user.isSubscribed = token.isSubscribed as boolean
+      session.user.image = (token.picture as string) || null
       return session
     },
   },

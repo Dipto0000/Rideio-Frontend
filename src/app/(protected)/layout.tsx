@@ -28,7 +28,7 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/auth/login?callbackUrl=" + encodeURIComponent(window.location.pathname))
+      router.replace("/auth/login?callbackUrl=" + encodeURIComponent(window.location.pathname))
     }
   }, [status, router])
 
