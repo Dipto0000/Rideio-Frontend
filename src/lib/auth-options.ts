@@ -4,6 +4,33 @@ import CredentialsProvider from "next-auth/providers/credentials"
 
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL
 
+/** Decode JWT payload to get expiry (no verification needed) */
+function getJwtExpiry(token: string): number | null {
+  try {
+    const payload = token.split(".")[1]
+    const decoded = JSON.parse(Buffer.from(payload, "base64").toString())
+    return decoded.exp ? decoded.exp * 1000 : null // seconds → ms
+  } catch {
+    return null
+  }
+}
+
+/** Call backend to exchange a refresh token for a new access token */
+async function refreshAccessToken(refreshToken: string): Promise<string | null> {
+  try {
+    const res = await fetch(`${BACKEND}/api/v1/auth/refresh-token`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken }),
+    })
+    const data = await res.json()
+    if (!data.success) return null
+    return data.data.accessToken ?? null
+  } catch {
+    return null
+  }
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
@@ -134,6 +161,7 @@ export const authOptions: NextAuthOptions = {
               token.id = u._id || u.id
               token.accessToken = data.data.accessToken
               token.refreshToken = data.data.refreshToken
+              token.accessTokenExpires = getJwtExpiry(data.data.accessToken) ?? 0
               token.role = u.role
               token.subRole = u.subRole
               token.phone = u.phone
@@ -149,6 +177,7 @@ export const authOptions: NextAuthOptions = {
           token.id = user.id
           token.accessToken = user.accessToken
           token.refreshToken = user.refreshToken
+          token.accessTokenExpires = getJwtExpiry(user.accessToken) ?? 0
           token.role = user.role
           token.subRole = user.subRole
           token.phone = user.phone
@@ -156,6 +185,25 @@ export const authOptions: NextAuthOptions = {
           token.isVerified = user.isVerified
           token.isSubscribed = user.isSubscribed
           token.picture = user.image
+        }
+      }
+
+      // ⏰ Refresh access token if expired (with 60s buffer)
+      // Falls back to decoding the JWT expiry for existing sessions without stored expiry
+      if (token.accessToken && token.refreshToken) {
+        const expiry =
+          token.accessTokenExpires ?? getJwtExpiry(token.accessToken) ?? 0
+        const now = Date.now()
+        const bufferMs = 60 * 1000 // refresh 60s before actual expiry
+        if (expiry > 0 && now > expiry - bufferMs) {
+          const newAccessToken = await refreshAccessToken(token.refreshToken)
+          if (newAccessToken) {
+            token.accessToken = newAccessToken
+            token.accessTokenExpires = getJwtExpiry(newAccessToken) ?? 0
+          } else {
+            // Refresh failed — log the user out
+            return {} as any
+          }
         }
       }
 

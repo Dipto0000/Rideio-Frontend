@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useActionState } from "react"
+import { useState, useActionState, startTransition } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -74,7 +74,9 @@ export function DriverSignupForm() {
     }
 
     form.set("profilePicture", profilePicture)
-    formAction(form)
+    startTransition(() => {
+      formAction(form)
+    })
   }
 
   return (

@@ -209,7 +209,15 @@ export default function ProfilePage() {
     setNotifSaving(false)
   }
 
-  if (authStatus === "loading" || loading) {
+  // Only show skeleton on initial load, not on session re-fetch (tab switch)
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false)
+  useEffect(() => {
+    if (!loading) {
+      setInitialLoadComplete(true)
+    }
+  }, [loading])
+
+  if ((authStatus === "loading" && !initialLoadComplete) || (loading && !initialLoadComplete)) {
     return (
       <div className="max-w-3xl mx-auto p-6 space-y-6">
         <Skeleton className="h-9 w-48" />
@@ -425,7 +433,7 @@ export default function ProfilePage() {
               <CardDescription>
                 {profile?.password
                   ? "Update your current password"
-                  : "Set a password for your account (you signed up with Google)"}
+                  : "Set a password for your account"}
               </CardDescription>
             </CardHeader>
             <CardContent>

@@ -48,8 +48,10 @@ export function ImageUpload({ name, required, error, onFileChange, defaultValue 
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null
-    handleFileSelection(file)
+    const file = e.target.files?.[0]
+    if (file) {
+      handleFileSelection(file)
+    }
   }
 
   const handleRemove = () => {

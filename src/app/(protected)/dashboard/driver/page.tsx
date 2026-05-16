@@ -394,10 +394,10 @@ export default function DriverDashboardPage() {
               <CreditCard className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             </div>
             <div>
-              <p className="font-medium text-emerald-800 dark:text-emerald-300">
+              <p className="font-medium text-emerald-900 dark:text-emerald-200">
                 Subscription Active
               </p>
-              <p className="text-sm text-emerald-700 dark:text-emerald-400">
+              <p className="text-sm text-emerald-800 dark:text-emerald-300">
                 Expires {new Date(subExpiry).toLocaleDateString("en-BD", {
                   day: "numeric", month: "long", year: "numeric"
                 })}
