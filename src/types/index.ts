@@ -85,8 +85,7 @@ export interface Ride {
   arrivalTime: string
   vehicleType: VehicleType
   status: RideStatus
-  proposedFare: number
-  systemSuggestedFare?: number
+  systemSuggestedFare: number
   distanceInKm?: number
   createdAt: string
   updatedAt: string

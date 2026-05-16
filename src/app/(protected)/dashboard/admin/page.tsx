@@ -50,7 +50,7 @@ interface AdminData {
     from: { address: string }
     to: { address: string }
     status: string
-    proposedFare: number
+    systemSuggestedFare: number
     riderName: string
     driverName: string | null
     createdAt: string
@@ -340,7 +340,7 @@ export default function AdminDashboardPage() {
                       </TableCell>
                       <TableCell className="text-muted-foreground">{ride.riderName}</TableCell>
                       <TableCell className="text-muted-foreground">{ride.driverName || "—"}</TableCell>
-                      <TableCell className="text-right font-medium">৳{ride.proposedFare}</TableCell>
+                      <TableCell className="text-right font-medium">৳{ride.systemSuggestedFare}</TableCell>
                       <TableCell>
                         <Badge variant={(statusBadgeVariant[ride.status] as any) || "outline"}>
                           {ride.status}

@@ -18,6 +18,7 @@ import {
   Crosshair,
   Bell,
 } from "lucide-react"
+import { toast } from "sonner"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -42,7 +43,7 @@ interface RideItem {
   from: { address: string }
   to: { address: string }
   status: RideStatus
-  proposedFare: number
+  systemSuggestedFare: number
   vehicleType?: string
   driverName?: string
   driverRating?: number
@@ -112,7 +113,10 @@ export default function RiderDashboardPage() {
     setActionLoading(rideId)
     const res = await cancelRide(rideId, session.user.accessToken)
     if (res.success) {
+      toast.success("Ride cancelled successfully")
       fetchData()
+    } else {
+      toast.error(res.message || "Failed to cancel ride")
     }
     setActionLoading(null)
   }
@@ -147,7 +151,16 @@ export default function RiderDashboardPage() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Rider Dashboard</h1>
+          <h1 className="text-2xl font-bold text-foreground">
+            Rider Dashboard
+            <Badge variant="outline" className="ml-2 align-middle text-xs bg-secondary/10 text-secondary border-secondary/20">
+              {session?.user?.role === "SUPER_ADMIN"
+                ? "Super Admin"
+                : session?.user?.role === "ADMIN"
+                  ? "Admin"
+                  : "Rider"}
+            </Badge>
+          </h1>
           <p className="text-muted-foreground text-sm mt-0.5">
             Welcome back, {session?.user?.name?.split(" ")[0] || "Rider"}
           </p>
@@ -327,7 +340,7 @@ export default function RiderDashboardPage() {
                           <span className="text-muted-foreground text-sm">—</span>
                         )}
                       </TableCell>
-                      <TableCell className="font-medium">৳{ride.proposedFare}</TableCell>
+                      <TableCell className="font-medium">৳{ride.systemSuggestedFare}</TableCell>
                       <TableCell>
                         <Badge variant={(statusBadge[ride.status] as any) || "outline"}>
                           {statusLabel[ride.status] || ride.status}

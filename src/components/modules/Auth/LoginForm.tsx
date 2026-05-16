@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { SocialButtons } from "./SocialButtons"
 import { Mail, Lock, Loader2, AlertCircle, ArrowRight } from "lucide-react"
+import { toast } from "sonner"
+import { loginSchema } from "@/schemas"
 
 export function LoginForm() {
   const router = useRouter()
@@ -28,15 +30,31 @@ export function LoginForm() {
     .join(" ") || "Home"
   const [showGooglePrompt, setShowGooglePrompt] = useState(false)
 
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setLoading(true)
+    setFieldErrors({})
     setError("")
     setNeedsVerification(false)
 
     const form = new FormData(e.currentTarget)
     const email = form.get("email") as string
     const password = form.get("password") as string
+
+    // Client-side validation
+    const result = loginSchema.safeParse({ email, password })
+    if (!result.success) {
+      const errors: Record<string, string> = {}
+      for (const issue of result.error.issues) {
+        const path = issue.path[0] as string
+        if (!errors[path]) errors[path] = issue.message
+      }
+      setFieldErrors(errors)
+      return
+    }
+
+    setLoading(true)
 
     try {
       const res = await fetch("/api/backend/auth/login", {
@@ -72,6 +90,7 @@ export function LoginForm() {
         return
       }
 
+      toast.success("Signed in successfully!")
       router.push(callbackUrl)
       router.refresh()
     } catch {
@@ -120,26 +139,40 @@ export function LoginForm() {
 
       <form id="login-form" onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="relative">
-          <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
-          <Input
-            name="email"
-            type="email"
-            placeholder="Email Address"
-            required
-            className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
-          />
-        </div>
+          <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />            <Input
+              name="email"
+              type="email"
+              placeholder="Email Address"
+              required
+              className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
+                fieldErrors.email
+                  ? "border-destructive focus:border-destructive"
+                  : "border-border/50 focus:border-secondary/50"
+              }`}
+              onChange={() => setFieldErrors((prev) => ({ ...prev, email: "" }))}
+            />
+            {fieldErrors.email && (
+              <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.email}</p>
+            )}
+          </div>
 
         <div className="relative">
-          <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
-          <Input
-            name="password"
-            type="password"
-            placeholder="Password"
-            required
-            className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
-          />
-        </div>
+          <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />            <Input
+              name="password"
+              type="password"
+              placeholder="Password"
+              required
+              className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
+                fieldErrors.password
+                  ? "border-destructive focus:border-destructive"
+                  : "border-border/50 focus:border-secondary/50"
+              }`}
+              onChange={() => setFieldErrors((prev) => ({ ...prev, password: "" }))}
+            />
+            {fieldErrors.password && (
+              <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.password}</p>
+            )}
+          </div>
 
         <div className="flex justify-end">
           <a

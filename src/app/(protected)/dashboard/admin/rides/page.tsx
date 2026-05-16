@@ -34,7 +34,7 @@ interface RideItem {
   from: { address: string }
   to: { address: string }
   status: string
-  proposedFare: number
+  systemSuggestedFare: number
   riderId?: { _id: string; name: string }
   driverId?: { _id: string; name: string }
   createdAt: string
@@ -153,7 +153,7 @@ export default function AdminRidesPage() {
                       <TableCell className="text-muted-foreground">
                         {new Date(ride.createdAt).toLocaleDateString("en-BD", { day: "numeric", month: "short" })}
                       </TableCell>
-                      <TableCell className="text-right font-medium">৳{ride.proposedFare}</TableCell>
+                      <TableCell className="text-right font-medium">৳{ride.systemSuggestedFare}</TableCell>
                       <TableCell>
                         <Badge variant={(statusBadgeVariant[ride.status] as any) || "outline"}>
                           {ride.status}

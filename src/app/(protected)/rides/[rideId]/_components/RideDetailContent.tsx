@@ -316,7 +316,7 @@ export default function RideDetailContent() {
               <CardContent className="p-4 flex flex-col items-center text-center gap-1">
                 <DollarSign className="w-5 h-5 text-primary" />
                 <span className="text-xs text-muted-foreground">Fare</span>
-                <span className="text-sm font-semibold text-primary">৳{ride.proposedFare}</span>
+                <span className="text-sm font-semibold text-primary">৳{ride.systemSuggestedFare}</span>
               </CardContent>
             </Card>
           </div>
@@ -353,34 +353,32 @@ export default function RideDetailContent() {
 
         {/* Sidebar */}
         <div className="space-y-4">
-          {/* Rider info — hidden from drivers until ride is accepted */}
-          {(!isDriver || ride.status !== "PENDING") && (
-            <Card>
-              <CardContent className="p-5 space-y-3">
-                <h3 className="font-semibold text-foreground flex items-center gap-2">
-                  <User className="w-4 h-4 text-secondary" />
-                  Rider
-                </h3>
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center overflow-hidden">
-                    {ride.riderId?.picture ? (
-                      <img src={ride.riderId.picture} alt={ride.riderId.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <User className="w-5 h-5 text-muted-foreground" />
-                    )}
-                  </div>
-                  <div>
-                    <p className="font-medium text-foreground">{ride.riderId?.name || "Anonymous"}</p>
-                    {ride.riderId?.phone && (
-                      <p className="text-xs text-muted-foreground">
-                        {ride.riderId.phone}
-                      </p>
-                    )}
-                  </div>
+          {/* Rider info — name visible to everyone, phone visible only to rider or after acceptance */}
+          <Card>
+            <CardContent className="p-5 space-y-3">
+              <h3 className="font-semibold text-foreground flex items-center gap-2">
+                <User className="w-4 h-4 text-secondary" />
+                Rider
+              </h3>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+                  {ride.riderId?.picture ? (
+                    <img src={ride.riderId.picture} alt={ride.riderId.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <User className="w-5 h-5 text-muted-foreground" />
+                  )}
                 </div>
-              </CardContent>
-            </Card>
-          )}
+                <div>
+                  <p className="font-medium text-foreground">{ride.riderId?.name || "Anonymous"}</p>
+                  {ride.riderId?.phone && (isOwnRide || ride.status !== "PENDING") && (
+                    <p className="text-xs text-muted-foreground">
+                      {ride.riderId.phone}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Vehicle info */}
           <Card>
@@ -427,15 +425,9 @@ export default function RideDetailContent() {
             <CardContent className="p-5 space-y-2">
               <h3 className="font-semibold text-foreground">Fare</h3>
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Proposed Fare</span>
-                <span className="font-semibold text-primary">৳{ride.proposedFare}</span>
+                <span className="text-muted-foreground">Est. Fare</span>
+                <span className="font-semibold text-primary">৳{ride.systemSuggestedFare}</span>
               </div>
-              {ride.systemSuggestedFare && (
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Suggested Fare</span>
-                  <span className="text-muted-foreground">৳{ride.systemSuggestedFare}</span>
-                </div>
-              )}
               {ride.distanceInKm && (
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Distance</span>

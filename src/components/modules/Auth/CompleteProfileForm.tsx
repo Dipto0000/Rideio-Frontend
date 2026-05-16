@@ -7,16 +7,19 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { updateProfile } from "@/lib/actions/auth.actions"
 import { Phone, MapPin, Loader2, User, Car, ArrowRight } from "lucide-react"
+import { toast } from "sonner"
+import { completeProfileSchema } from "@/schemas"
 
 export function CompleteProfileForm() {
   const router = useRouter()
   const { data: session, update } = useSession()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setLoading(true)
+    setFieldErrors({})
     setError("")
 
     const form = new FormData(e.currentTarget)
@@ -33,11 +36,24 @@ export function CompleteProfileForm() {
     const address = form.get("address") as string
     if (address) data.address = address
 
+    const zodResult = completeProfileSchema.safeParse({ phone: data.phone, address: data.address })
+    if (!zodResult.success) {
+      const errors: Record<string, string> = {}
+      for (const issue of zodResult.error.issues) {
+        const path = issue.path[0] as string
+        if (!errors[path]) errors[path] = issue.message
+      }
+      setFieldErrors(errors)
+      return
+    }
+
     if (!data.subRole && !data.phone && !data.address) {
       router.push("/")
       router.refresh()
       return
     }
+
+    setLoading(true)
 
     const res = await updateProfile(data, session?.user.accessToken || "", session?.user.id || "")
     if (!res.success) {
@@ -46,6 +62,7 @@ export function CompleteProfileForm() {
       return
     }
     await update()
+    toast.success("Profile updated successfully!")
     router.push("/")
     router.refresh()
   }
@@ -141,6 +158,9 @@ export function CompleteProfileForm() {
         </Button>
       </form>
 
+      <p className="text-xs text-muted-foreground text-center">
+        You can update these details later from your profile.
+      </p>
       <button
         type="button"
         onClick={handleSkip}

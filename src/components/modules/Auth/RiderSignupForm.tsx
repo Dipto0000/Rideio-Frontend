@@ -8,16 +8,21 @@ import { ImageUpload } from "@/components/ui/ImageUpload"
 import { SocialButtons } from "./SocialButtons"
 import { registerRider } from "@/lib/actions/auth.actions"
 import { Mail, Lock, User, Phone, MapPin, Loader2, AlertCircle } from "lucide-react"
+import { toast } from "sonner"
+import { riderSignupSchema } from "@/schemas"
 
 export function RiderSignupForm() {
   const router = useRouter()
   const [profilePicture, setProfilePicture] = useState<File | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
 
   const [formState, formAction, isPending] = useActionState(
     async (_prevState: { error?: string } | null, formData: FormData) => {
       const res = await registerRider(formData)
       if (!res.success) return { error: res.message || "Registration failed" }
-      router.push("/auth/verify?email=" + encodeURIComponent(formData.get("email") as string))
+      const email = formData.get("email") as string
+      toast.success("Account created! Please verify your email.")
+      router.push("/auth/verify?email=" + encodeURIComponent(email))
       return { error: undefined }
     },
     { error: undefined }
@@ -25,7 +30,28 @@ export function RiderSignupForm() {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    setFieldErrors({})
+
     const form = new FormData(e.currentTarget)
+    const data = {
+      name: (form.get("name") as string) || "",
+      email: (form.get("email") as string) || "",
+      password: (form.get("password") as string) || "",
+      phone: (form.get("phone") as string) || undefined,
+      address: (form.get("address") as string) || undefined,
+    }
+
+    const result = riderSignupSchema.safeParse(data)
+    if (!result.success) {
+      const errors: Record<string, string> = {}
+      for (const issue of result.error.issues) {
+        const path = issue.path[0] as string
+        if (!errors[path]) errors[path] = issue.message
+      }
+      setFieldErrors(errors)
+      return
+    }
+
     if (profilePicture) {
       form.set("profilePicture", profilePicture)
     } else {
@@ -63,8 +89,12 @@ export function RiderSignupForm() {
             name="name"
             placeholder="Full Name"
             required
-            className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+            className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
+              fieldErrors.name ? "border-destructive focus:border-destructive" : "border-border/50 focus:border-secondary/50"
+            }`}
+            onChange={() => setFieldErrors((prev) => ({ ...prev, name: "" }))}
           />
+          {fieldErrors.name && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.name}</p>}
         </div>
         <div className="relative">
           <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -73,8 +103,12 @@ export function RiderSignupForm() {
             type="email"
             placeholder="Email Address"
             required
-            className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+            className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
+              fieldErrors.email ? "border-destructive focus:border-destructive" : "border-border/50 focus:border-secondary/50"
+            }`}
+            onChange={() => setFieldErrors((prev) => ({ ...prev, email: "" }))}
           />
+          {fieldErrors.email && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.email}</p>}
         </div>
         <div className="relative">
           <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -84,8 +118,12 @@ export function RiderSignupForm() {
             placeholder="Password (min 6 characters)"
             required
             minLength={6}
-            className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+            className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
+              fieldErrors.password ? "border-destructive focus:border-destructive" : "border-border/50 focus:border-secondary/50"
+            }`}
+            onChange={() => setFieldErrors((prev) => ({ ...prev, password: "" }))}
           />
+          {fieldErrors.password && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.password}</p>}
         </div>
         <div className="relative">
           <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />

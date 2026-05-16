@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { forgotPassword } from "@/lib/actions/auth.actions"
 import { Mail, Loader2, AlertCircle, ArrowLeft, CheckCircle2 } from "lucide-react"
+import { forgotPasswordSchema } from "@/schemas"
 
 export default function ForgotPasswordForm() {
   const [sent, setSent] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
 
   const [formState, formAction, isPending] = useActionState(
     async (_prevState: { error?: string } | null, formData: FormData) => {
@@ -23,7 +25,22 @@ export default function ForgotPasswordForm() {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    setFieldErrors({})
+
     const form = new FormData(e.currentTarget)
+    const email = (form.get("email") as string) || ""
+
+    const result = forgotPasswordSchema.safeParse({ email })
+    if (!result.success) {
+      const errors: Record<string, string> = {}
+      for (const issue of result.error.issues) {
+        const path = issue.path[0] as string
+        if (!errors[path]) errors[path] = issue.message
+      }
+      setFieldErrors(errors)
+      return
+    }
+
     formAction(form)
   }
 
@@ -73,8 +90,12 @@ export default function ForgotPasswordForm() {
               type="email"
               placeholder="Email Address"
               required
-              className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+              className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
+                fieldErrors.email ? "border-destructive focus:border-destructive" : "border-border/50 focus:border-secondary/50"
+              }`}
+              onChange={() => setFieldErrors((prev) => ({ ...prev, email: "" }))}
             />
+            {fieldErrors.email && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.email}</p>}
           </div>
 
           {formState.error && (

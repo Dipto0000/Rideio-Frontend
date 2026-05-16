@@ -18,17 +18,22 @@ import {
   IdCard,
   Calendar,
 } from "lucide-react"
+import { toast } from "sonner"
+import { driverSignupSchema } from "@/schemas"
 
 export function DriverSignupForm() {
   const router = useRouter()
   const [profilePicture, setProfilePicture] = useState<File | null>(null)
   const [profilePicError, setProfilePicError] = useState("")
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
 
   const [formState, formAction, isPending] = useActionState(
     async (_prevState: { error?: string } | null, formData: FormData) => {
       const res = await registerDriver(formData)
       if (!res.success) return { error: res.message || "Registration failed" }
-      router.push("/auth/verify?email=" + encodeURIComponent(formData.get("email") as string))
+      const email = formData.get("email") as string
+      toast.success("Account created! Please verify your email.")
+      router.push("/auth/verify?email=" + encodeURIComponent(email))
       return { error: undefined }
     },
     { error: undefined }
@@ -36,14 +41,38 @@ export function DriverSignupForm() {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    setFieldErrors({})
     setProfilePicError("")
+
+    const form = new FormData(e.currentTarget)
+    const data = {
+      name: (form.get("name") as string) || "",
+      email: (form.get("email") as string) || "",
+      password: (form.get("password") as string) || "",
+      phone: (form.get("phone") as string) || "",
+      address: (form.get("address") as string) || "",
+      licenseNumber: (form.get("licenseNumber") as string) || "",
+      numberplate: (form.get("numberplate") as string) || "",
+      vehicleType: (form.get("vehicleType") as string) || "",
+      dob: (form.get("dob") as string) || "",
+    }
+
+    const result = driverSignupSchema.safeParse(data)
+    if (!result.success) {
+      const errors: Record<string, string> = {}
+      for (const issue of result.error.issues) {
+        const path = issue.path[0] as string
+        if (!errors[path]) errors[path] = issue.message
+      }
+      setFieldErrors(errors)
+      return
+    }
 
     if (!profilePicture) {
       setProfilePicError("Profile picture is required")
       return
     }
 
-    const form = new FormData(e.currentTarget)
     form.set("profilePicture", profilePicture)
     formAction(form)
   }
@@ -74,8 +103,12 @@ export function DriverSignupForm() {
             name="name"
             placeholder="Full Name"
             required
-            className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+            className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
+              fieldErrors.name ? "border-destructive focus:border-destructive" : "border-border/50 focus:border-secondary/50"
+            }`}
+            onChange={() => setFieldErrors((prev) => ({ ...prev, name: "" }))}
           />
+          {fieldErrors.name && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.name}</p>}
         </div>
         <div className="relative">
           <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -84,8 +117,12 @@ export function DriverSignupForm() {
             type="email"
             placeholder="Email Address"
             required
-            className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+            className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
+              fieldErrors.email ? "border-destructive focus:border-destructive" : "border-border/50 focus:border-secondary/50"
+            }`}
+            onChange={() => setFieldErrors((prev) => ({ ...prev, email: "" }))}
           />
+          {fieldErrors.email && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.email}</p>}
         </div>
         <div className="relative">
           <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -95,8 +132,12 @@ export function DriverSignupForm() {
             placeholder="Password (min 6 characters)"
             required
             minLength={6}
-            className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+            className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
+              fieldErrors.password ? "border-destructive focus:border-destructive" : "border-border/50 focus:border-secondary/50"
+            }`}
+            onChange={() => setFieldErrors((prev) => ({ ...prev, password: "" }))}
           />
+          {fieldErrors.password && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.password}</p>}
         </div>
         <div className="relative">
           <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -105,8 +146,12 @@ export function DriverSignupForm() {
             type="tel"
             placeholder="Phone Number"
             required
-            className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+            className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
+              fieldErrors.phone ? "border-destructive focus:border-destructive" : "border-border/50 focus:border-secondary/50"
+            }`}
+            onChange={() => setFieldErrors((prev) => ({ ...prev, phone: "" }))}
           />
+          {fieldErrors.phone && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.phone}</p>}
         </div>
         <div className="relative">
           <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -114,8 +159,12 @@ export function DriverSignupForm() {
             name="address"
             placeholder="Address"
             required
-            className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+            className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
+              fieldErrors.address ? "border-destructive focus:border-destructive" : "border-border/50 focus:border-secondary/50"
+            }`}
+            onChange={() => setFieldErrors((prev) => ({ ...prev, address: "" }))}
           />
+          {fieldErrors.address && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.address}</p>}
         </div>
       </div>
 
@@ -132,8 +181,12 @@ export function DriverSignupForm() {
               name="licenseNumber"
               placeholder="Driving License Number"
               required
-              className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+              className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
+                fieldErrors.licenseNumber ? "border-destructive focus:border-destructive" : "border-border/50 focus:border-secondary/50"
+              }`}
+              onChange={() => setFieldErrors((prev) => ({ ...prev, licenseNumber: "" }))}
             />
+            {fieldErrors.licenseNumber && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.licenseNumber}</p>}
           </div>
           <div className="relative">
             <Car className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -141,18 +194,26 @@ export function DriverSignupForm() {
               name="numberplate"
               placeholder="Vehicle Number Plate"
               required
-              className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+              className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
+                fieldErrors.numberplate ? "border-destructive focus:border-destructive" : "border-border/50 focus:border-secondary/50"
+              }`}
+              onChange={() => setFieldErrors((prev) => ({ ...prev, numberplate: "" }))}
             />
+            {fieldErrors.numberplate && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.numberplate}</p>}
           </div>
           <select
             name="vehicleType"
-            className="flex h-11 w-full rounded-xl border border-border/50 bg-muted/20 px-3.5 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-secondary/50 transition-all"
+            className={`flex h-11 w-full rounded-xl border bg-muted/20 px-3.5 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition-all ${
+              fieldErrors.vehicleType ? "border-destructive focus:ring-destructive" : "border-border/50 focus:ring-secondary/50"
+            }`}
             required
+            onChange={() => setFieldErrors((prev) => ({ ...prev, vehicleType: "" }))}
           >
             <option value="">Select Vehicle Type</option>
             <option value="bike">Bike</option>
             <option value="car">Car</option>
           </select>
+          {fieldErrors.vehicleType && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.vehicleType}</p>}
           <div className="relative">
             <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
@@ -160,8 +221,12 @@ export function DriverSignupForm() {
               type="date"
               placeholder="Date of Birth"
               required
-              className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+              className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
+                fieldErrors.dob ? "border-destructive focus:border-destructive" : "border-border/50 focus:border-secondary/50"
+              }`}
+              onChange={() => setFieldErrors((prev) => ({ ...prev, dob: "" }))}
             />
+            {fieldErrors.dob && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.dob}</p>}
           </div>
         </div>
       </div>

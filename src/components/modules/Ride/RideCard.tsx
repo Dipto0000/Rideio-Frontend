@@ -64,7 +64,7 @@ export function RideCard({ ride, onAccept, acceptLoading }: RideCardProps) {
             </span>
             <span className="flex items-center gap-1 font-semibold text-primary">
               <DollarSign className="w-3.5 h-3.5" />
-              ৳{ride.proposedFare}
+              ৳{ride.systemSuggestedFare}
             </span>
           </div>
 

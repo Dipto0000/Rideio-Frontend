@@ -22,7 +22,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             {children}
           </ClientSessionWrapper>
         </ThemeProvider>
-        <Toaster />
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            style: { zIndex: 99999 },
+          }}
+        />
       </body>
     </html>
   )

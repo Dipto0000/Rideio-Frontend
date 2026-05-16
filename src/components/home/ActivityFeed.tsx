@@ -230,7 +230,7 @@ export function ActivityFeed() {
           name: (ride.riderId as Record<string, unknown>)?.name as string ?? "Anonymous",
           from: ((ride.from as Record<string, unknown>)?.address as string) ?? "Unknown",
           to: ((ride.to as Record<string, unknown>)?.address as string) ?? "Unknown",
-          fare: (ride.proposedFare as number) ?? 0,
+          fare: (ride.systemSuggestedFare as number) ?? 0,
           vehicleType: ((ride.vehicleType as string) ?? "BIKE") as "BIKE" | "CAR",
           timestamp: new Date((ride.createdAt as string) ?? Date.now()),
         }))

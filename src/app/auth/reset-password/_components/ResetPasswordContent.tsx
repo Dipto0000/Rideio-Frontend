@@ -7,10 +7,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { resetPassword } from "@/lib/actions/auth.actions"
 import { Lock, Loader2, AlertCircle, ArrowLeft } from "lucide-react"
+import { resetPasswordSchema } from "@/schemas"
 
 export default function ResetPasswordContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
 
   const [formState, formAction, isPending] = useActionState(
     async (_prevState: { error?: string } | null, formData: FormData) => {
@@ -27,7 +29,23 @@ export default function ResetPasswordContent() {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    setFieldErrors({})
+
     const form = new FormData(e.currentTarget)
+    const password = (form.get("password") as string) || ""
+    const confirmPassword = (form.get("confirmPassword") as string) || ""
+
+    const result = resetPasswordSchema.safeParse({ password, confirmPassword })
+    if (!result.success) {
+      const errors: Record<string, string> = {}
+      for (const issue of result.error.issues) {
+        const path = issue.path[0] as string
+        if (!errors[path]) errors[path] = issue.message
+      }
+      setFieldErrors(errors)
+      return
+    }
+
     formAction(form)
   }
 
@@ -55,8 +73,12 @@ export default function ResetPasswordContent() {
               placeholder="New Password"
               required
               minLength={6}
-              className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+              className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
+                fieldErrors.password ? "border-destructive focus:border-destructive" : "border-border/50 focus:border-secondary/50"
+              }`}
+              onChange={() => setFieldErrors((prev) => ({ ...prev, password: "" }))}
             />
+            {fieldErrors.password && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.password}</p>}
           </div>
           <div className="relative">
             <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -66,8 +88,12 @@ export default function ResetPasswordContent() {
               placeholder="Confirm Password"
               required
               minLength={6}
-              className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
+              className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
+                fieldErrors.confirmPassword ? "border-destructive focus:border-destructive" : "border-border/50 focus:border-secondary/50"
+              }`}
+              onChange={() => setFieldErrors((prev) => ({ ...prev, confirmPassword: "" }))}
             />
+            {fieldErrors.confirmPassword && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.confirmPassword}</p>}
           </div>
 
           {formState.error && (

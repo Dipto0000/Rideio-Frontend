@@ -98,8 +98,8 @@ export function RideFiltersSidebar({ values, onChange, onApply, onReset }: RideF
             className="flex h-10 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-secondary"
           >
             <option value="-createdAt">Newest First</option>
-            <option value="proposedFare">Fare: Low to High</option>
-            <option value="-proposedFare">Fare: High to Low</option>
+            <option value="systemSuggestedFare">Fare: Low to High</option>
+            <option value="-systemSuggestedFare">Fare: High to Low</option>
             <option value="-distanceInKm">Distance: Longest</option>
             <option value="arrivalTime">Earliest Arrival</option>
           </select>
@@ -159,8 +159,8 @@ export function RideFiltersMobile({ values, onChange, onApply, onReset }: RideFi
           className="h-9 rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-secondary"
         >
           <option value="-createdAt">Newest</option>
-          <option value="proposedFare">Fare ↑</option>
-          <option value="-proposedFare">Fare ↓</option>
+          <option value="systemSuggestedFare">Fare ↑</option>
+          <option value="-systemSuggestedFare">Fare ↓</option>
           <option value="-distanceInKm">Distance</option>
           <option value="arrivalTime">Arrival</option>
         </select>
