@@ -14,6 +14,7 @@ import {
   User,
   Menu,
   X,
+  LogIn,
 } from "lucide-react"
 import { signOut } from "next-auth/react"
 import { NotificationBell } from "@/components/modules/Notifications/NotificationBell"
@@ -25,12 +26,6 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const profileRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.replace("/auth/login?callbackUrl=" + encodeURIComponent(window.location.pathname))
-    }
-  }, [status, router])
 
   // Close profile dropdown on click outside
   useEffect(() => {
@@ -55,7 +50,50 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
     )
   }
 
-  if (!session) return null
+  if (status === "unauthenticated" || !session) {
+    const path = typeof window !== "undefined" ? window.location.pathname : "/"
+    const readablePath = path
+      .replace(/^\//, "")
+      .split("/")
+      .map((s) => s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()))
+      .join(" ") || "Home"
+
+    return (
+      <div className="flex items-center justify-center min-h-[70vh] px-4">
+        <div className="max-w-sm w-full text-center space-y-6">
+          <div className="mx-auto w-16 h-16 rounded-full bg-secondary/10 flex items-center justify-center">
+            <LogIn className="w-7 h-7 text-secondary" />
+          </div>
+          <div className="space-y-2">
+            <h1 className="text-xl font-bold text-foreground">
+              Sign in to access {readablePath}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              You need to be signed in to view this page.
+            </p>
+          </div>
+          <div className="space-y-2.5">
+            <Button
+              variant="primary"
+              className="w-full h-11 rounded-xl text-base font-semibold"
+              onClick={() =>
+                router.replace("/auth/login?callbackUrl=" + encodeURIComponent(path))
+              }
+            >
+              Sign In
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full h-11 rounded-xl text-sm"
+              onClick={() => router.replace("/")}
+            >
+              Go to Home
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const initials = session.user?.name
     ?.split(" ")

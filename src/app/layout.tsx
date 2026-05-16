@@ -4,6 +4,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import ClientSessionWrapper from "@/app/_components/ClientSessionWrapper"
 import { ThemeProvider } from "@/components/layout/ThemeProvider"
+import { Toaster } from "sonner"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             {children}
           </ClientSessionWrapper>
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   )

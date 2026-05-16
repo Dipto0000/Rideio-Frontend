@@ -124,7 +124,18 @@ export default function AdminDashboardPage() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Admin Dashboard</h1>
+          <h1 className="text-2xl font-bold text-foreground">
+            Admin Dashboard
+            <Badge variant="outline" className="ml-2 align-middle text-xs bg-secondary/10 text-secondary border-secondary/20">
+              {session?.user?.role === "SUPER_ADMIN"
+                ? "Super Admin"
+                : session?.user?.role === "ADMIN"
+                  ? "Admin"
+                  : session?.user?.subRole === "DRIVER"
+                    ? "Driver"
+                    : "Rider"}
+            </Badge>
+          </h1>
           <p className="text-muted-foreground text-sm mt-0.5">
             Platform overview and management at a glance.
           </p>

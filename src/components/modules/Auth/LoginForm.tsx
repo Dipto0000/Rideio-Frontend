@@ -6,7 +6,7 @@ import { signIn } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { SocialButtons } from "./SocialButtons"
-import { Mail, Lock, Loader2, AlertCircle } from "lucide-react"
+import { Mail, Lock, Loader2, AlertCircle, ArrowRight } from "lucide-react"
 
 export function LoginForm() {
   const router = useRouter()
@@ -18,6 +18,14 @@ export function LoginForm() {
 
   const callbackUrl = searchParams.get("callbackUrl") || "/"
   const urlError = searchParams.get("error")
+
+  // Format callbackUrl path into a readable page name
+  const pageName = callbackUrl
+    .split("?")[0]
+    .replace(/^\//, "")
+    .split("/")
+    .map((s) => s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()))
+    .join(" ") || "Home"
   const [showGooglePrompt, setShowGooglePrompt] = useState(false)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -94,8 +102,17 @@ export function LoginForm() {
 
   return (
     <div className="flex flex-col gap-6 w-full">
+      {/* Callback redirect banner */}
+      {callbackUrl && callbackUrl !== "/" && !urlError && (
+        <div className="p-3.5 rounded-xl text-sm flex items-start gap-2.5 bg-secondary/10 border border-secondary/20 text-secondary dark:bg-secondary/20 dark:border-secondary/30">
+          <ArrowRight className="w-4 h-4 mt-0.5 shrink-0" />
+          <p>Please sign in to access <strong>{pageName}</strong></p>
+        </div>
+      )}
+
       {/* Error banner from URL params (e.g. Google auth failure for drivers) */}
-      {urlError && (          <div className="p-3.5 rounded-xl text-sm flex items-start gap-2.5 bg-red-50 border border-red-200 text-red-700 dark:bg-red-950/70 dark:border-red-800/50 dark:text-red-300">
+      {urlError && (
+        <div className="p-3.5 rounded-xl text-sm flex items-start gap-2.5 bg-red-50 border border-red-200 text-red-700 dark:bg-red-950/70 dark:border-red-800/50 dark:text-red-300">
           <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
           <p>{urlError}</p>
         </div>
