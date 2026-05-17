@@ -1,8 +1,6 @@
 import { Suspense } from "react"
 import AuthErrorContent from "./_components/AuthErrorContent"
 
-export const dynamic = 'force-static'
-
 function AuthErrorFallback() {
   return (
     <div className="rounded-2xl border border-border/40 bg-card p-8 sm:p-10 shadow-sm">

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import { MapContainer, TileLayer, Marker, Polyline, useMapEvents, useMap } from "react-leaflet"
-import { MapPin, Navigation, Loader2 } from "lucide-react"
+import { MapPin, Navigation, Loader2, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import L from "leaflet"
 
@@ -41,18 +41,14 @@ interface RideMapPickerProps {
 
 function MapClickHandler({
   onMapClick,
-  setTargetField,
+  activeField,
 }: {
   onMapClick: (lat: number, lng: number, field: "from" | "to") => void
-  setTargetField: React.Dispatch<React.SetStateAction<"from" | "to" | null>>
+  activeField: "from" | "to"
 }) {
   useMapEvents({
     click(e) {
-      setTargetField((prev) => {
-        const field = prev || "from"
-        onMapClick(e.latlng.lat, e.latlng.lng, field)
-        return null
-      })
+      onMapClick(e.latlng.lat, e.latlng.lng, activeField)
     },
   })
   return null
@@ -99,6 +95,8 @@ function SearchField({
   query,
   onQueryChange,
   onSelect,
+  onClear,
+  onFocus,
   placeholder,
   icon,
   color,
@@ -106,6 +104,8 @@ function SearchField({
   query: string
   onQueryChange: (val: string) => void
   onSelect: (point: Point) => void
+  onClear: () => void
+  onFocus: () => void
   placeholder: string
   icon: React.ReactNode
   color: string
@@ -138,7 +138,7 @@ function SearchField({
         setOpen(true)
       } catch { setSuggestions([]) }
       finally { setLoading(false) }
-    }, 400)
+    }, 1000)
   }
 
   async function handleKeyDown(e: React.KeyboardEvent) {
@@ -165,13 +165,22 @@ function SearchField({
           value={query}
           onChange={(e) => handleInput(e.target.value)}
           onKeyDown={handleKeyDown}
+          onFocus={onFocus}
           placeholder={placeholder}
           className="pl-10 h-11 bg-background pr-10"
           style={{ borderLeft: `3px solid ${color}` }}
         />
-        {loading && (
+        {loading ? (
           <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-muted-foreground" />
-        )}
+        ) : query ? (
+          <button
+            type="button"
+            onClick={onClear}
+            className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        ) : null}
       </div>
       {open && suggestions.length > 0 && (
         <ul className="absolute z-[9999] w-full bg-card border border-border rounded-lg shadow-lg max-h-48 overflow-y-auto">
@@ -193,11 +202,16 @@ function SearchField({
 export function RideMapPicker({ from, to, onFromChange, onToChange }: RideMapPickerProps) {
   const [fromQuery, setFromQuery] = useState(from?.address || "")
   const [toQuery, setToQuery] = useState(to?.address || "")
-  const [targetField, setTargetField] = useState<"from" | "to" | null>(null)
+  const [activeField, setActiveField] = useState<"from" | "to">("from")
   const defaultCenter: [number, number] = [23.8103, 90.4125]
 
   useEffect(() => { setFromQuery(from?.address || "") }, [from?.address])
   useEffect(() => { setToQuery(to?.address || "") }, [to?.address])
+
+  // Auto-advance: once pickup is set, switch focus to drop-off
+  useEffect(() => {
+    if (from && !to) setActiveField("to")
+  }, [from, to])
 
   const handleFromSelect = useCallback((point: Point) => {
     setFromQuery(point.address)
@@ -222,27 +236,12 @@ export function RideMapPicker({ from, to, onFromChange, onToChange }: RideMapPic
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-        <button
-          type="button"
-          onClick={() => setTargetField("from")}
-          className={`px-3 py-1.5 rounded-md border transition-colors ${targetField === "from" ? "border-secondary bg-secondary/10 text-secondary" : "border-border hover:border-secondary/50"}`}
-        >
-          Click map to set: {targetField === "from" ? "Pickup" : "Pickup"}
-        </button>
-        <button
-          type="button"
-          onClick={() => setTargetField("to")}
-          className={`px-3 py-1.5 rounded-md border transition-colors ${targetField === "to" ? "border-red-500 bg-red-50 text-red-600" : "border-border hover:border-red-500/50"}`}
-        >
-          Click map to set: {targetField === "to" ? "Drop-off" : "Drop-off"}
-        </button>
-      </div>
-
       <SearchField
         query={fromQuery}
         onQueryChange={setFromQuery}
         onSelect={handleFromSelect}
+        onClear={() => { setFromQuery(""); onFromChange(null as any); setActiveField("from") }}
+        onFocus={() => setActiveField("from")}
         placeholder="Pickup location..."
         icon={<MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary w-5 h-5" />}
         color="#006b5f"
@@ -252,12 +251,14 @@ export function RideMapPicker({ from, to, onFromChange, onToChange }: RideMapPic
         query={toQuery}
         onQueryChange={setToQuery}
         onSelect={handleToSelect}
+        onClear={() => { setToQuery(""); onToChange(null as any); setActiveField("to") }}
+        onFocus={() => setActiveField("to")}
         placeholder="Drop-off location..."
         icon={<Navigation className="absolute left-3 top-1/2 -translate-y-1/2 text-red-500 w-5 h-5" />}
         color="#dc2626"
       />
 
-      <div className="h-72 md:h-96 rounded-xl overflow-hidden border border-border">
+      <div className="h-72 md:h-96 rounded-xl overflow-hidden border border-border relative z-0">
         <MapContainer
           center={from ? [from.lat, from.lng] : defaultCenter}
           zoom={from ? 12 : 6}
@@ -268,7 +269,7 @@ export function RideMapPicker({ from, to, onFromChange, onToChange }: RideMapPic
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <MapClickHandler onMapClick={handleMapClick} setTargetField={setTargetField} />
+          <MapClickHandler onMapClick={handleMapClick} activeField={activeField} />
           <FitBounds points={points} />
           {from && <Marker position={[from.lat, from.lng]} icon={fromIcon} />}
           {to && <Marker position={[to.lat, to.lng]} icon={toIcon} />}
@@ -285,6 +286,11 @@ export function RideMapPicker({ from, to, onFromChange, onToChange }: RideMapPic
           )}
         </MapContainer>
       </div>
+
+      {/* Hint text */}
+      <p className="text-xs text-muted-foreground text-center">
+        Click on the map or search to set {activeField === "from" ? "pickup" : "drop-off"} location
+      </p>
     </div>
   )
 }

@@ -16,8 +16,9 @@ import {
   AlertCircle,
   Car,
   IdCard,
-  Calendar,
 } from "lucide-react"
+import { VehicleTypeSelector } from "@/components/ui/VehicleTypeSelector"
+import { DOBPicker } from "@/components/ui/DOBPicker"
 import { toast } from "sonner"
 import { driverSignupSchema } from "@/schemas"
 
@@ -26,6 +27,8 @@ export function DriverSignupForm() {
   const [profilePicture, setProfilePicture] = useState<File | null>(null)
   const [profilePicError, setProfilePicError] = useState("")
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
+  const [vehicleType, setVehicleType] = useState<"car" | "bike" | "">("")
+  const [dob, setDob] = useState("")
 
   const [formState, formAction, isPending] = useActionState(
     async (_prevState: { error?: string } | null, formData: FormData) => {
@@ -53,8 +56,8 @@ export function DriverSignupForm() {
       address: (form.get("address") as string) || "",
       licenseNumber: (form.get("licenseNumber") as string) || "",
       numberplate: (form.get("numberplate") as string) || "",
-      vehicleType: (form.get("vehicleType") as string) || "",
-      dob: (form.get("dob") as string) || "",
+      vehicleType,
+      dob,
     }
 
     const result = driverSignupSchema.safeParse(data)
@@ -74,6 +77,8 @@ export function DriverSignupForm() {
     }
 
     form.set("profilePicture", profilePicture)
+    form.set("vehicleType", vehicleType)
+    form.set("dob", dob)
     startTransition(() => {
       formAction(form)
     })
@@ -203,33 +208,28 @@ export function DriverSignupForm() {
             />
             {fieldErrors.numberplate && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.numberplate}</p>}
           </div>
-          <select
-            name="vehicleType"
-            className={`flex h-11 w-full rounded-xl border bg-muted/20 px-3.5 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition-all ${
-              fieldErrors.vehicleType ? "border-destructive focus:ring-destructive" : "border-border/50 focus:ring-secondary/50"
-            }`}
-            required
-            onChange={() => setFieldErrors((prev) => ({ ...prev, vehicleType: "" }))}
-          >
-            <option value="">Select Vehicle Type</option>
-            <option value="bike">Bike</option>
-            <option value="car">Car</option>
-          </select>
-          {fieldErrors.vehicleType && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.vehicleType}</p>}
-          <div className="relative">
-            <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              name="dob"
-              type="date"
-              placeholder="Date of Birth"
-              required
-              className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
-                fieldErrors.dob ? "border-destructive focus:border-destructive" : "border-border/50 focus:border-secondary/50"
-              }`}
-              onChange={() => setFieldErrors((prev) => ({ ...prev, dob: "" }))}
+          <div>
+            <p className="text-xs text-muted-foreground mb-2 ml-1">Vehicle Type</p>
+            <VehicleTypeSelector
+              value={vehicleType}
+              onChange={(val) => {
+                setVehicleType(val)
+                setFieldErrors((prev) => ({ ...prev, vehicleType: "" }))
+              }}
             />
-            {fieldErrors.dob && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.dob}</p>}
           </div>
+          {fieldErrors.vehicleType && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.vehicleType}</p>}
+          <div>
+            <p className="text-xs text-muted-foreground mb-2 ml-1">Date of Birth</p>
+            <DOBPicker
+              value={dob}
+              onChange={(val) => {
+                setDob(val)
+                setFieldErrors((prev) => ({ ...prev, dob: "" }))
+              }}
+            />
+          </div>
+          {fieldErrors.dob && <p className="text-xs text-destructive mt-1 ml-1">{fieldErrors.dob}</p>}
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 "use server"
 
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL
+const BACKEND = process.env.BACKEND_URL
 
 async function handleResponse(res: Response) {
   try {
@@ -110,19 +110,5 @@ export async function getRideById(rideId: string, accessToken?: string) {
     return await res.json()
   } catch {
     return { success: false, message: "Could not load ride details. Please check your internet connection." }
-  }
-}
-
-export async function getMyRides(accessToken: string, page = 1, limit = 10) {
-  if (!accessToken) return { success: false, message: "Please sign in to view your rides." }
-
-  try {
-    const res = await fetch(
-      `${BACKEND}/api/v1/rides/my-rides?page=${page}&limit=${limit}`,
-      { headers: { Authorization: `Bearer ${accessToken}` } }
-    )
-    return handleResponse(res)
-  } catch {
-    return { success: false, message: "Could not load your rides. Please check your internet connection." }
   }
 }

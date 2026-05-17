@@ -159,7 +159,9 @@ export default function ProfilePage() {
     if (res.success) {
       setMessage({ type: "success", text: "Profile photo updated" })
       setPhotoFile(null)
-      fetchProfile()
+      await fetchProfile()
+      // Update session so Navbar avatar reflects the new photo
+      update({})
     } else {
       setMessage({ type: "error", text: res.message || "Failed to upload photo" })
     }

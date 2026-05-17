@@ -4,8 +4,12 @@ import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter, useParams } from "next/navigation"
 import Link from "next/link"
-import { MapContainer, TileLayer, Marker, Polyline } from "react-leaflet"
-import L from "leaflet"
+import dynamic from "next/dynamic"
+
+const RideDetailMap = dynamic(() => import("./RideDetailMap").then(mod => ({ default: mod.RideDetailMap })), {
+  ssr: false,
+  loading: () => <div className="h-64 rounded-xl bg-muted/30 animate-pulse" />,
+})
 import { ArrowLeft, Calendar, Clock, MapPin, Bike, Car, DollarSign, User, Ruler, ShieldCheck, AlertTriangle } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -14,20 +18,6 @@ import { getRideById, acceptRide, cancelRide } from "@/lib/actions/ride.actions"
 import { getSubscriptionStatus } from "@/lib/actions/subscription.actions"
 import { ReviewDialog } from "@/components/modules/Review/ReviewDialog"
 import type { Ride } from "@/types"
-
-const fromIcon = L.divIcon({
-  className: "bg-transparent",
-  html: `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#006b5f" stroke="white" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>`,
-  iconSize: [28, 28],
-  iconAnchor: [14, 28],
-})
-
-const toIcon = L.divIcon({
-  className: "bg-transparent",
-  html: `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#dc2626" stroke="white" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>`,
-  iconSize: [28, 28],
-  iconAnchor: [14, 28],
-})
 
 export default function RideDetailContent() {
   const params = useParams<{ rideId: string }>()
@@ -211,11 +201,6 @@ export default function RideDetailContent() {
     minute: "2-digit",
   })
 
-  const points: [number, number][] = []
-  if (ride.from?.lat && ride.from?.lng) points.push([ride.from.lat, ride.from.lng])
-  if (ride.to?.lat && ride.to?.lng) points.push([ride.to.lat, ride.to.lng])
-  const center: [number, number] = points.length > 0 ? points[0] : [23.8103, 90.4125]
-
   const statusColors: Record<string, string> = {
     PENDING: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/60",
     ACCEPTED: "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800/60",
@@ -263,22 +248,7 @@ export default function RideDetailContent() {
           {/* Map */}
           {ride.from?.lat && ride.to?.lat ? (
             <div className="h-64 md:h-80 rounded-xl overflow-hidden border border-border">
-              <MapContainer
-                center={center}
-                zoom={12}
-                className="h-full w-full"
-                zoomControl={false}
-              >
-                <TileLayer
-                  attribution="&copy; OSM"
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                <Marker position={[ride.from.lat, ride.from.lng]} icon={fromIcon} />
-                <Marker position={[ride.to.lat, ride.to.lng]} icon={toIcon} />
-                {points.length === 2 && (
-                  <Polyline positions={points} color="#006b5f" weight={3} dashArray="8 4" />
-                )}
-              </MapContainer>
+              <RideDetailMap from={ride.from} to={ride.to} />
             </div>
           ) : (
             <div className="h-48 rounded-xl bg-muted flex items-center justify-center">

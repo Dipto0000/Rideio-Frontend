@@ -7,7 +7,12 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { DateTimePicker } from "@/components/ui/DateTimePicker"
 import { VehicleTypeSelector } from "@/components/ui/VehicleTypeSelector"
-import { RideMapPicker } from "./RideMapPicker"
+import dynamic from "next/dynamic"
+
+const RideMapPicker = dynamic(() => import("./RideMapPicker").then(mod => ({ default: mod.RideMapPicker })), {
+  ssr: false,
+  loading: () => <div className="h-96 rounded-xl bg-muted/30 animate-pulse" />,
+})
 import { createRide } from "@/lib/actions/ride.actions"
 import {
   DollarSign,
@@ -26,7 +31,7 @@ export function CreateRideForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [arrivalTime, setArrivalTime] = useState("")
-  const [vehicleType, setVehicleType] = useState<"CAR" | "BIKE">("CAR")
+  const [vehicleType, setVehicleType] = useState<"car" | "bike">("car")
   const [success, setSuccess] = useState<{
     systemSuggestedFare: number
     distanceInKm: number
@@ -57,7 +62,7 @@ export function CreateRideForm() {
         from: { address: from.address, lat: from.lat, lng: from.lng },
         to: { address: to.address, lat: to.lat, lng: to.lng },
         arrivalTime,
-        vehicleType,
+        vehicleType: vehicleType.toUpperCase() as "BIKE" | "CAR",
       },
       session.user.accessToken
     )

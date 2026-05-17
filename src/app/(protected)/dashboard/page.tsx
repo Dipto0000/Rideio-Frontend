@@ -1,30 +1,26 @@
-"use client"
-
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { redirect } from "next/navigation"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth-options"
 import { Skeleton } from "@/components/ui/skeleton"
 
-export default function DashboardPage() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
+export default async function DashboardPage() {
+  const session = await getServerSession(authOptions)
 
-  useEffect(() => {
-    if (status === "loading") return
-    if (!session) return
+  if (!session) {
+    redirect("/auth/login")
+  }
 
-    const role = session.user.role
-    const subRole = session.user.subRole
+  const { role, subRole } = session.user
 
-    if (role === "SUPER_ADMIN" || role === "ADMIN") {
-      router.replace("/dashboard/admin")
-    } else if (subRole === "DRIVER") {
-      router.replace("/dashboard/driver")
-    } else if (subRole === "RIDER") {
-      router.replace("/dashboard/rider")
-    }
-  }, [session, status, router])
+  if (role === "SUPER_ADMIN" || role === "ADMIN") {
+    redirect("/dashboard/admin")
+  } else if (subRole === "DRIVER") {
+    redirect("/dashboard/driver")
+  } else if (subRole === "RIDER") {
+    redirect("/dashboard/rider")
+  }
 
+  // Fallback skeleton (should never render since we redirect)
   return (
     <div className="space-y-4">
       <Skeleton className="h-9 w-48" />

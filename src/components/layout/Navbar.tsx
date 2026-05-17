@@ -59,9 +59,9 @@ export function Navbar() {
             <>
               {isRider && (
                 <Button
-                  variant="ghost"
+                  variant="primary"
                   size="sm"
-                  className="gap-1.5"
+                  className="gap-1.5 shadow-md shadow-primary/15"
                   onClick={() => router.push("/create-ride")}
                 >
                   <PlusCircle className="w-4 h-4" />
@@ -70,9 +70,9 @@ export function Navbar() {
               )}
               {isDriver && (
                 <Button
-                  variant="ghost"
+                  variant="primary"
                   size="sm"
-                  className="gap-1.5"
+                  className="gap-1.5 shadow-md shadow-primary/15"
                   onClick={() => router.push("/find-rides")}
                 >
                   <Car className="w-4 h-4" />
@@ -92,9 +92,9 @@ export function Navbar() {
           )}
           {!session && (
             <Button
-              variant="ghost"
+              variant="primary"
               size="sm"
-              className="gap-1.5"
+              className="gap-1.5 shadow-md shadow-primary/15"
               onClick={() => router.push("/find-rides")}
             >
               <Car className="w-4 h-4" />
@@ -131,6 +131,8 @@ export function Navbar() {
                   variant="ghost"
                   size="sm"
                   className="gap-2"
+                  aria-haspopup="menu"
+                  aria-expanded={profileMenuOpen}
                   onClick={() => setProfileMenuOpen(!profileMenuOpen)}
                 >
                   <Avatar className="w-6 h-6">
@@ -144,8 +146,9 @@ export function Navbar() {
                 </Button>
 
                 {profileMenuOpen && (
-                  <div className="absolute right-0 top-full mt-1 w-44 rounded-xl border bg-card shadow-lg z-50 overflow-hidden py-1">
+                  <div role="menu" aria-label="User menu" className="absolute right-0 top-full mt-1 w-44 rounded-xl border bg-card shadow-lg z-50 overflow-hidden py-1">
                     <button
+                      role="menuitem"
                       className="w-full flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
                       onClick={() => {
                         setProfileMenuOpen(false)
@@ -156,6 +159,7 @@ export function Navbar() {
                       Profile
                     </button>
                     <button
+                      role="menuitem"
                       className="w-full flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
                       onClick={() => {
                         setProfileMenuOpen(false)
@@ -166,6 +170,7 @@ export function Navbar() {
                       Dashboard
                     </button>
                     <button
+                      role="menuitem"
                       className="w-full flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
                       onClick={() => {
                         setProfileMenuOpen(false)
@@ -177,6 +182,7 @@ export function Navbar() {
                     </button>
                     <hr className="my-1 border-border" />
                     <button
+                      role="menuitem"
                       className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-destructive/10 transition-colors"
                       onClick={handleLogout}
                     >
@@ -250,9 +256,9 @@ export function Navbar() {
           {!session && (
             <>
               <Button
-                variant="ghost"
+                variant="primary"
                 size="sm"
-                className="w-full justify-start gap-2"
+                className="w-full justify-center gap-2"
                 onClick={() => {
                   setMobileMenuOpen(false)
                   router.push("/find-rides")
@@ -329,9 +335,9 @@ export function Navbar() {
               </Button>
               {isRider && (
                 <Button
-                  variant="ghost"
+                  variant="primary"
                   size="sm"
-                  className="w-full justify-start gap-2"
+                  className="w-full justify-center gap-2"
                   onClick={() => {
                     setMobileMenuOpen(false)
                     router.push("/create-ride")
@@ -343,9 +349,9 @@ export function Navbar() {
               )}
               {isDriver && (
                 <Button
-                  variant="ghost"
+                  variant="primary"
                   size="sm"
-                  className="w-full justify-start gap-2"
+                  className="w-full justify-center gap-2"
                   onClick={() => {
                     setMobileMenuOpen(false)
                     router.push("/find-rides")

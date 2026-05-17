@@ -4,8 +4,6 @@ import { LoginForm } from "@/components/modules/Auth/LoginForm"
 import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
 
-export const dynamic = 'force-static'
-
 export const metadata: Metadata = {
   title: "Log In - Rideio",
 }

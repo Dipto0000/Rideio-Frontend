@@ -2,20 +2,22 @@
 
 import { Car, Motorbike } from "lucide-react"
 
+type VehicleType = "car" | "bike"
+
 interface VehicleTypeSelectorProps {
-  value: "CAR" | "BIKE"
-  onChange: (value: "CAR" | "BIKE") => void
+  value: VehicleType | ""
+  onChange: (value: VehicleType) => void
 }
 
 const VEHICLES = [
   {
-    value: "CAR" as const,
+    value: "car",
     label: "Car",
     icon: Car,
     desc: "Sedan, SUV, or hatchback",
   },
   {
-    value: "BIKE" as const,
+    value: "bike",
     label: "Bike",
     icon: Motorbike,
     desc: "Motorcycle or scooter",
@@ -35,7 +37,7 @@ export function VehicleTypeSelector({
           <button
             key={vehicle.value}
             type="button"
-            onClick={() => onChange(vehicle.value)}
+            onClick={() => onChange(vehicle.value as VehicleType)}
             className={`flex flex-col items-center gap-2 rounded-xl border-2 p-5 transition-all ${
               selected
                 ? "border-secondary bg-secondary/10 shadow-sm"

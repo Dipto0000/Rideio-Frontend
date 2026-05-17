@@ -7,26 +7,12 @@ const FOOTER_LINKS = [
     links: [
       { label: "About Us", href: "/about" },
       { label: "How It Works", href: "/how-it-works" },
-      { label: "Careers", href: "#" },
-      { label: "Blog", href: "#" },
     ],
   },
   {
     title: "Support",
     links: [
-      { label: "Help Center", href: "#" },
-      { label: "Safety Guidelines", href: "#" },
-      { label: "Contact Us", href: "#" },
-      { label: "Community", href: "#" },
-    ],
-  },
-  {
-    title: "Legal",
-    links: [
-      { label: "Privacy Policy", href: "#" },
-      { label: "Terms of Service", href: "#" },
-      { label: "Cookie Policy", href: "#" },
-      { label: "FAQs", href: "#" },
+      { label: "Contact Us", href: "mailto:hello@rideio.com" },
     ],
   },
 ]

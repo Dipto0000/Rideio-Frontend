@@ -52,11 +52,18 @@ export function BookingCard() {
           </TabsList>
 
           <TabsContent value="ride" className="space-y-5">
-            <div className="relative group">
-              <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 text-primary w-5 h-5 transition-colors group-focus-within:text-secondary" />
+            <div
+              className="relative group cursor-pointer"
+              onClick={handleFindRide}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleFindRide() }}
+            >
+              <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 text-primary w-5 h-5 transition-colors group-focus-within:text-secondary pointer-events-none" />
               <Input
                 placeholder="Where are you going?"
-                className="pl-11 h-12 bg-muted/20 border-border/50 focus:border-secondary/50 placeholder:text-muted-foreground/50 text-base font-medium rounded-xl transition-all duration-200"
+                className="pl-11 h-12 bg-muted/20 border-border/50 focus:border-secondary/50 placeholder:text-muted-foreground/50 text-base font-medium rounded-xl transition-all duration-200 cursor-pointer"
+                readOnly
               />
             </div>
 
@@ -69,6 +76,7 @@ export function BookingCard() {
                   (route) => (
                     <button
                       key={route}
+                      onClick={handleFindRide}
                       className="px-3 py-1.5 text-xs font-medium text-muted-foreground bg-muted/30 hover:bg-muted/60 rounded-lg border border-border/30 transition-all duration-200"
                     >
                       {route}

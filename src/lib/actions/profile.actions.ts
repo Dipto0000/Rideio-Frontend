@@ -1,11 +1,11 @@
 "use server"
 
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL
+const BACKEND = process.env.BACKEND_URL
 
 export async function getProfile(accessToken: string) {
   if (!accessToken) return { success: false, message: "Please sign in to view your profile." }
   try {
-    const res = await fetch(`${BACKEND}/api/v1/user/me`, {
+    const res = await fetch(`${BACKEND}/api/v1/users/me`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     })
     return await res.json()
@@ -29,7 +29,7 @@ export async function updateProfile(
   if (!accessToken) return { success: false, message: "Please sign in to update your profile." }
 
   try {
-    const res = await fetch(`${BACKEND}/api/v1/user/${userId}`, {
+    const res = await fetch(`${BACKEND}/api/v1/users/${userId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -47,7 +47,7 @@ export async function uploadProfilePhoto(formData: FormData, accessToken: string
   if (!accessToken) return { success: false, message: "Please sign in to upload a photo." }
 
   try {
-    const res = await fetch(`${BACKEND}/api/v1/user/me/photo`, {
+    const res = await fetch(`${BACKEND}/api/v1/users/me/photo`, {
       method: "POST",
       headers: { Authorization: `Bearer ${accessToken}` },
       body: formData,
@@ -71,7 +71,7 @@ export async function changePassword(
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ oldPassword: data.currentPassword, newPassword: data.newPassword }),
     })
     return await res.json()
   } catch {

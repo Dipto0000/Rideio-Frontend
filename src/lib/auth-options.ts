@@ -2,7 +2,7 @@ import type { NextAuthOptions } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL
+const BACKEND = process.env.BACKEND_URL
 
 /** Decode JWT payload to get expiry (no verification needed) */
 function getJwtExpiry(token: string): number | null {
@@ -47,7 +47,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.accessToken) return null
         try {
-          const res = await fetch(`${BACKEND}/api/v1/user/me`, {
+          const res = await fetch(`${BACKEND}/api/v1/users/me`, {
             headers: { Authorization: `Bearer ${credentials.accessToken}` },
           })
           const data = await res.json()
@@ -93,7 +93,7 @@ export const authOptions: NextAuthOptions = {
           })
 
           const data = await res.json()
-          if (!res.ok || !data.success) return null
+          if (!res.ok || !data.success) throw new Error(data.message || "Login failed")
 
           const u = data.data.user
           return {
@@ -117,28 +117,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ account, profile }) {
-      if (account?.provider === "google") {
-        try {
-          const res = await fetch(`${BACKEND}/api/v1/auth/google-auth`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              email: profile?.email,
-              name: profile?.name,
-              picture: (profile as any)?.picture || (profile as any)?.image,
-              googleId: account.providerAccountId,
-            }),
-          })
-          const data = await res.json()
-          if (!data.success) {
-            return `/auth/login?error=${encodeURIComponent(data.message || "Google sign-in failed")}`
-          }
-          return true
-        } catch {
-          return `/auth/login?error=${encodeURIComponent("Could not connect to the server. Please try again.")}`
-        }
-      }
+    async signIn() {
       return true
     },
     async jwt({ token, user, account, trigger }) {
@@ -209,14 +188,16 @@ export const authOptions: NextAuthOptions = {
 
       if (trigger === "update" && token.accessToken) {
         try {
-          const res = await fetch(`${BACKEND}/api/v1/subscription/status`, {
+          const res = await fetch(`${BACKEND}/api/v1/users/me`, {
             headers: { Authorization: `Bearer ${token.accessToken}` },
           })
           const data = await res.json()
           if (data.success) {
-            token.isSubscribed = data.data.isSubscribed
-            token.phone = data.data.phone ?? token.phone
-            token.address = data.data.address ?? token.address
+            const u = data.data
+            token.isSubscribed = u.subscription?.isSubscribed ?? token.isSubscribed
+            token.phone = u.phone ?? token.phone
+            token.address = u.address ?? token.address
+            token.picture = u.picture ?? token.picture
           }
         } catch {
           /* backend unreachable */

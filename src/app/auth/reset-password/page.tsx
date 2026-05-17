@@ -1,8 +1,6 @@
 import { Suspense } from "react"
 import ResetPasswordContent from "./_components/ResetPasswordContent"
 
-export const dynamic = 'force-static'
-
 function ResetPasswordFallback() {
   return (
     <div className="w-full">

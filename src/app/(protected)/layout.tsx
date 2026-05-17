@@ -52,11 +52,6 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
 
   if (status === "unauthenticated" || !session) {
     const path = typeof window !== "undefined" ? window.location.pathname : "/"
-    const readablePath = path
-      .replace(/^\//, "")
-      .split("/")
-      .map((s) => s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()))
-      .join(" ") || "Home"
 
     return (
       <div className="flex items-center justify-center min-h-[70vh] px-4">
@@ -66,7 +61,7 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
           </div>
           <div className="space-y-2">
             <h1 className="text-xl font-bold text-foreground">
-              Sign in to access {readablePath}
+              Sign in to access this page
             </h1>
             <p className="text-sm text-muted-foreground">
               You need to be signed in to view this page.
@@ -151,10 +146,12 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
                 variant="ghost"
                 size="sm"
                 className="gap-2"
+                aria-haspopup="menu"
+                aria-expanded={profileMenuOpen}
                 onClick={() => setProfileMenuOpen(!profileMenuOpen)}
               >
                 <Avatar className="w-6 h-6">
-                  <AvatarImage src={(session.user as any)?.picture || ""} />
+                  <AvatarImage src={session.user?.image || ""} />
                   <AvatarFallback className="text-[10px]">{initials}</AvatarFallback>
                 </Avatar>
                 <span className="text-sm font-medium max-w-[120px] truncate hidden lg:inline">
@@ -164,8 +161,9 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
               </Button>
 
               {profileMenuOpen && (
-                <div className="absolute right-0 top-full mt-1 w-48 rounded-xl border bg-card shadow-lg z-50 overflow-hidden py-1">
+                <div role="menu" aria-label="User menu" className="absolute right-0 top-full mt-1 w-48 rounded-xl border bg-card shadow-lg z-50 overflow-hidden py-1">
                   <button
+                    role="menuitem"
                     className="w-full flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
                     onClick={() => {
                       setProfileMenuOpen(false)
@@ -176,6 +174,7 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
                     Profile
                   </button>
                   <button
+                    role="menuitem"
                     className="w-full flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
                     onClick={() => {
                       setProfileMenuOpen(false)
@@ -187,6 +186,7 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
                   </button>
                   <hr className="my-1 border-border" />
                   <button
+                    role="menuitem"
                     className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-destructive/10 transition-colors"
                     onClick={handleLogout}
                   >

@@ -1,6 +1,6 @@
 "use server"
 
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL
+const BACKEND = process.env.BACKEND_URL
 
 export async function registerRider(formData: FormData) {
   try {
@@ -44,7 +44,7 @@ export async function resetPassword(token: string, password: string) {
     const res = await fetch(`${BACKEND}/api/v1/auth/reset-password`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token, password }),
+      body: JSON.stringify({ token, newPassword: password }),
     })
     return await res.json()
   } catch {
@@ -90,7 +90,7 @@ export async function updateProfile(
   if (!accessToken) return { success: false, message: "Please sign in to update your profile." }
 
   try {
-    const res = await fetch(`${BACKEND}/api/v1/user/${userId}`, {
+    const res = await fetch(`${BACKEND}/api/v1/users/${userId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

@@ -57,28 +57,6 @@ export function LoginForm() {
     setLoading(true)
 
     try {
-      const res = await fetch("/api/backend/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      })
-      const data = await res.json()
-
-      if (!data.success) {
-        if (data.message?.toLowerCase().includes("verify your email")) {
-          setNeedsVerification(true)
-          setError("Please verify your email before signing in.")
-          return
-        }
-        if (data.message?.toLowerCase().includes("google") || data.message?.toLowerCase().includes("set a password")) {
-          setShowGooglePrompt(true)
-          setError("This account was created with Google. Sign in with Google or set a password in your profile.")
-          return
-        }
-        setError(data.message || "Invalid email or password")
-        return
-      }
-
       const result = await signIn("credentials", {
         email,
         password,
@@ -86,7 +64,18 @@ export function LoginForm() {
       })
 
       if (result?.error) {
-        setError("Invalid email or password")
+        const msg = result.error.toLowerCase()
+        if (msg.includes("verify your email")) {
+          setNeedsVerification(true)
+          setError("Please verify your email before signing in.")
+          return
+        }
+        if (msg.includes("google") || msg.includes("set a password")) {
+          setShowGooglePrompt(true)
+          setError("This account was created with Google. Sign in with Google or set a password in your profile.")
+          return
+        }
+        setError(result.error || "Invalid email or password")
         return
       }
 
