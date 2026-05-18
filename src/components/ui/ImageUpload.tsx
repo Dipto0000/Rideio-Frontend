@@ -109,7 +109,7 @@ export function ImageUpload({ name, required, error, onFileChange, defaultValue 
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); handleRemove() }}
-                className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full p-1.5 shadow-md opacity-0 group-hover:opacity-100 hover:scale-110 transition-all duration-200"
+                className="absolute -top-1 -right-1 bg-red-600 text-white rounded-full p-1.5 shadow-md opacity-0 group-hover:opacity-100 hover:scale-110 transition-all duration-200"
                 aria-label="Remove image"
               >
                 <X className="w-3.5 h-3.5" />

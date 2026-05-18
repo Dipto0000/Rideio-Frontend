@@ -30,7 +30,7 @@ export function RideDetailMap({ from, to }: RideDetailMapProps) {
     <MapContainer
       center={center}
       zoom={12}
-      className="h-full w-full"
+      className="h-full w-full relative z-0"
       zoomControl={false}
     >
       <TileLayer

@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -27,6 +27,16 @@ export function Navbar() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const profileRef = useRef<HTMLDivElement>(null)
   const subRole = session?.user.subRole
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileMenuOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
   const isRider = subRole === "RIDER"
   const isDriver = subRole === "DRIVER"
 
@@ -183,11 +193,11 @@ export function Navbar() {
                     <hr className="my-1 border-border" />
                     <button
                       role="menuitem"
-                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-destructive/10 transition-colors"
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
                       onClick={handleLogout}
                     >
                       <LogOut className="w-4 h-4" />
-                      Sign Out
+                      Log Out
                     </button>
                   </div>
                 )}
@@ -413,11 +423,11 @@ export function Navbar() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="w-full justify-start gap-2 text-destructive"
+                className="w-full justify-start gap-2 text-red-600 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/30"
                 onClick={handleLogout}
               >
                 <LogOut className="w-4 h-4" />
-                Sign Out
+                Log Out
               </Button>
             </>
           )}

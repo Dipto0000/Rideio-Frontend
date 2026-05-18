@@ -82,6 +82,8 @@ export default function RiderDashboardPage() {
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [refreshing, setRefreshing] = useState(false)
 
+  const accessToken = session?.user.accessToken
+
   useEffect(() => {
     if (authStatus === "loading") return
     if (!session || session.user.subRole !== "RIDER") {
@@ -89,7 +91,8 @@ export default function RiderDashboardPage() {
       return
     }
     fetchData()
-  }, [session, authStatus, router])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessToken, authStatus])
 
   function fetchData() {
     if (!session?.user.accessToken) return
@@ -106,7 +109,7 @@ export default function RiderDashboardPage() {
     setRefreshing(true)
     fetchData()
     setTimeout(() => setRefreshing(false), 500)
-  }, [session])
+  }, [accessToken])
 
   async function handleCancelRide(rideId: string) {
     if (!session?.user.accessToken) return
@@ -357,7 +360,7 @@ export default function RiderDashboardPage() {
                                 e.stopPropagation()
                                 handleCancelRide(ride._id)
                               }}
-                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30"
                             >
                               <XCircle className="w-3.5 h-3.5 mr-1" />
                               {actionLoading === ride._id ? "..." : "Cancel"}

@@ -64,6 +64,7 @@ export const authOptions: NextAuthOptions = {
             subRole: u.subRole,
             phone: u.phone,
             address: u.address,
+            vehicleType: u.vehicleType,
             isVerified: u.isVerified,
             isSubscribed: u.subscription?.isSubscribed ?? false,
           }
@@ -107,6 +108,7 @@ export const authOptions: NextAuthOptions = {
             subRole: u.subRole,
             phone: u.phone,
             address: u.address,
+            vehicleType: u.vehicleType,
             isVerified: u.isVerified,
             isSubscribed: u.subscription?.isSubscribed ?? false,
           }
@@ -148,6 +150,7 @@ export const authOptions: NextAuthOptions = {
               token.isVerified = u.isVerified
               token.isSubscribed = u.subscription?.isSubscribed ?? false
               token.picture = u.picture
+              token.vehicleType = u.vehicleType
             }
           } catch {
             /* backend unreachable */
@@ -161,6 +164,7 @@ export const authOptions: NextAuthOptions = {
           token.subRole = user.subRole
           token.phone = user.phone
           token.address = user.address
+          token.vehicleType = user.vehicleType
           token.isVerified = user.isVerified
           token.isSubscribed = user.isSubscribed
           token.picture = user.image
@@ -198,6 +202,9 @@ export const authOptions: NextAuthOptions = {
             token.phone = u.phone ?? token.phone
             token.address = u.address ?? token.address
             token.picture = u.picture ?? token.picture
+            token.vehicleType = u.vehicleType ?? token.vehicleType
+            token.role = u.role ?? token.role
+            token.subRole = u.subRole ?? token.subRole
           }
         } catch {
           /* backend unreachable */
@@ -215,6 +222,7 @@ export const authOptions: NextAuthOptions = {
       session.user.address = token.address as string | undefined
       session.user.isVerified = token.isVerified as boolean
       session.user.isSubscribed = token.isSubscribed as boolean
+      session.user.vehicleType = token.vehicleType as "bike" | "car" | undefined
       session.user.image = (token.picture as string) || null
       return session
     },

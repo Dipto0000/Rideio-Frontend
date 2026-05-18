@@ -29,6 +29,7 @@ interface DeletedRecord {
 
 export default function AdminDeletedRecordsPage() {
   const { data: session } = useSession()
+  const accessToken = session?.user?.accessToken
   const [records, setRecords] = useState<DeletedRecord[]>([])
   const [meta, setMeta] = useState<PaginationMeta | null>(null)
   const [loading, setLoading] = useState(true)
@@ -48,7 +49,7 @@ export default function AdminDeletedRecordsPage() {
 
   useEffect(() => {
     fetchRecords(page)
-  }, [session, page]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [accessToken, page]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="space-y-6">

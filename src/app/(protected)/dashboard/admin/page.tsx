@@ -8,7 +8,6 @@ import {
   Car,
   CreditCard,
   TrendingUp,
-  DollarSign,
   CalendarCheck,
   ArrowUpRight,
   Shield,
@@ -72,10 +71,13 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
 
+  const accessToken = session?.user.accessToken
+
   useEffect(() => {
-    if (!session?.user.accessToken) return
+    if (!accessToken) return
     fetchData()
-  }, [session])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessToken])
 
   function fetchData() {
     if (!session?.user.accessToken) return
@@ -92,7 +94,7 @@ export default function AdminDashboardPage() {
     setRefreshing(true)
     fetchData()
     setTimeout(() => setRefreshing(false), 500)
-  }, [session])
+  }, [accessToken])
 
   if (loading) {
     return (
@@ -213,7 +215,7 @@ export default function AdminDashboardPage() {
           accentColor="bg-purple-500"
         />
         <StatsCard
-          icon={<DollarSign className="w-5 h-5" />}
+          icon={<span className="text-lg font-bold">৳</span>}
           label="Revenue"
           value={`৳${data?.totalRevenue?.toLocaleString() || "0"}`}
           accentColor="bg-amber-500"

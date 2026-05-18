@@ -34,7 +34,7 @@ export function RoleSelector() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
         {/* Rider card */}
         <Card
-          className="cursor-pointer border-border/40 hover:border-primary/30 transition-all duration-200 hover:shadow-lg group overflow-hidden relative"
+          className="cursor-pointer border-border/40 hover:border-primary/30 transition-all duration-200 hover:shadow-lg group overflow-hidden relative h-full flex flex-col"
           onClick={() => router.push("/auth/signup?role=rider")}
         >
           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/[0.03] rounded-bl-[100px] pointer-events-none" />
@@ -49,7 +49,7 @@ export function RoleSelector() {
               Need a ride? Create a trip post and let drivers come to you.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex-1 flex flex-col">
             <ul className="space-y-2.5 mb-5">
               {RIDER_FEATURES.map((feature) => (
                 <li
@@ -63,7 +63,7 @@ export function RoleSelector() {
             </ul>
             <Button
               variant="primary"
-              className="w-full rounded-xl group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-200"
+              className="w-full rounded-xl mt-auto group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-200"
             >
               Sign Up as Rider
               <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-0.5 transition-transform" />
@@ -73,7 +73,7 @@ export function RoleSelector() {
 
         {/* Driver card */}
         <Card
-          className="cursor-pointer border-border/40 hover:border-secondary/30 transition-all duration-200 hover:shadow-lg group overflow-hidden relative"
+          className="cursor-pointer border-border/40 hover:border-secondary/30 transition-all duration-200 hover:shadow-lg group overflow-hidden relative h-full flex flex-col"
           onClick={() => router.push("/auth/signup?role=driver")}
         >
           <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/[0.04] rounded-bl-[100px] pointer-events-none" />
@@ -88,7 +88,7 @@ export function RoleSelector() {
               Earn money by giving rides. Subscribe and start accepting trips.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex-1 flex flex-col">
             <ul className="space-y-2.5 mb-5">
               {DRIVER_FEATURES.map((feature) => (
                 <li
@@ -102,7 +102,7 @@ export function RoleSelector() {
             </ul>
             <Button
               variant="primary"
-              className="w-full rounded-xl group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-200"
+              className="w-full rounded-xl mt-auto group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-200"
             >
               Sign Up as Driver
               <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-0.5 transition-transform" />

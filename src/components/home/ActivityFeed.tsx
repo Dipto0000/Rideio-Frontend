@@ -1,16 +1,17 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
+import { useSession } from "next-auth/react"
 import {
   Activity,
   ArrowRight,
   Bike,
   Car,
   Clock,
-  DollarSign,
   MapPin,
   TrendingUp,
   Users,
+  Banknote,
 } from "lucide-react"
 import Link from "next/link"
 import { Card } from "@/components/ui/card"
@@ -132,55 +133,56 @@ function ActivityCard({ event }: { event: ActivityEvent }) {
   }, [event.timestamp])
 
   return (
-    <Card className="p-4 border border-border/40 bg-card hover:bg-card/80 hover:border-border/60 hover:shadow-md transition-all duration-200 group animate-fade-slide-up">
-      <div className="flex items-start gap-3">
-        <Avatar className="w-9 h-9 ring-2 ring-secondary/10 shrink-0">
-          <AvatarFallback className="bg-secondary/10 text-secondary font-bold text-xs">
-            {event.name.charAt(0)}
-          </AvatarFallback>
-        </Avatar>
+    <Link href={`/rides/${event.id}`} className="block h-full">
+      <Card className="p-4 border border-border/40 bg-card hover:bg-card/80 hover:border-border/60 hover:shadow-md transition-all duration-200 group h-full">
+        <div className="flex items-start gap-3">
+          <Avatar className="w-9 h-9 ring-2 ring-secondary/10 shrink-0">
+            <AvatarFallback className="bg-secondary/10 text-secondary font-bold text-xs">
+              {event.name.charAt(0)}
+            </AvatarFallback>
+          </Avatar>
 
-        <div className="flex-1 min-w-0">
-          {/* Name + time */}
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-sm font-bold text-foreground truncate">{event.name}</span>
-            <span className="text-[11px] text-muted-foreground shrink-0 flex items-center gap-1 whitespace-nowrap">
-              <Clock className="w-3 h-3" />
-              {time}
-            </span>
-          </div>
+          <div className="flex-1 min-w-0">
+            {/* Name + time */}
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-sm font-bold text-foreground truncate">{event.name}</span>
+              <span className="text-[11px] text-muted-foreground shrink-0 flex items-center gap-1 whitespace-nowrap">
+                <Clock className="w-3 h-3" />
+                {time}
+              </span>
+            </div>
 
-          {/* Route */}
-          <div className="mt-1.5 flex items-start gap-1.5">
-            <MapPin className="w-3.5 h-3.5 mt-0.5 text-primary shrink-0" />
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              <span className="font-medium text-foreground">{event.from}</span>
-              <span className="mx-1.5 text-muted-foreground/50">→</span>
-              <span className="font-medium text-foreground">{event.to}</span>
-            </p>
-          </div>
+            {/* Route */}
+            <div className="mt-1.5 flex items-start gap-1.5">
+              <MapPin className="w-3.5 h-3.5 mt-0.5 text-primary shrink-0" />
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                <span className="font-medium text-foreground">{event.from}</span>
+                <span className="mx-1.5 text-muted-foreground/50">→</span>
+                <span className="font-medium text-foreground">{event.to}</span>
+              </p>
+            </div>
 
-          {/* Meta */}
-          <div className="mt-2 flex items-center gap-3 text-[11px] text-muted-foreground">
-            <span className="inline-flex items-center gap-1">
-              {event.vehicleType === "CAR" ? (
-                <Car className="w-3 h-3" />
-              ) : (
-                <Bike className="w-3 h-3" />
-              )}
-              {event.vehicleType === "CAR" ? "Car" : "Bike"}
-            </span>
-            <span className="inline-flex items-center gap-1 font-semibold text-secondary">
-              <DollarSign className="w-3 h-3" />
-              ৳{event.fare}
-            </span>
-            <span className="inline-flex items-center gap-1 ml-auto text-primary/0 group-hover:text-primary transition-all duration-200">
-              Details <ArrowRight className="w-3 h-3" />
-            </span>
+            {/* Meta */}
+            <div className="mt-2 flex items-center gap-3 text-[11px] text-muted-foreground">
+              <span className="inline-flex items-center gap-1">
+                {event.vehicleType === "CAR" ? (
+                  <Car className="w-3 h-3" />
+                ) : (
+                  <Bike className="w-3 h-3" />
+                )}
+                {event.vehicleType === "CAR" ? "Car" : "Bike"}
+              </span>
+              <span className="inline-flex items-center gap-1 font-semibold text-secondary">
+                ৳{event.fare}
+              </span>
+              <span className="inline-flex items-center gap-1 ml-auto text-primary/0 group-hover:text-primary transition-all duration-200">
+                Details <ArrowRight className="w-3 h-3" />
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+    </Link>
   )
 }
 
@@ -212,6 +214,11 @@ function ActivitySkeleton() {
 // ─── Main Component ───────────────────────────────────
 
 export function ActivityFeed() {
+  const { data: session } = useSession()
+  const subRole = session?.user.subRole
+  const ctaHref = subRole === "DRIVER" ? "/find-rides" : subRole === "RIDER" ? "/create-ride" : "/auth/role"
+  const ctaLabel = subRole === "DRIVER" ? "Find rides" : subRole === "RIDER" ? "Create a ride" : "Get started"
+
   const [realData, setRealData] = useState<ActivityEvent[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [mockIndex, setMockIndex] = useState(0)
@@ -309,7 +316,7 @@ export function ActivityFeed() {
               </span>
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-primary tracking-tight">
-              {showMock ? "Rides in Your City" : "Today&apos;s Rides"}
+              {showMock ? "Rides in Your City" : "Today's Rides"}
             </h2>
             <p className="text-sm text-muted-foreground max-w-md">
               {showMock
@@ -319,18 +326,17 @@ export function ActivityFeed() {
           </div>
 
           <Link
-            href="/auth/role"
+            href={ctaHref}
             className="inline-flex items-center gap-1.5 text-sm font-semibold text-secondary hover:text-secondary/80 transition-colors shrink-0"
           >
-            Get started <ArrowRight className="w-4 h-4" />
+            {ctaLabel} <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
         {/* ── Stats row ── */}
-        <div className="grid grid-cols-3 gap-3 md:gap-4 mb-10 max-w-lg mx-auto">
-          <AnimatedCounter target={247} label="Today's Rides" icon={TrendingUp} />
-          <AnimatedCounter target={128} label="Active Riders" icon={Users} />
-          <AnimatedCounter target={85} label="Drivers Online" icon={Activity} />
+        <div className="grid grid-cols-2 gap-3 md:gap-4 mb-10 max-w-md mx-auto">
+          <AnimatedCounter target={realData?.length || displayedEvents.length} label="Active Rides" icon={TrendingUp} />
+          <AnimatedCounter target={new Set(displayedEvents.map(e => e.name)).size} label="Riders Nearby" icon={Users} />
         </div>
 
         {/* ── Activity cards ── */}
@@ -345,7 +351,7 @@ export function ActivityFeed() {
               {displayedEvents.map((event, i) => (
                 <div
                   key={event.id}
-                  className="animate-fade-slide-up"
+                  className="animate-fade-slide-up h-full"
                   style={{ animationDelay: `${i * 120}ms` }}
                 >
                   <ActivityCard event={event} />
@@ -372,7 +378,7 @@ export function ActivityFeed() {
               {showMock && (
                 <p className="text-[11px] text-muted-foreground/60 max-w-sm text-center leading-relaxed">
                   🚀 Rides are auto-refreshing every 30s. When someone books a ride,
-                  it&apos;ll appear here instantly.
+                  it'll appear here instantly.
                 </p>
               )}
             </div>

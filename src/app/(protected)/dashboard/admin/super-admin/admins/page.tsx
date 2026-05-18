@@ -23,6 +23,7 @@ interface AdminUser {
 export default function SuperAdminAdminsPage() {
   const { data: session, status: authStatus } = useSession()
   const router = useRouter()
+  const accessToken = session?.user?.accessToken
   const [admins, setAdmins] = useState<AdminUser[]>([])
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
@@ -38,7 +39,7 @@ export default function SuperAdminAdminsPage() {
       return
     }
     fetchAdmins()
-  }, [session, authStatus, router])
+  }, [accessToken, authStatus])
 
   function fetchAdmins() {
     if (!session?.user.accessToken) return
@@ -171,7 +172,7 @@ export default function SuperAdminAdminsPage() {
                           size="sm"
                           disabled={actionLoading === admin._id}
                           onClick={() => handleRemove(admin._id)}
-                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30"
                         >
                           <Trash2 className="w-4 h-4 mr-1" />
                           Remove

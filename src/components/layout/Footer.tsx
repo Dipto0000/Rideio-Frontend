@@ -43,7 +43,7 @@ export function Footer() {
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 shrink-0" />
-                <span>+880 1234-567890</span>
+                <span>Available after sign up</span>
               </div>
             </div>
             {/* Social icons */}

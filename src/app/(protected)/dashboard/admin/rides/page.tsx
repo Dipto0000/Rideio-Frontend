@@ -42,6 +42,7 @@ interface RideItem {
 
 export default function AdminRidesPage() {
   const { data: session } = useSession()
+  const accessToken = session?.user?.accessToken
   const router = useRouter()
   const [rides, setRides] = useState<RideItem[]>([])
   const [meta, setMeta] = useState<PaginationMeta | null>(null)
@@ -67,7 +68,7 @@ export default function AdminRidesPage() {
 
   useEffect(() => {
     fetchRides(page, search)
-  }, [session, page]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [accessToken, page]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Debounced search
   function handleSearchChange(value: string) {
@@ -173,7 +174,7 @@ export default function AdminRidesPage() {
                             size="sm"
                             disabled={actionLoading === ride._id}
                             onClick={() => handleDelete(ride._id)}
-                            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30"
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>

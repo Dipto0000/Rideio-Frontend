@@ -5,9 +5,9 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 const STATS = [
-  { icon: Users, value: "10K+", label: "Active Users" },
-  { icon: Star, value: "4.8", label: "Average Rating" },
-  { icon: Shield, value: "100%", label: "Verified" },
+  { icon: Users, value: "Growing", label: "Community" },
+  { icon: Star, value: "Trusted", label: "Platform" },
+  { icon: Shield, value: "Verified", label: "Drivers" },
 ]
 
 export function Hero() {
@@ -119,7 +119,7 @@ export function Hero() {
               </div>
               <div className="flex flex-col">
                 <span className="text-sm font-bold text-foreground">
-                  Join 10,000+ Riders
+                  Join Our Community
                 </span>
                 <span className="text-xs text-muted-foreground font-medium">
                   Growing community every day

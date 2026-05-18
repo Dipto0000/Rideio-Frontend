@@ -36,11 +36,20 @@ export function RideList() {
   const router = useRouter()
   const pathname = usePathname()
 
+  const driverVehicleType = session?.user.subRole === "DRIVER" ? session.user.vehicleType : undefined
+
   const [rides, setRides] = useState<Ride[]>([])
   const [meta, setMeta] = useState<PaginationMeta>({ page: 1, limit: 10, total: 0, totalPage: 0 })
   const [loading, setLoading] = useState(true)
   const [acceptLoading, setAcceptLoading] = useState<string | null>(null)
-  const [filterValues, setFilterValues] = useState<FilterValues>(() => filterFromParams(searchParams))
+  const [filterValues, setFilterValues] = useState<FilterValues>(() => {
+    const base = filterFromParams(searchParams)
+    // Auto-apply driver's vehicle type if not manually set
+    if (driverVehicleType && !base.vehicleType) {
+      base.vehicleType = driverVehicleType.toUpperCase()
+    }
+    return base
+  })
 
   const page = Number(searchParams.get("page")) || 1
 
@@ -57,6 +66,10 @@ export function RideList() {
     try {
       const params = new URLSearchParams(searchParams.toString())
       if (!params.has("limit")) params.set("limit", "10")
+      // Auto-filter by driver's vehicle type if no explicit filter set
+      if (driverVehicleType && !params.has("vehicleType")) {
+        params.set("vehicleType", driverVehicleType.toUpperCase())
+      }
       const res = await fetch(`/api/backend/rides?${params}`)
       const data = await res.json()
       if (data.success) {

@@ -34,6 +34,7 @@ interface UserItem {
 
 export default function AdminUsersPage() {
   const { data: session } = useSession()
+  const accessToken = session?.user?.accessToken
   const [users, setUsers] = useState<UserItem[]>([])
   const [meta, setMeta] = useState<PaginationMeta | null>(null)
   const [loading, setLoading] = useState(true)
@@ -58,7 +59,7 @@ export default function AdminUsersPage() {
 
   useEffect(() => {
     fetchUsers(page, search)
-  }, [session, page]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [accessToken, page]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Debounced search
   function handleSearchChange(value: string) {
@@ -140,13 +141,19 @@ export default function AdminUsersPage() {
                       </TableCell>
                       <TableCell className="text-muted-foreground">{user.email}</TableCell>
                       <TableCell>
-                        <Badge variant={
-                          user.role === "SUPER_ADMIN" ? "destructive" :
-                          user.role === "ADMIN" ? "info" :
-                          "secondary"
-                        }>
-                          {user.role}
-                        </Badge>
+                        {user.role === "USER" ? (
+                          <Badge variant="secondary">
+                            {user.subRole || "User"}
+                          </Badge>
+                        ) : (
+                          <Badge variant={
+                            user.role === "SUPER_ADMIN" ? "destructive" :
+                            user.role === "ADMIN" ? "info" :
+                            "secondary"
+                          }>
+                            {user.role === "SUPER_ADMIN" ? "Super Admin" : user.role}
+                          </Badge>
+                        )}
                       </TableCell>
                       <TableCell>
                         <Badge variant={user.isVerified ? "success" : "warning"}>
@@ -165,7 +172,7 @@ export default function AdminUsersPage() {
                             size="sm"
                             disabled={actionLoading === user._id}
                             onClick={() => handleDelete(user._id)}
-                            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30"
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>

@@ -108,7 +108,7 @@ export default function NotificationsPage() {
       return
     }
     fetchData(page)
-  }, [session, authStatus, page, fetchData, router])
+  }, [accessToken, page])
 
   const handleMarkRead = async (id: string) => {
     if (!accessToken) return

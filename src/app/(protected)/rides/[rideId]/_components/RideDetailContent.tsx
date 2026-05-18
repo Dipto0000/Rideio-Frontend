@@ -10,7 +10,7 @@ const RideDetailMap = dynamic(() => import("./RideDetailMap").then(mod => ({ def
   ssr: false,
   loading: () => <div className="h-64 rounded-xl bg-muted/30 animate-pulse" />,
 })
-import { ArrowLeft, Calendar, Clock, MapPin, Bike, Car, DollarSign, User, Ruler, ShieldCheck, AlertTriangle } from "lucide-react"
+import { ArrowLeft, Calendar, Clock, MapPin, Bike, Car, User, Ruler, ShieldCheck, AlertTriangle } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -48,7 +48,7 @@ export default function RideDetailContent() {
   useEffect(() => {
     if (isDriver && accessToken) {
       getSubscriptionStatus(accessToken).then((res) => {
-        setSubscribed(res.isSubscribed ?? false)
+        setSubscribed(res.data?.isSubscribed ?? false)
       })
     } else {
       setSubscribed(false)
@@ -284,7 +284,7 @@ export default function RideDetailContent() {
             </Card>
             <Card>
               <CardContent className="p-4 flex flex-col items-center text-center gap-1">
-                <DollarSign className="w-5 h-5 text-primary" />
+                <span className="text-primary font-bold text-lg">৳</span>
                 <span className="text-xs text-muted-foreground">Fare</span>
                 <span className="text-sm font-semibold text-primary">৳{ride.systemSuggestedFare}</span>
               </CardContent>
@@ -442,7 +442,7 @@ export default function RideDetailContent() {
             {(ride.status === "PENDING" || ride.status === "ACCEPTED") && isOwnRide && (
               <Button
                 variant="outline"
-                className="w-full text-destructive border-destructive/30 hover:bg-destructive/10"
+                className="w-full text-red-600 border-red-200 hover:bg-red-50 dark:border-red-800 dark:hover:bg-red-950/30"
                 onClick={handleCancel}
                 disabled={actionLoading === "cancel"}
               >

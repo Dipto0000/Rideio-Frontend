@@ -26,6 +26,18 @@ export async function fetchWithAuth(
       if (msg.includes("jwt") || msg.includes("token") || msg.includes("unauthorized")) {
         return { success: false, message: "Session expired. Please sign in again." }
       }
+      // Map technical backend errors to user-friendly messages
+      if (msg.includes("casterror") || msg.includes("cast to") || msg.includes("invalid id")) {
+        return { success: false, message: "The request could not be processed. Please check your input and try again." }
+      }
+      if (msg.includes("duplicate key") || msg.includes("e11000")) {
+        return { success: false, message: "This item already exists. Please use a different value." }
+      }
+      if (msg.includes("validation failed") || msg.includes("validationerror")) {
+        return { success: false, message: "Some of the information you provided is invalid. Please check and try again." }
+      }
+      // Pass through the original message if it's already user-friendly
+      return { success: false, message: data.message }
     }
 
     return data

@@ -116,7 +116,7 @@ export default function ProfilePage() {
     }
     fetchProfile()
     fetchSettings()
-  }, [session, authStatus, fetchProfile, fetchSettings, router])
+  }, [accessToken, authStatus])
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -325,9 +325,16 @@ export default function ProfilePage() {
                 <div className="flex-1 space-y-1">
                   <p className="font-medium text-foreground">{profile?.name}</p>
                   <p className="text-sm text-muted-foreground">{profile?.email}</p>
-                  <Badge variant="secondary" className="mt-1">
-                    {profile?.subRole === "DRIVER" ? "Driver" : "Rider"}
-                  </Badge>
+                  <div className="flex gap-2 mt-1">
+                    {(profile?.role === "SUPER_ADMIN" || profile?.role === "ADMIN") && (
+                      <Badge variant="destructive">
+                        {profile?.role === "SUPER_ADMIN" ? "Super Admin" : "Admin"}
+                      </Badge>
+                    )}
+                    <Badge variant="secondary">
+                      {profile?.subRole === "DRIVER" ? "Driver" : "Rider"}
+                    </Badge>
+                  </div>
                   {photoUploading && (
                     <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />

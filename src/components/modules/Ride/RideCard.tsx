@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Calendar, Clock, MapPin, Bike, Car, DollarSign, ChevronRight } from "lucide-react"
+import { Calendar, Clock, MapPin, Bike, Car, ChevronRight } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import type { Ride } from "@/types"
@@ -63,7 +63,6 @@ export function RideCard({ ride, onAccept, acceptLoading }: RideCardProps) {
               {ride.vehicleType === "CAR" ? "Car" : "Bike"}
             </span>
             <span className="flex items-center gap-1 font-semibold text-primary">
-              <DollarSign className="w-3.5 h-3.5" />
               ৳{ride.systemSuggestedFare}
             </span>
           </div>

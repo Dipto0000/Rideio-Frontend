@@ -44,17 +44,17 @@ const VALUES = [
 ]
 
 const TEAM = [
-  { name: "Farhan Rahman", role: "Founder & CEO", initials: "FR" },
-  { name: "Nusrat Jahan", role: "Head of Operations", initials: "NJ" },
+  { name: "Shahriar Ahmed Dipto", role: "Founder & CEO", initials: "SAD" },
+  { name: "Najibul Islam", role: "Head of Operations", initials: "NI" },
   { name: "Tanvir Ahmed", role: "CTO", initials: "TA" },
-  { name: "Sadia Islam", role: "Head of Community", initials: "SI" },
+  { name: "Tamim Azkar", role: "Head of Community", initials: "TA" },
 ]
 
 const STATS = [
-  { value: "50K+", label: "Rides Completed" },
-  { value: "10K+", label: "Verified Drivers" },
-  { value: "30+", label: "Cities in Bangladesh" },
-  { value: "4.8", label: "Average Rating" },
+  { value: "Trusted", label: "Ride Platform" },
+  { value: "Verified", label: "Drivers" },
+  { value: "Growing", label: "Across Bangladesh" },
+  { value: "Safe", label: "Every Ride" },
 ]
 
 export default function AboutPage() {

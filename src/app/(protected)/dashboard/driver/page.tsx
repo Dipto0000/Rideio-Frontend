@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import {
-  DollarSign,
   Car,
   Star,
   CreditCard,
@@ -87,6 +86,8 @@ export default function DriverDashboardPage() {
   const [todayRides, setTodayRides] = useState<number>(0)
   const [refreshing, setRefreshing] = useState(false)
 
+  const accessToken = session?.user.accessToken
+
   useEffect(() => {
     if (authStatus === "loading") return
     if (!session || session.user.subRole !== "DRIVER") {
@@ -95,7 +96,8 @@ export default function DriverDashboardPage() {
     }
     fetchData()
     fetchSubscription()
-  }, [session, authStatus, router])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessToken, authStatus])
 
   function fetchData() {
     if (!session?.user.accessToken) return
@@ -133,7 +135,7 @@ export default function DriverDashboardPage() {
     fetchData()
     fetchSubscription()
     setTimeout(() => setRefreshing(false), 500)
-  }, [session])
+  }, [accessToken])
 
   async function handleStartRide(rideId: string) {
     if (!session?.user.accessToken) return
@@ -272,7 +274,7 @@ export default function DriverDashboardPage() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatsCard
-          icon={<DollarSign className="w-5 h-5" />}
+          icon={<span className="text-lg font-bold">৳</span>}
           label="Total Earnings"
           value={`৳${data?.totalEarnings?.toLocaleString() || "0"}`}
           accentColor="bg-emerald-500"
@@ -394,10 +396,10 @@ export default function DriverDashboardPage() {
               <CreditCard className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             </div>
             <div>
-              <p className="font-medium text-emerald-900 dark:text-emerald-200">
+              <p className="font-medium text-emerald-700 dark:text-emerald-300">
                 Subscription Active
               </p>
-              <p className="text-sm text-emerald-800 dark:text-emerald-300">
+              <p className="text-sm text-emerald-600 dark:text-emerald-400">
                 Expires {new Date(subExpiry).toLocaleDateString("en-BD", {
                   day: "numeric", month: "long", year: "numeric"
                 })}

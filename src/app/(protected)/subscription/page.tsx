@@ -13,6 +13,7 @@ import type { SubscriptionStatus, PaymentRecord, PaginationMeta } from "@/types"
 export default function SubscriptionPage() {
   const { data: session, update } = useSession()
   const router = useRouter()
+  const accessToken = session?.user?.accessToken
   const [loading, setLoading] = useState(true)
   const [paying, setPaying] = useState(false)
   const [status, setStatus] = useState<SubscriptionStatus | null>(null)
@@ -21,9 +22,9 @@ export default function SubscriptionPage() {
   const [error, setError] = useState("")
 
   useEffect(() => {
-    if (!session?.user.accessToken) return
+    if (!accessToken) return
     loadData()
-  }, [session])
+  }, [accessToken])
 
   async function loadData() {
     setLoading(true)

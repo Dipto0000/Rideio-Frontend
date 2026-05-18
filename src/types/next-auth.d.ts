@@ -9,6 +9,7 @@ declare module "next-auth" {
       accessToken: string
       phone?: string
       address?: string
+      vehicleType?: "bike" | "car"
       isVerified: boolean
       isSubscribed: boolean
     } & DefaultSession["user"]
@@ -21,6 +22,7 @@ declare module "next-auth" {
     subRole: "RIDER" | "DRIVER"
     phone?: string
     address?: string
+    vehicleType?: "bike" | "car"
     isVerified: boolean
     isSubscribed: boolean
   }
@@ -35,6 +37,7 @@ declare module "next-auth/jwt" {
     subRole: "RIDER" | "DRIVER"
     phone?: string
     address?: string
+    vehicleType?: "bike" | "car"
     isVerified: boolean
     isSubscribed: boolean
   }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
@@ -66,6 +66,13 @@ export function CompleteProfileForm() {
     router.push("/")
     router.refresh()
   }
+
+  // Redirect away if profile is already complete
+  useEffect(() => {
+    if (session?.user.phone && session?.user.address) {
+      router.replace("/")
+    }
+  }, [session?.user.phone, session?.user.address, router])
 
   function handleSkip() {
     router.push("/")

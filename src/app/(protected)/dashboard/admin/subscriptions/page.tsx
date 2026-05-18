@@ -40,6 +40,7 @@ interface PaymentItem {
 
 export default function AdminSubscriptionsPage() {
   const { data: session } = useSession()
+  const accessToken = session?.user?.accessToken
   const [payments, setPayments] = useState<PaymentItem[]>([])
   const [meta, setMeta] = useState<PaginationMeta | null>(null)
   const [loading, setLoading] = useState(true)
@@ -60,7 +61,7 @@ export default function AdminSubscriptionsPage() {
 
   useEffect(() => {
     fetchPayments(page)
-  }, [session, page]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [accessToken, page]) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleStatusUpdate(paymentId: string, status: string) {
     if (!session?.user.accessToken) return

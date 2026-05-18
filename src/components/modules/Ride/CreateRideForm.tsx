@@ -15,7 +15,6 @@ const RideMapPicker = dynamic(() => import("./RideMapPicker").then(mod => ({ def
 })
 import { createRide } from "@/lib/actions/ride.actions"
 import {
-  DollarSign,
   Ruler,
   CheckCircle,
   Clock,
@@ -107,7 +106,7 @@ export function CreateRideForm() {
                   <p className="text-xs text-muted-foreground">Distance</p>
                 </div>
                 <div className="animate-fade-slide-up space-y-1.5 rounded-xl bg-muted/40 p-4" style={{ animationDelay: "150ms" }}>
-                  <DollarSign className="mx-auto h-5 w-5 text-muted-foreground" />                    <p className="text-lg font-bold text-foreground">
+                  <p className="text-lg font-bold text-foreground">
                     ৳{success.systemSuggestedFare}
                   </p>
                   <p className="text-xs text-muted-foreground">Est. Fare</p>
@@ -122,9 +121,9 @@ export function CreateRideForm() {
               <Button
                 variant="primary"
                 className="h-11 w-full rounded-xl text-base font-semibold"
-                onClick={() => router.push("/find-rides")}
+                onClick={() => router.push("/dashboard/rider")}
               >
-                View Available Rides
+                Go to Dashboard
               </Button>
             </div>
           </CardContent>
@@ -137,17 +136,6 @@ export function CreateRideForm() {
     <form onSubmit={handleSubmit} className="flex flex-col gap-8">
       {/* Section: Route */}
       <section className="space-y-4">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary/10">
-            <Navigation className="h-4 w-4 text-secondary" />
-          </div>
-          <div>
-            <h2 className="text-base font-semibold text-foreground">Route</h2>
-            <p className="text-xs text-muted-foreground">
-              Set your pickup and drop-off locations
-            </p>
-          </div>
-        </div>
 
         <RideMapPicker
           from={from}

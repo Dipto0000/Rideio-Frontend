@@ -22,6 +22,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
   const isSuperAdmin = session?.user.role === "SUPER_ADMIN"
+  const accessToken = session?.user?.accessToken
 
   useEffect(() => {
     if (status === "loading") return
@@ -31,7 +32,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     ) {
       router.replace("/dashboard")
     }
-  }, [session, status, router])
+  }, [accessToken, status])
 
   if (status === "loading" || !session) {
     return (
