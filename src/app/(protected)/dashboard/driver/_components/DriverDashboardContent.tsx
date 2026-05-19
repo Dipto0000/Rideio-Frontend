@@ -57,7 +57,7 @@ export interface SubData {
   expiryDate: string | null
 }
 
-const statusBadge: Record<string, string> = {
+const statusBadge: Record<string, "warning" | "info" | "success" | "destructive" | "outline"> = {
   PENDING: "warning",
   ACCEPTED: "info",
   IN_PROGRESS: "info",
@@ -423,7 +423,7 @@ export function DriverDashboardContent({ initialData, initialSub }: Props) {
                       <TableCell className="text-muted-foreground">{ride.riderName}</TableCell>
                       <TableCell className="font-medium">৳{ride.systemSuggestedFare}</TableCell>
                       <TableCell>
-                        <Badge variant={(statusBadge[ride.status] as any) || "outline"}>
+                        <Badge variant={statusBadge[ride.status] || "outline"}>
                           {statusLabel[ride.status] || ride.status}
                         </Badge>
                       </TableCell>

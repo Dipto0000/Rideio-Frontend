@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-// ─── Shared ─────────────────────────────────────────
+// Shared
 const bdPhoneRegex = /^(?:\+8801|01)[3-9]\d{8}$/
 const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]).{6,}$/
 
@@ -20,14 +20,14 @@ const password = z
   .min(6, "Password must be at least 6 characters")
   .regex(passwordRegex, "Password must contain at least one letter and one special character")
 
-// ─── Login ──────────────────────────────────────────
+// Login
 export const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Please enter a valid email"),
   password: z.string().min(1, "Password is required"),
 })
 export type LoginInput = z.infer<typeof loginSchema>
 
-// ─── Rider Signup ───────────────────────────────────
+// Rider Signup
 export const riderSignupSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().min(1, "Email is required").email("Please enter a valid email"),
@@ -37,7 +37,7 @@ export const riderSignupSchema = z.object({
 })
 export type RiderSignupInput = z.infer<typeof riderSignupSchema>
 
-// ─── Driver Signup ──────────────────────────────────
+// Driver Signup
 export const driverSignupSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().min(1, "Email is required").email("Please enter a valid email"),
@@ -51,13 +51,13 @@ export const driverSignupSchema = z.object({
 })
 export type DriverSignupInput = z.infer<typeof driverSignupSchema>
 
-// ─── Forgot Password ────────────────────────────────
+// Forgot Password
 export const forgotPasswordSchema = z.object({
   email: z.string().min(1, "Email is required").email("Please enter a valid email"),
 })
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>
 
-// ─── Reset Password ─────────────────────────────────
+// Reset Password
 export const resetPasswordSchema = z
   .object({
     password,
@@ -69,14 +69,14 @@ export const resetPasswordSchema = z
   })
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>
 
-// ─── Complete Profile ───────────────────────────────
+// Complete Profile
 export const completeProfileSchema = z.object({
   phone: phoneOptional,
   address: z.string().optional(),
 })
 export type CompleteProfileInput = z.infer<typeof completeProfileSchema>
 
-// ─── Create Ride ────────────────────────────────────
+// Create Ride
 export const createRideSchema = z.object({
   from: z.object(
     { lat: z.number(), lng: z.number(), address: z.string().min(1, "Pickup location is required") },

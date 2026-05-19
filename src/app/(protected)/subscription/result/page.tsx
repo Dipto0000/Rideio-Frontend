@@ -15,7 +15,7 @@ function SubscriptionResultContent() {
 
   useEffect(() => {
     if (status === "success") {
-      update().catch(() => {})
+      update().catch((err) => console.error("Session update failed:", err))
     }
     router.replace("/find-rides")
   }, [])

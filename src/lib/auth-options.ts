@@ -186,7 +186,7 @@ export const authOptions: NextAuthOptions = {
             token.accessTokenExpires = getJwtExpiry(newAccessToken) ?? 0
           } else {
             // Refresh failed — log the user out
-            return {} as any
+            return { ...token, accessToken: null as unknown as string }
           }
         }
       }

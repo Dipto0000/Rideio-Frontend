@@ -69,7 +69,9 @@ interface Props {
 }
 
 export function ProfileContent({ initialProfile, initialSettings }: Props) {
-  const { update } = useSession()
+  const { data: session, update } = useSession()
+  const accessToken = session?.user.accessToken
+  const userId = session?.user.id
   const [profile, setProfile] = useState<ProfileData>(initialProfile)
   const [saving, setSaving] = useState(false)
   const [photoUploading, setPhotoUploading] = useState(false)
@@ -98,6 +100,11 @@ export function ProfileContent({ initialProfile, initialSettings }: Props) {
     setSaving(true)
     setMessage(null)
 
+    if (!accessToken || !userId) {
+      setMessage({ type: "error", text: "Session not ready. Try refreshing the page." })
+      setSaving(false)
+      return
+    }
     const res = await updateProfile(
       {
         name,
@@ -107,10 +114,8 @@ export function ProfileContent({ initialProfile, initialSettings }: Props) {
           ? { vehicleType: vehicleType || undefined, numberplate, licenseNumber }
           : {}),
       },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any).__accessToken,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any).__userId
+      accessToken,
+      userId
     )
 
     if (res.success) {
@@ -128,8 +133,12 @@ export function ProfileContent({ initialProfile, initialSettings }: Props) {
 
     const formData = new FormData()
     formData.append("profilePicture", file)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const res = await uploadProfilePhoto(formData, (window as any).__accessToken)
+    if (!accessToken) {
+      setMessage({ type: "error", text: "Session not ready. Try refreshing the page." })
+      setPhotoUploading(false)
+      return
+    }
+    const res = await uploadProfilePhoto(formData, accessToken)
 
     if (res.success) {
       setMessage({ type: "success", text: "Profile photo updated" })
@@ -149,13 +158,16 @@ export function ProfileContent({ initialProfile, initialSettings }: Props) {
     setPasswordSaving(true)
     setMessage(null)
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const token = (window as any).__accessToken
+    if (!accessToken) {
+      setMessage({ type: "error", text: "Session not ready. Try refreshing the page." })
+      setPasswordSaving(false)
+      return
+    }
     let res
     if (profile.password) {
-      res = await changePassword({ currentPassword, newPassword }, token)
+      res = await changePassword({ currentPassword, newPassword }, accessToken)
     } else {
-      res = await setPassword({ password: newPassword }, token)
+      res = await setPassword({ password: newPassword }, accessToken)
     }
 
     if (res.success) {
@@ -174,8 +186,8 @@ export function ProfileContent({ initialProfile, initialSettings }: Props) {
     setNotifSaving(true)
     setNotificationSettings((prev) => prev ? { ...prev, [key]: value } : prev)
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const res = await updateNotificationSettings({ [key]: value }, (window as any).__accessToken)
+    if (!accessToken) return
+    const res = await updateNotificationSettings({ [key]: value }, accessToken)
     if (!res.success) {
       setNotificationSettings((prev) => prev ? { ...prev, [key]: !value } : prev)
     }

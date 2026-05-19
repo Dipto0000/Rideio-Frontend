@@ -109,6 +109,18 @@ export async function completeRide(rideId: string, accessToken: string) {
   }
 }
 
+export async function getMyRides(accessToken: string, page = 1, limit = 50) {
+  try {
+    const res = await fetch(
+      `${BACKEND}/api/v1/rides/my-rides?page=${page}&limit=${limit}`,
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    )
+    return handleResponse(res)
+  } catch {
+    return { success: false, message: "Unable to connect to the server. Please check your internet connection and try again." }
+  }
+}
+
 export async function getRideById(rideId: string, accessToken?: string) {
   try {
     const res = await fetch(

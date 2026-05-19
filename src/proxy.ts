@@ -1,5 +1,8 @@
 import { withAuth } from "next-auth/middleware"
 import type { NextRequest } from "next/server"
+import type { NextFetchEvent } from "next/server"
+
+type AuthMiddleware = (req: NextRequest, event: NextFetchEvent) => ReturnType<ReturnType<typeof withAuth>>
 
 const authProxy = withAuth({
   callbacks: {
@@ -8,7 +11,7 @@ const authProxy = withAuth({
 })
 
 export function proxy(request: NextRequest) {
-  return (authProxy as any)(request)
+  return (authProxy as AuthMiddleware)(request, {} as NextFetchEvent)
 }
 
 export const config = {

@@ -32,11 +32,11 @@ export function RideCard({ ride, onAccept, acceptLoading }: RideCardProps) {
             <div className="flex flex-col gap-2 flex-1">
               <div className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 mt-1 text-secondary shrink-0" />
-                <div>
-                  <p className="text-sm font-medium text-foreground">
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">
                     {ride.from.address}
                   </p>
-                  <p className="text-xs text-muted-foreground">→ {ride.to.address}</p>
+                  <p className="text-xs text-muted-foreground truncate">→ {ride.to.address}</p>
                 </div>
               </div>
             </div>

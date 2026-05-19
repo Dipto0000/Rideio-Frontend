@@ -20,7 +20,7 @@ import { Pagination } from "@/components/modules/Dashboard/Pagination"
 import { adminGetRides, adminSoftDeleteRide } from "@/lib/actions/admin.actions"
 import type { PaginationMeta } from "@/types"
 
-const statusBadgeVariant: Record<string, string> = {
+const statusBadgeVariant: Record<string, "warning" | "info" | "success" | "destructive" | "outline"> = {
   PENDING: "warning",
   ACCEPTED: "info",
   IN_PROGRESS: "info",
@@ -159,7 +159,7 @@ export function RidesContent({ initialRides, initialMeta, accessToken }: RidesCo
                       </TableCell>
                       <TableCell className="text-right font-medium">৳{ride.systemSuggestedFare}</TableCell>
                       <TableCell>
-                        <Badge variant={(statusBadgeVariant[ride.status] as any) || "outline"}>
+                        <Badge variant={statusBadgeVariant[ride.status] || "outline"}>
                           {ride.status}
                         </Badge>
                       </TableCell>

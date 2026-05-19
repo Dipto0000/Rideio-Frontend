@@ -232,7 +232,7 @@ export default function RideDetailContent() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Ride Details</h1>
-          <p className="text-muted-foreground text-sm mt-1">
+          <p className="text-muted-foreground text-sm mt-1 truncate max-w-md">
             {ride.from?.address} → {ride.to?.address}
           </p>
         </div>
@@ -307,14 +307,14 @@ export default function RideDetailContent() {
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground font-medium">Pickup</p>
-                    <p className="text-sm text-foreground">{ride.from?.address}</p>
+                    <p className="text-sm text-foreground line-clamp-2">{ride.from?.address}</p>
                   </div>
                 </div>
                 <div className="flex gap-3 items-start">
                   <div className="w-3 h-3 rounded-full bg-red-500 shrink-0" />
                   <div>
                     <p className="text-xs text-muted-foreground font-medium">Drop-off</p>
-                    <p className="text-sm text-foreground">{ride.to?.address}</p>
+                    <p className="text-sm text-foreground line-clamp-2">{ride.to?.address}</p>
                   </div>
                 </div>
               </div>

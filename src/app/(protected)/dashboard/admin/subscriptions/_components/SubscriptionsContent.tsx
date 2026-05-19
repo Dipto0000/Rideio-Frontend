@@ -18,7 +18,7 @@ import { Pagination } from "@/components/modules/Dashboard/Pagination"
 import { adminGetSubscriptions, adminUpdatePaymentStatus } from "@/lib/actions/admin.actions"
 import type { PaginationMeta } from "@/types"
 
-const statusBadgeVariant: Record<string, string> = {
+const statusBadgeVariant: Record<string, "success" | "warning" | "destructive" | "outline"> = {
   SUCCESS: "success",
   PENDING: "warning",
   FAILED: "destructive",
@@ -128,7 +128,7 @@ export function SubscriptionsContent({ initialPayments, initialMeta, accessToken
                         {new Date(p.createdAt).toLocaleDateString("en-BD", { day: "numeric", month: "short" })}
                       </TableCell>
                       <TableCell>
-                        <Badge variant={(statusBadgeVariant[p.status] as any) || "outline"}>
+                        <Badge variant={statusBadgeVariant[p.status] || "outline"}>
                           {p.status}
                         </Badge>
                       </TableCell>

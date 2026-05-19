@@ -17,7 +17,7 @@ import Link from "next/link"
 import { Card } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
-// ─── Types ────────────────────────────────────────────
+// Types
 
 interface ActivityEvent {
   id: string
@@ -29,7 +29,7 @@ interface ActivityEvent {
   timestamp: Date
 }
 
-// ─── Mock data generator ──────────────────────────────
+// Placeholder data for empty states
 
 function generateMockRides(): ActivityEvent[] {
   const now = Date.now()
@@ -45,7 +45,7 @@ function generateMockRides(): ActivityEvent[] {
   ]
 }
 
-// ─── Helpers ──────────────────────────────────────────
+// Helpers
 
 function getRelativeTime(date: Date): string {
   const diff = Date.now() - date.getTime()
@@ -60,7 +60,7 @@ function getRelativeTime(date: Date): string {
   return days === 1 ? "Yesterday" : `${days} days ago`
 }
 
-// ─── Sub-components ───────────────────────────────────
+// Sub-components
 
 function AnimatedCounter({
   target,
@@ -155,7 +155,7 @@ function ActivityCard({ event }: { event: ActivityEvent }) {
             {/* Route */}
             <div className="mt-1.5 flex items-start gap-1.5">
               <MapPin className="w-3.5 h-3.5 mt-0.5 text-primary shrink-0" />
-              <p className="text-xs text-muted-foreground leading-relaxed">
+              <p className="text-xs text-muted-foreground leading-relaxed truncate max-w-[200px]">
                 <span className="font-medium text-foreground">{event.from}</span>
                 <span className="mx-1.5 text-muted-foreground/50">→</span>
                 <span className="font-medium text-foreground">{event.to}</span>
@@ -211,7 +211,7 @@ function ActivitySkeleton() {
   )
 }
 
-// ─── Main Component ───────────────────────────────────
+// Main Component
 
 export function ActivityFeed() {
   const { data: session } = useSession()
@@ -306,7 +306,7 @@ export function ActivityFeed() {
   return (
     <section className="py-20 md:py-28 px-6 md:px-12 bg-gradient-to-b from-background via-muted/20 to-background">
       <div className="max-w-7xl mx-auto">
-        {/* ── Header ── */}
+        {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
           <div className="flex flex-col gap-3">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 border border-secondary/20 w-fit">
@@ -333,13 +333,13 @@ export function ActivityFeed() {
           </Link>
         </div>
 
-        {/* ── Stats row ── */}
+        {/* Stats row */}
         <div className="grid grid-cols-2 gap-3 md:gap-4 mb-10 max-w-md mx-auto">
           <AnimatedCounter target={realData?.length || displayedEvents.length} label="Active Rides" icon={TrendingUp} />
           <AnimatedCounter target={new Set(displayedEvents.map(e => e.name)).size} label="Riders Nearby" icon={Users} />
         </div>
 
-        {/* ── Activity cards ── */}
+        {/* Activity cards */}
         {loading ? (
           <ActivitySkeleton />
         ) : (
@@ -359,7 +359,7 @@ export function ActivityFeed() {
               ))}
             </div>
 
-            {/* ── Footer status ── */}
+            {/* Footer status */}
             <div className="mt-10 flex flex-col items-center gap-3">
               <div className="inline-flex items-center gap-2 text-xs text-muted-foreground">
                 {showMock ? (

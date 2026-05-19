@@ -54,7 +54,7 @@ export interface AdminData {
   }[]
 }
 
-const statusBadgeVariant: Record<string, string> = {
+const statusBadgeVariant: Record<string, "warning" | "info" | "success" | "destructive" | "outline"> = {
   PENDING: "warning",
   ACCEPTED: "info",
   IN_PROGRESS: "info",
@@ -306,7 +306,7 @@ export function AdminDashboardContent({ initialData }: Props) {
                       <TableCell className="text-muted-foreground">{ride.driverName || "—"}</TableCell>
                       <TableCell className="text-right font-medium">৳{ride.systemSuggestedFare}</TableCell>
                       <TableCell>
-                        <Badge variant={(statusBadgeVariant[ride.status] as any) || "outline"}>
+                        <Badge variant={statusBadgeVariant[ride.status] || "outline"}>
                           {ride.status}
                         </Badge>
                       </TableCell>

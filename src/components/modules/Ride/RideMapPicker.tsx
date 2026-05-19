@@ -35,8 +35,8 @@ interface Point {
 interface RideMapPickerProps {
   from: Point | null
   to: Point | null
-  onFromChange: (loc: Point) => void
-  onToChange: (loc: Point) => void
+  onFromChange: (loc: Point | null) => void
+  onToChange: (loc: Point | null) => void
 }
 
 function MapClickHandler({
@@ -240,7 +240,7 @@ export function RideMapPicker({ from, to, onFromChange, onToChange }: RideMapPic
         query={fromQuery}
         onQueryChange={setFromQuery}
         onSelect={handleFromSelect}
-        onClear={() => { setFromQuery(""); onFromChange(null as any); setActiveField("from") }}
+        onClear={() => { setFromQuery(""); onFromChange(null); setActiveField("from") }}
         onFocus={() => setActiveField("from")}
         placeholder="Pickup location..."
         icon={<MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary w-5 h-5" />}
@@ -251,7 +251,7 @@ export function RideMapPicker({ from, to, onFromChange, onToChange }: RideMapPic
         query={toQuery}
         onQueryChange={setToQuery}
         onSelect={handleToSelect}
-        onClear={() => { setToQuery(""); onToChange(null as any); setActiveField("to") }}
+        onClear={() => { setToQuery(""); onToChange(null); setActiveField("to") }}
         onFocus={() => setActiveField("to")}
         placeholder="Drop-off location..."
         icon={<Navigation className="absolute left-3 top-1/2 -translate-y-1/2 text-red-500 w-5 h-5" />}
