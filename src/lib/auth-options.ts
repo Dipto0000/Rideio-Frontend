@@ -112,8 +112,9 @@ export const authOptions: NextAuthOptions = {
             isVerified: u.isVerified,
             isSubscribed: u.subscription?.isSubscribed ?? false,
           }
-        } catch {
-          return null
+        } catch (err) {
+          // Re-throw so NextAuth preserves the error message
+          throw err instanceof Error ? err : new Error("Login failed")
         }
       },
     }),

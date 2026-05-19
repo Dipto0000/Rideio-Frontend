@@ -1,6 +1,14 @@
 import type { NextConfig } from "next"
+import withSerwistInit from "@serwist/next"
+
+const withSerwist = withSerwistInit({
+  swSrc: "src/sw.ts",
+  swDest: "public/sw.js",
+  disable: process.env.NODE_ENV === "development",
+})
 
 const nextConfig: NextConfig = {
+  turbopack: {},
   experimental: {
     serverActions: {
       bodySizeLimit: "2mb",
@@ -16,6 +24,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "i.pravatar.cc",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
     ],
   },
   async rewrites() {
@@ -28,4 +40,4 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default nextConfig
+export default withSerwist(nextConfig)

@@ -75,7 +75,13 @@ export function LoginForm() {
           setError("This account was created with Google. Sign in with Google or set a password in your profile.")
           return
         }
-        setError(result.error || "Invalid email or password")
+        // Map NextAuth's generic error to a user-friendly message
+        if (msg.includes("credentials") || msg.includes("credentialsignin")) {
+          setError("Invalid email or password. Please try again.")
+          return
+        }
+        // Use the actual error message from the backend if available
+        setError(result.error || "Invalid email or password. Please try again.")
         return
       }
 

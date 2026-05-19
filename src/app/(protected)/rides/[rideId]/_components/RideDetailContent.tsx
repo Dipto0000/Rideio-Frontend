@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter, useParams } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import dynamic from "next/dynamic"
 
 const RideDetailMap = dynamic(() => import("./RideDetailMap").then(mod => ({ default: mod.RideDetailMap })), {
@@ -333,7 +334,7 @@ export default function RideDetailContent() {
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center overflow-hidden">
                   {ride.riderId?.picture ? (
-                    <img src={ride.riderId.picture} alt={ride.riderId.name} className="w-full h-full object-cover" />
+                    <Image src={ride.riderId.picture} alt={ride.riderId.name} width={48} height={48} className="w-full h-full object-cover" />
                   ) : (
                     <User className="w-5 h-5 text-muted-foreground" />
                   )}
@@ -368,7 +369,7 @@ export default function RideDetailContent() {
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
                       {ride.driverId.picture ? (
-                        <img src={ride.driverId.picture} alt="" className="w-full h-full object-cover rounded-full" />
+                        <Image src={ride.driverId.picture} alt={ride.driverId.name || "Driver"} width={32} height={32} className="w-full h-full object-cover rounded-full" />
                       ) : (
                         <User className="w-4 h-4 text-muted-foreground" />
                       )}

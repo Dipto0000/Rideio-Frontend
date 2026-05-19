@@ -107,7 +107,7 @@ export default function AboutPage() {
           </h2>
           <div className="prose prose-sm max-w-none text-muted-foreground space-y-4">
             <p className="text-base leading-relaxed">
-              Rideio was born in Dhaka in 2023, out of a simple observation: getting
+              Rideio was born in Dhaka in 2026, out of a simple observation: getting
               around one of the world&apos;s most vibrant cities shouldn&apos;t be a struggle.
               Our founders experienced the daily challenges of Dhaka&apos;s traffic
               first-hand — the long waits, the unreliable transport, the lack of

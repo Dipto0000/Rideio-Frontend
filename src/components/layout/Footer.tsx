@@ -117,7 +117,7 @@ export function Footer() {
             &copy; {new Date().getFullYear()} Rideio. All rights reserved.
           </p>
           <p className="text-xs text-white/40">
-            Made with ❤️ for Bangladesh
+            Made with ❤️ for Bangladesh by <a href="https://www.facebook.com/shahriar.dipto.92" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors duration-200">Shahriar Ahmed Dipto</a>
           </p>
         </div>
       </div>
