@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import { DateTimePicker } from "@/components/ui/DateTimePicker"
 import { VehicleTypeSelector } from "@/components/ui/VehicleTypeSelector"
 import dynamic from "next/dynamic"
@@ -20,6 +21,7 @@ import {
   Clock,
   Navigation,
   MapPin,
+  Phone,
   Loader2,
 } from "lucide-react"
 import { toast } from "sonner"
@@ -36,6 +38,9 @@ export function CreateRideForm() {
     distanceInKm: number
   } | null>(null)
 
+  const [phone, setPhone] = useState("")
+  const needsPhone = !session?.user.phone
+
   const [from, setFrom] = useState<{ address: string; lat: number; lng: number } | null>(null)
   const [to, setTo] = useState<{ address: string; lat: number; lng: number } | null>(null)
 
@@ -47,6 +52,10 @@ export function CreateRideForm() {
     }
     if (!arrivalTime) {
       setError("Please select arrival date and time")
+      return
+    }
+    if (needsPhone && !phone.trim()) {
+      setError("Please enter your phone number so the driver can contact you")
       return
     }
     if (!session?.user.accessToken) {
@@ -62,6 +71,7 @@ export function CreateRideForm() {
         to: { address: to.address, lat: to.lat, lng: to.lng },
         arrivalTime,
         vehicleType: vehicleType.toUpperCase() as "BIKE" | "CAR",
+        phone: needsPhone ? phone : undefined,
       },
       session.user.accessToken
     )
@@ -165,6 +175,41 @@ export function CreateRideForm() {
       </section>
 
       <hr className="border-border" />
+
+      {/* Section: Contact (only if rider has no phone on profile) */}
+      {needsPhone && (
+        <section className="space-y-4">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary/10">
+              <Phone className="h-4 w-4 text-secondary" />
+            </div>
+            <div>
+              <h2 className="text-base font-semibold text-foreground">Contact</h2>
+              <p className="text-xs text-muted-foreground">
+                So the driver can reach you after accepting
+              </p>
+            </div>
+          </div>
+          <div className="relative">
+            <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              name="phone"
+              type="tel"
+              placeholder="01712345678"
+              required
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              pattern="(?:\+8801|01)[3-9]\d{8}"
+              className="pl-10 h-11 bg-muted/20 rounded-xl border-border/50 focus:border-secondary/50 transition-all"
+            />
+          </div>
+          <p className="text-xs text-muted-foreground">
+            You can save this to your profile so you don&apos;t have to enter it again.
+          </p>
+        </section>
+      )}
+
+      {needsPhone && <hr className="border-border" />}
 
       {/* Section: Vehicle */}
       <section className="space-y-4">

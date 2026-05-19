@@ -136,7 +136,7 @@ export function DriverSignupForm() {
           <Input
             name="password"
             type="password"
-            placeholder="Password (min 6 characters)"
+            placeholder="Min 6 chars, 1 letter, 1 special character"
             required
             minLength={6}
             className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
@@ -151,8 +151,9 @@ export function DriverSignupForm() {
           <Input
             name="phone"
             type="tel"
-            placeholder="Phone Number"
+            placeholder="01712345678"
             required
+            pattern="(?:\+8801|01)[3-9]\d{8}"
             className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
               fieldErrors.phone ? "border-destructive focus:border-destructive" : "border-border/50 focus:border-secondary/50"
             }`}

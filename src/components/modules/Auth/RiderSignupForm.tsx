@@ -117,7 +117,7 @@ export function RiderSignupForm() {
           <Input
             name="password"
             type="password"
-            placeholder="Password (min 6 characters)"
+            placeholder="Min 6 chars, 1 letter, 1 special character"
             required
             minLength={6}
             className={`pl-10 h-11 bg-muted/20 rounded-xl transition-all ${
@@ -132,7 +132,8 @@ export function RiderSignupForm() {
           <Input
             name="phone"
             type="tel"
-            placeholder="Phone Number (optional)"
+            placeholder="01712345678 (optional)"
+            pattern="(?:\+8801|01)[3-9]\d{8}"
             className="pl-10 h-11 bg-muted/20 border-border/50 focus:border-secondary/50 rounded-xl transition-all"
           />
         </div>

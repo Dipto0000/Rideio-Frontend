@@ -1,4 +1,10 @@
+import type { Metadata } from "next"
 import { RideListingView } from "./RideListingView"
+
+export const metadata: Metadata = {
+  title: "Find Rides",
+  description: "Browse available rides heading your way. Find the perfect ride on Rideio.",
+}
 
 export default function FindRidesPage() {
   return (

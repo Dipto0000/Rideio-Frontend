@@ -184,7 +184,7 @@ export default function RiderDashboardPage() {
       {activeRide && (
         <Card className="border-2 border-blue-200 bg-blue-50/50 dark:border-blue-800 dark:bg-blue-950/20">
           <CardContent className="p-5">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 overflow-hidden">
               <div className="flex items-center gap-3 flex-1">
                 <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center animate-pulse">
                   <Crosshair className="w-6 h-6 text-blue-600 dark:text-blue-400" />

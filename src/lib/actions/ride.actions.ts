@@ -32,6 +32,7 @@ export async function createRide(
     to: { address: string; lat: number; lng: number }
     arrivalTime: string
     vehicleType: "BIKE" | "CAR"
+    phone?: string
   },
   accessToken: string
 ) {

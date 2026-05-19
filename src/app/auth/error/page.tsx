@@ -1,5 +1,10 @@
+import type { Metadata } from "next"
 import { Suspense } from "react"
 import AuthErrorContent from "./_components/AuthErrorContent"
+
+export const metadata: Metadata = {
+  title: "Authentication Error",
+}
 
 function AuthErrorFallback() {
   return (

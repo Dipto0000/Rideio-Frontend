@@ -5,7 +5,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
 
 export const metadata: Metadata = {
-  title: "Log In - Rideio",
+  title: "Log In",
+  description: "Sign in to your Rideio account to find rides or manage your driving.",
 }
 
 export default function LoginPage() {

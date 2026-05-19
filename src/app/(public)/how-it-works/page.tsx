@@ -1,7 +1,14 @@
+import type { Metadata } from "next"
 import { ChevronDown } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { HowItWorksTabs } from "@/components/home/HowItWorksTabs"
+
+export const metadata: Metadata = {
+  title: "How It Works",
+  description:
+    "See how easy it is to find rides or start driving with Rideio. Simple steps to get started.",
+}
 
 const FAQS = [
   {

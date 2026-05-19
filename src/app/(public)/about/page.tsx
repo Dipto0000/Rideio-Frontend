@@ -1,8 +1,15 @@
+import type { Metadata } from "next"
 import { Users, Shield, Sparkles, Globe, Heart, Target } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 export const dynamic = "force-static"
+
+export const metadata: Metadata = {
+  title: "About Us",
+  description:
+    "Learn about Rideio's mission to make transportation affordable and accessible across Bangladesh.",
+}
 
 const VALUES = [
   {

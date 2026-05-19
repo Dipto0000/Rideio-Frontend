@@ -1,5 +1,25 @@
 import { z } from "zod"
 
+// ─── Shared ─────────────────────────────────────────
+const bdPhoneRegex = /^(?:\+8801|01)[3-9]\d{8}$/
+const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]).{6,}$/
+
+const phoneOptional = z
+  .string()
+  .regex(bdPhoneRegex, "Enter a valid Bangladeshi phone number (e.g. 01712345678)")
+  .optional()
+  .or(z.literal(""))
+
+const phoneRequired = z
+  .string()
+  .min(1, "Phone number is required")
+  .regex(bdPhoneRegex, "Enter a valid Bangladeshi phone number (e.g. 01712345678)")
+
+const password = z
+  .string()
+  .min(6, "Password must be at least 6 characters")
+  .regex(passwordRegex, "Password must contain at least one letter and one special character")
+
 // ─── Login ──────────────────────────────────────────
 export const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Please enter a valid email"),
@@ -11,8 +31,8 @@ export type LoginInput = z.infer<typeof loginSchema>
 export const riderSignupSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().min(1, "Email is required").email("Please enter a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  phone: z.string().optional(),
+  password,
+  phone: phoneOptional,
   address: z.string().optional(),
 })
 export type RiderSignupInput = z.infer<typeof riderSignupSchema>
@@ -21,8 +41,8 @@ export type RiderSignupInput = z.infer<typeof riderSignupSchema>
 export const driverSignupSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().min(1, "Email is required").email("Please enter a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  phone: z.string().min(1, "Phone number is required"),
+  password,
+  phone: phoneRequired,
   address: z.string().min(1, "Address is required"),
   licenseNumber: z.string().min(1, "Driving license number is required"),
   numberplate: z.string().min(1, "Vehicle number plate is required"),
@@ -40,8 +60,8 @@ export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>
 // ─── Reset Password ─────────────────────────────────
 export const resetPasswordSchema = z
   .object({
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(6, "Please confirm your password"),
+    password,
+    confirmPassword: z.string().min(1, "Please confirm your password"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -51,7 +71,7 @@ export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>
 
 // ─── Complete Profile ───────────────────────────────
 export const completeProfileSchema = z.object({
-  phone: z.string().optional(),
+  phone: phoneOptional,
   address: z.string().optional(),
 })
 export type CompleteProfileInput = z.infer<typeof completeProfileSchema>

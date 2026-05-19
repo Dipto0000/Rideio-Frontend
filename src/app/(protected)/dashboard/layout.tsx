@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-  return <div className="max-w-7xl mx-auto px-4 py-8">{children}</div>
+  return <div className="py-8 overflow-hidden">{children}</div>
 }

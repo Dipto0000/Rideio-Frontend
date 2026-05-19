@@ -1,5 +1,11 @@
+import type { Metadata } from "next"
 import { Suspense } from "react"
 import ResetPasswordContent from "./_components/ResetPasswordContent"
+
+export const metadata: Metadata = {
+  title: "Reset Password",
+  description: "Set a new password for your Rideio account.",
+}
 
 function ResetPasswordFallback() {
   return (

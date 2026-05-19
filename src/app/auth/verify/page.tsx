@@ -1,5 +1,11 @@
+import type { Metadata } from "next"
 import { Suspense } from "react"
 import VerifyContent from "./_components/VerifyContent"
+
+export const metadata: Metadata = {
+  title: "Verify Email",
+  description: "Verify your email address to activate your Rideio account.",
+}
 
 function VerifyFallback() {
   return (

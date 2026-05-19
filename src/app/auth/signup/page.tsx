@@ -4,7 +4,8 @@ import { RiderSignupForm } from "@/components/modules/Auth/RiderSignupForm"
 import { DriverSignupForm } from "@/components/modules/Auth/DriverSignupForm"
 
 export const metadata: Metadata = {
-  title: "Sign Up - Rideio",
+  title: "Sign Up",
+  description: "Create a Rideio account to start riding or driving across Bangladesh.",
 }
 
 export default async function SignupPage(props: {
