@@ -18,10 +18,18 @@ export function LoginForm() {
   const [needsVerification, setNeedsVerification] = useState(false)
   const [resending, setResending] = useState(false)
 
-  const callbackUrl = searchParams.get("callbackUrl") || "/"
+  const rawCallbackUrl = searchParams.get("callbackUrl") || "/"
   const urlError = searchParams.get("error")
 
-  // Format callbackUrl path into a readable page name
+  // Normalize callbackUrl: extract pathname from full URL
+  // e.g., "https://rideio.vercel.app/find-rides" → "/find-rides"
+  let callbackUrl = rawCallbackUrl
+  try {
+    callbackUrl = new URL(rawCallbackUrl).pathname || "/"
+  } catch {
+    // Already a relative path, use as-is
+  }
+
   const pageName = callbackUrl
     .split("?")[0]
     .replace(/^\//, "")
