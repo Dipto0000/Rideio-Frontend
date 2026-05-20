@@ -16,3 +16,9 @@ export async function getSubscriptionStatus(accessToken: string) {
 export async function getPaymentHistory(accessToken: string, page = 1) {
   return fetchWithAuth(`/api/v1/subscriptions/history?page=${page}&limit=10`, accessToken)
 }
+
+export async function cancelPendingPayment(accessToken: string) {
+  return fetchWithAuth(`/api/v1/subscriptions/cancel-pending`, accessToken, {
+    method: "POST",
+  })
+}

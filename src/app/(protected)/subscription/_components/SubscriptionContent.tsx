@@ -4,8 +4,8 @@ import { useState } from "react"
 import { useSession } from "next-auth/react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { CheckCircle, Shield, CreditCard, Clock, History, Loader2 } from "lucide-react"
-import { initiatePayment } from "@/lib/actions/subscription.actions"
+import { CheckCircle, Shield, CreditCard, Clock, History, Loader2, XCircle, RefreshCw } from "lucide-react"
+import { initiatePayment, cancelPendingPayment } from "@/lib/actions/subscription.actions"
 import type { SubscriptionStatus, PaymentRecord, PaginationMeta } from "@/types"
 
 interface Props {
@@ -17,17 +17,33 @@ interface Props {
 export function SubscriptionContent({ initialStatus, initialPayments }: Props) {
   const { data: session } = useSession()
   const [paying, setPaying] = useState(false)
+  const [cancelling, setCancelling] = useState(false)
   const [status] = useState<SubscriptionStatus | null>(initialStatus)
-  const [payments] = useState<PaymentRecord[]>(initialPayments)
+  const [payments, setPayments] = useState<PaymentRecord[]>(initialPayments)
   const [error, setError] = useState("")
 
   const isSubscribed = status?.isSubscribed ?? session?.user.isSubscribed ?? false
   const expiryDate = status?.expiryDate
 
+  const hasPending = payments.some((p) => p.status === "PENDING")
+
   async function handleSubscribe() {
     if (!session?.user.accessToken) return
     setPaying(true)
     setError("")
+
+    // If there's a pending payment, cancel it first
+    if (hasPending) {
+      const cancelRes = await cancelPendingPayment(session.user.accessToken)
+      if (!cancelRes.success) {
+        setError(cancelRes.message || "Failed to cancel previous pending payment")
+        setPaying(false)
+        return
+      }
+      setPayments((prev) =>
+        prev.map((p) => (p.status === "PENDING" ? { ...p, status: "CANCELLED" as const } : p))
+      )
+    }
 
     const res = await initiatePayment(session.user.accessToken)
     if (!res.success) {
@@ -37,6 +53,25 @@ export function SubscriptionContent({ initialStatus, initialPayments }: Props) {
     }
 
     window.location.href = res.data.gatewayUrl
+  }
+
+  async function handleCancelPending() {
+    if (!session?.user.accessToken) return
+    setCancelling(true)
+    setError("")
+
+    const res = await cancelPendingPayment(session.user.accessToken)
+    if (!res.success) {
+      setError(res.message || "Failed to cancel pending payment")
+      setCancelling(false)
+      return
+    }
+
+    // Mark pending payments as cancelled in local state
+    setPayments((prev) =>
+      prev.map((p) => (p.status === "PENDING" ? { ...p, status: "CANCELLED" as const } : p))
+    )
+    setCancelling(false)
   }
 
   return (
@@ -94,7 +129,29 @@ export function SubscriptionContent({ initialStatus, initialPayments }: Props) {
           </ul>
 
           {error && (
-            <p className="text-sm text-red-500 dark:text-red-400 text-center">{error}</p>
+            <div className="space-y-3">
+              <p className="text-sm text-red-500 dark:text-red-400 text-center">{error}</p>
+              {error.toLowerCase().includes("pending payment") && (
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleCancelPending}
+                  disabled={cancelling}
+                >
+                  {cancelling ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Cancelling...
+                    </>
+                  ) : (
+                    <>
+                      <XCircle className="w-4 h-4 mr-2" />
+                      Cancel Previous Payment & Retry
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
           )}
 
           <Button
@@ -110,6 +167,11 @@ export function SubscriptionContent({ initialStatus, initialPayments }: Props) {
               </>
             ) : isSubscribed ? (
               "Already Subscribed"
+            ) : hasPending ? (
+              <>
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Cancel Pending & Subscribe
+              </>
             ) : (
               "Subscribe Now — ৳700/month"
             )}

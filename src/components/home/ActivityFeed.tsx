@@ -96,6 +96,7 @@ function ActivityCard({ event }: { event: ActivityEvent }) {
   const [time, setTime] = useState(getRelativeTime(event.timestamp))
 
   useEffect(() => {
+    setTime(getRelativeTime(event.timestamp))
     const interval = setInterval(() => {
       setTime(getRelativeTime(event.timestamp))
     }, 30_000)
@@ -317,13 +318,10 @@ export function ActivityFeed() {
           <ActivitySkeleton />
         ) : (
           <>
-            <div
-              className="grid grid-cols-1 md:grid-cols-3 gap-4"
-              key={showMock ? mockIndex : "real"}
-            >
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {displayedEvents.map((event, i) => (
                 <div
-                  key={event.id}
+                  key={i}
                   className="animate-fade-slide-up h-full"
                   style={{ animationDelay: `${i * 120}ms` }}
                 >
