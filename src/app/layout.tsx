@@ -34,13 +34,13 @@ export const metadata: Metadata = {
     title: "Rideio — Community Ride Sharing in Bangladesh",
     description:
       "Find affordable rides or earn as a driver across Bangladesh. Safe, verified, and transparent.",
-    images: [{ url: "/og", width: 1200, height: 630, alt: "Rideio — Community Ride Sharing" }],
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Rideio — Community Ride Sharing" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Rideio — Community Ride Sharing in Bangladesh",
     description: "Find affordable rides or earn as a driver across Bangladesh.",
-    images: ["/og"],
+    images: ["/og-image.png"],
   },
   robots: { index: true, follow: true },
   icons: {
