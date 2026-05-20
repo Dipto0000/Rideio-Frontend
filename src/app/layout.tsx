@@ -9,14 +9,8 @@ import { PWAInstallPrompt } from "@/components/layout/PWAInstallPrompt"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL 
-  ? process.env.NEXT_PUBLIC_APP_URL 
-  : process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}` 
-    : "https://rideio.vercel.app"
-
 export const metadata: Metadata = {
-  metadataBase: new URL(baseUrl),
+  metadataBase: new URL("https://rideio.vercel.app"),
   title: {
     default: "Rideio — Community Ride Sharing in Bangladesh",
     template: "%s | Rideio",
