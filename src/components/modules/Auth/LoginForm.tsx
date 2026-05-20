@@ -30,12 +30,33 @@ export function LoginForm() {
     // Already a relative path, use as-is
   }
 
-  const pageName = callbackUrl
-    .split("?")[0]
-    .replace(/^\//, "")
-    .split("/")
-    .map((s) => s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()))
-    .join(" ") || "Home"
+  const pageName = (() => {
+    const path = callbackUrl.split("?")[0].replace(/^\//, "").split("/").filter(Boolean)
+
+    // Known route patterns → friendly display names (no raw IDs or params)
+    const routeMap: Record<string, string> = {
+      "find-rides": "Find Rides",
+      "create-ride": "Create a Ride",
+      rides: "Ride Details",
+      dashboard: "Dashboard",
+      profile: "Profile Settings",
+      notifications: "Notifications",
+      subscription: "Subscription",
+    }
+
+    const base = path[0]
+    if (base && routeMap[base]) {
+      return routeMap[base]
+    }
+
+    // Fallback: filter out ID-like segments (MongoDB ObjectId, UUIDs, etc.)
+    const friendly = path
+      .filter((s) => !/^[0-9a-f]{24}$/i.test(s) && !/^[0-9a-f-]{36}$/i.test(s))
+      .map((s) => s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()))
+      .join(" ")
+
+    return friendly || "Home"
+  })()
   const [showGooglePrompt, setShowGooglePrompt] = useState(false)
 
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
