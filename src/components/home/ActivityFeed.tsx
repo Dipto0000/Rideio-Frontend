@@ -62,7 +62,7 @@ function getRelativeTime(date: Date): string {
 
 // Sub-components
 
-function AnimatedCounter({
+function StatCard({
   target,
   label,
   icon: Icon,
@@ -71,53 +71,23 @@ function AnimatedCounter({
   label: string
   icon: React.ElementType
 }) {
-  const [count, setCount] = useState(0)
-  const ref = useRef<HTMLDivElement>(null)
-  const counted = useRef(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !counted.current) {
-          counted.current = true
-          const duration = 2_000
-          const steps = 60
-          const increment = target / steps
-          let current = 0
-          const timer = setInterval(() => {
-            current += increment
-            if (current >= target) {
-              setCount(target)
-              clearInterval(timer)
-            } else {
-              setCount(Math.floor(current))
-            }
-          }, duration / steps)
-        }
-      },
-      { threshold: 0.3 },
-    )
-
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [target])
-
   return (
-    <div
-      ref={ref}
-      className="flex flex-col items-center gap-1 p-3 md:p-4 rounded-xl bg-card/50 border border-border/30"
-    >
-      <Icon className="w-5 h-5 text-secondary" />
-      <span className="text-2xl md:text-3xl font-bold text-foreground tabular-nums">
-        {count.toLocaleString()}
-        <span className="text-lg md:text-xl text-muted-foreground">+</span>
-      </span>
-      <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider text-center">
-        {label}
-      </span>
+    <div className="relative overflow-hidden flex flex-col items-center gap-2 p-4 md:p-5 rounded-2xl bg-card border border-border/40 shadow-sm hover:shadow-md transition-all group isolate">
+      <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      
+      <div className="p-2.5 rounded-full bg-secondary/10 text-secondary group-hover:scale-110 transition-transform duration-300">
+        <Icon className="w-5 h-5" />
+      </div>
+      
+      <div className="flex flex-col items-center">
+        <span className="text-2xl md:text-3xl font-extrabold text-foreground tabular-nums tracking-tight flex items-center">
+          {target.toLocaleString()}
+          <span className="text-lg md:text-xl text-secondary ml-0.5">+</span>
+        </span>
+        <span className="text-[10px] md:text-xs text-muted-foreground font-bold uppercase tracking-wider text-center mt-0.5">
+          {label}
+        </span>
+      </div>
     </div>
   )
 }
@@ -304,7 +274,10 @@ export function ActivityFeed() {
       : []
 
   return (
-    <section className="py-20 md:py-28 px-6 md:px-12 bg-gradient-to-b from-background via-muted/20 to-background">
+    <section className="relative py-20 md:py-28 px-6 md:px-12 bg-background isolate">
+      {/* Subtle decorative background replacing the buggy gradient */}
+      <div className="absolute inset-0 bg-muted/10 pointer-events-none -z-10" />
+      
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
@@ -335,8 +308,8 @@ export function ActivityFeed() {
 
         {/* Stats row */}
         <div className="grid grid-cols-2 gap-3 md:gap-4 mb-10 max-w-md mx-auto">
-          <AnimatedCounter target={realData?.length || displayedEvents.length} label="Active Rides" icon={TrendingUp} />
-          <AnimatedCounter target={new Set(displayedEvents.map(e => e.name)).size} label="Riders Nearby" icon={Users} />
+          <StatCard target={realData?.length || displayedEvents.length} label="Active Rides" icon={TrendingUp} />
+          <StatCard target={new Set(displayedEvents.map(e => e.name)).size} label="Riders Nearby" icon={Users} />
         </div>
 
         {/* Activity cards */}

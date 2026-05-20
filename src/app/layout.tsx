@@ -5,11 +5,12 @@ import "./globals.css"
 import ClientSessionWrapper from "@/app/_components/ClientSessionWrapper"
 import { ThemeProvider } from "@/components/layout/ThemeProvider"
 import { Toaster } from "sonner"
+import { PWAInstallPrompt } from "@/components/layout/PWAInstallPrompt"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://rideio.com"),
+  metadataBase: new URL("https://rideio.vercel.app"),
   title: {
     default: "Rideio — Community Ride Sharing in Bangladesh",
     template: "%s | Rideio",
@@ -62,6 +63,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <ClientSessionWrapper>
             {children}
           </ClientSessionWrapper>
+          <PWAInstallPrompt />
         </ThemeProvider>
         <Toaster
           position="top-right"
