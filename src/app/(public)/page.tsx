@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Rideio — Community Ride Sharing in Bangladesh",
     description: "Find affordable rides or earn as a driver. Safe, verified, and transparent.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Rideio — Community Ride Sharing" }],
   },
 }
 
