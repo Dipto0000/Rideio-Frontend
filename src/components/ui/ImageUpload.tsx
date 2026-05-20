@@ -95,7 +95,6 @@ export function ImageUpload({ name, required, error, onFileChange, defaultValue 
           accept="image/png,image/jpeg,image/webp"
           className="hidden"
           onChange={handleChange}
-          required={required}
         />
 
         {preview ? (
