@@ -64,10 +64,10 @@ export default function RideDetailContent() {
       if (res.success) {
         setRide(res.data)
       } else {
-        setError(res.message || "Ride not found")
+        setError("Could not load this ride. It may have been removed or you may not have access.")
       }
     } catch {
-      setError("Failed to load ride details")
+      setError("Failed to load ride details. Please try again.")
     }
     setLoading(false)
   }
@@ -79,7 +79,7 @@ export default function RideDetailContent() {
     if (res.success) {
       await loadRide()
     } else {
-      setError(res.message || "Failed to accept ride")
+      setError("Could not accept this ride. Please try again.")
     }
     setActionLoading(null)
   }
@@ -91,7 +91,7 @@ export default function RideDetailContent() {
     if (res.success) {
       await loadRide()
     } else {
-      setError(res.message || "Failed to cancel ride")
+      setError("Could not cancel this ride. Please try again.")
     }
     setActionLoading(null)
   }
@@ -181,9 +181,11 @@ export default function RideDetailContent() {
   if (error || !ride) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-        <AlertTriangle className="w-12 h-12 text-destructive mx-auto mb-4" />
+        <AlertTriangle className="w-12 h-12 text-destructive mx-auto mb-6" />
         <h2 className="text-xl font-semibold mb-2">Ride Not Found</h2>
-        <p className="text-muted-foreground mb-6">{error || "This ride doesn't exist or has been removed."}</p>
+        <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
+          This ride doesn&apos;t exist or has been removed. It may no longer be available.
+        </p>
         <Button variant="primary" onClick={() => router.push("/find-rides")}>
           Back to Find Rides
         </Button>

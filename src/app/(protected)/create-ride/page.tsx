@@ -13,12 +13,16 @@ export default function CreateRidePage() {
 
   useEffect(() => {
     if (status === "loading") return
+    if (status === "unauthenticated") {
+      router.replace("/auth/login")
+      return
+    }
     if (isDriver) {
       router.replace("/find-rides")
     }
   }, [status, isDriver, router])
 
-  if (status === "loading" || !session) {
+  if (status === "loading" || status === "unauthenticated" || !session) {
     return (
       <div className="min-h-[calc(100dvh-3.5rem)] bg-gradient-to-b from-secondary/[0.03] via-background to-background">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12">

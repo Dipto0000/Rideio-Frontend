@@ -26,6 +26,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (status === "loading") return
+    if (status === "unauthenticated") {
+      router.replace("/auth/login")
+      return
+    }
     if (
       !session ||
       (session.user.role !== "ADMIN" && session.user.role !== "SUPER_ADMIN")
@@ -34,7 +38,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     }
   }, [accessToken, status])
 
-  if (status === "loading" || !session) {
+  if (status === "loading" || status === "unauthenticated" || !session) {
     return (
       <div className="space-y-4">
         <Skeleton className="h-8 w-48" />

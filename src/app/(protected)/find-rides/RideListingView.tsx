@@ -40,6 +40,10 @@ export function RideListingView() {
 
   useEffect(() => {
     if (status === "loading") return
+    if (status === "unauthenticated") {
+      router.replace("/auth/login")
+      return
+    }
     if (isRider) {
       router.replace("/create-ride")
       return

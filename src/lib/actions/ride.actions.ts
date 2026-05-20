@@ -129,7 +129,7 @@ export async function getRideById(rideId: string, accessToken?: string) {
         headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
       }
     )
-    return await res.json()
+    return handleResponse(res)
   } catch {
     return { success: false, message: "Could not load ride details. Please check your internet connection." }
   }
