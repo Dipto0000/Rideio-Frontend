@@ -61,7 +61,7 @@ const FEATURES = [
   {
     icon: Shield,
     title: "Safe & Secure",
-    description: "Real-time trip tracking, in-app support, and community-rated safety features.",
+    description: "Verified riders and drivers, community ratings, and in-app support for every trip.",
   },
   {
     icon: Clock,
