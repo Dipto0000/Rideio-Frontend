@@ -1,17 +1,29 @@
 "use client"
 
 import { useState } from "react"
-import { Shield, Trash2, Plus } from "lucide-react"
+import { Shield, ArrowDownCircle, Plus, AlertTriangle } from "lucide-react"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { adminGetUsers, adminCreateAdmin, adminRemoveAdmin } from "@/lib/actions/admin.actions"
 
 interface AdminUser {
   _id: string
   name: string
   email: string
+  picture?: string
   role: string
   phone?: string
   createdAt: string
@@ -26,6 +38,7 @@ export function AdminsContent({ initialAdmins, accessToken }: AdminsContentProps
   const [admins, setAdmins] = useState<AdminUser[]>(initialAdmins)
   const [loading, setLoading] = useState(false)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
+  const [demoteTarget, setDemoteTarget] = useState<AdminUser | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [formData, setFormData] = useState({ name: "", email: "", password: "", phone: "" })
   const [formError, setFormError] = useState("")
@@ -55,13 +68,14 @@ export function AdminsContent({ initialAdmins, accessToken }: AdminsContentProps
     setFormLoading(false)
   }
 
-  async function handleRemove(adminId: string) {
+  async function handleDemote(adminId: string) {
     setActionLoading(adminId)
     const res = await adminRemoveAdmin(accessToken, adminId)
     if (res.success) {
       setAdmins((prev) => prev.filter((a) => a._id !== adminId))
     }
     setActionLoading(null)
+    setDemoteTarget(null)
   }
 
   return (
@@ -135,7 +149,7 @@ export function AdminsContent({ initialAdmins, accessToken }: AdminsContentProps
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="text-left font-medium text-muted-foreground px-5 py-3">Name</th>
+                    <th className="text-left font-medium text-muted-foreground px-5 py-3">Admin</th>
                     <th className="text-left font-medium text-muted-foreground px-5 py-3">Email</th>
                     <th className="text-left font-medium text-muted-foreground px-5 py-3">Phone</th>
                     <th className="text-left font-medium text-muted-foreground px-5 py-3">Created</th>
@@ -146,7 +160,15 @@ export function AdminsContent({ initialAdmins, accessToken }: AdminsContentProps
                   {admins.map((admin) => (
                     <tr key={admin._id} className="border-b border-border last:border-0 hover:bg-muted/30 transition-colors">
                       <td className="px-5 py-3.5">
-                        <p className="font-medium text-foreground">{admin.name}</p>
+                        <div className="flex items-center gap-3">
+                          <Avatar className="w-8 h-8 shrink-0 border border-border">
+                            <AvatarImage src={admin.picture || ""} alt={admin.name} />
+                            <AvatarFallback className="text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                              {admin.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <p className="font-medium text-foreground">{admin.name}</p>
+                        </div>
                       </td>
                       <td className="px-5 py-3.5 text-muted-foreground">{admin.email}</td>
                       <td className="px-5 py-3.5 text-muted-foreground">{admin.phone || "—"}</td>
@@ -158,11 +180,11 @@ export function AdminsContent({ initialAdmins, accessToken }: AdminsContentProps
                           variant="ghost"
                           size="sm"
                           disabled={actionLoading === admin._id}
-                          onClick={() => handleRemove(admin._id)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30"
+                          onClick={() => setDemoteTarget(admin)}
+                          className="text-amber-600 hover:text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-950/30"
                         >
-                          <Trash2 className="w-4 h-4 mr-1" />
-                          Remove
+                          <ArrowDownCircle className="w-4 h-4 mr-1" />
+                          Demote
                         </Button>
                       </td>
                     </tr>
@@ -173,6 +195,32 @@ export function AdminsContent({ initialAdmins, accessToken }: AdminsContentProps
           </CardContent>
         </Card>
       )}
+
+      {/* Demote Confirmation Dialog */}
+      <AlertDialog open={!!demoteTarget} onOpenChange={(open: boolean) => !open && setDemoteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-amber-600" />
+              Demote Admin?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This will revoke <strong>{demoteTarget?.name}</strong>&apos;s admin privileges and return them to a regular user role.
+              They will lose access to all admin features including the admin dashboard.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={actionLoading === demoteTarget?._id}
+              onClick={() => demoteTarget && handleDemote(demoteTarget._id)}
+              className="bg-amber-600 hover:bg-amber-700 text-white"
+            >
+              {actionLoading === demoteTarget?._id ? "Demoting..." : "Yes, Demote to User"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

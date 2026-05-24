@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import { Search, Trash2, Users as UsersIcon } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -23,6 +24,7 @@ interface UserItem {
   _id: string
   name: string
   email: string
+  picture?: string
   role: string
   subRole: string
   status: string
@@ -127,7 +129,7 @@ export function UsersContent({ initialUsers, initialMeta, accessToken }: UsersCo
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
+                    <TableHead>User</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Role</TableHead>
                     <TableHead>Verified</TableHead>
@@ -139,8 +141,18 @@ export function UsersContent({ initialUsers, initialMeta, accessToken }: UsersCo
                   {users.map((user) => (
                     <TableRow key={user._id}>
                       <TableCell>
-                        <p className="font-medium text-foreground">{user.name}</p>
-                        <p className="text-xs text-muted-foreground capitalize">{user.subRole?.toLowerCase() || "—"}</p>
+                        <div className="flex items-center gap-3">
+                          <Avatar className="w-9 h-9 shrink-0 border border-border">
+                            <AvatarImage src={user.picture || ""} alt={user.name} />
+                            <AvatarFallback className="text-xs font-semibold bg-primary/10 text-primary">
+                              {user.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-medium text-foreground">{user.name}</p>
+                            <p className="text-xs text-muted-foreground capitalize">{user.subRole?.toLowerCase() || "—"}</p>
+                          </div>
+                        </div>
                       </TableCell>
                       <TableCell className="text-muted-foreground">{user.email}</TableCell>
                       <TableCell>
