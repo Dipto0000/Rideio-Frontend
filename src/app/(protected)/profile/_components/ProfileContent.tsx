@@ -60,7 +60,7 @@ interface ProfileData {
   vehicleType?: string
   numberplate?: string
   licenseNumber?: string
-  password?: string
+  hasPassword?: boolean
 }
 
 interface Props {
@@ -164,7 +164,7 @@ export function ProfileContent({ initialProfile, initialSettings }: Props) {
       return
     }
     let res
-    if (profile.password) {
+    if (profile.hasPassword) {
       res = await changePassword({ currentPassword, newPassword }, accessToken)
     } else {
       res = await setPassword({ password: newPassword }, accessToken)
@@ -370,17 +370,17 @@ export function ProfileContent({ initialProfile, initialSettings }: Props) {
           <Card>
             <CardHeader>
               <CardTitle className="text-base">
-                {profile.password ? "Change Password" : "Set Password"}
+                {profile.hasPassword ? "Change Password" : "Set Password"}
               </CardTitle>
               <CardDescription>
-                {profile.password
+                {profile.hasPassword
                   ? "Update your current password"
                   : "Set a password for your account"}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleChangePassword} className="space-y-4 max-w-sm">
-                {profile.password && (
+                {profile.hasPassword && (
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-foreground">Current Password</label>
                     <Input
@@ -424,7 +424,7 @@ export function ProfileContent({ initialProfile, initialSettings }: Props) {
                     ) : (
                       <>
                         <KeyRound className="w-4 h-4 mr-1.5" />
-                        {profile.password ? "Change Password" : "Set Password"}
+                        {profile.hasPassword ? "Change Password" : "Set Password"}
                       </>
                     )}
                   </Button>
