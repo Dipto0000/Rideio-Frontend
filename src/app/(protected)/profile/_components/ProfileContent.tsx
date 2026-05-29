@@ -101,7 +101,7 @@ export function ProfileContent({ initialProfile, initialSettings }: Props) {
     setMessage(null)
 
     if (!accessToken || !userId) {
-      setMessage({ type: "error", text: "Session not ready. Try refreshing the page." })
+      setMessage({ type: "error", text: "Session expired. Please sign in again." })
       setSaving(false)
       return
     }
@@ -134,7 +134,7 @@ export function ProfileContent({ initialProfile, initialSettings }: Props) {
     const formData = new FormData()
     formData.append("profilePicture", file)
     if (!accessToken) {
-      setMessage({ type: "error", text: "Session not ready. Try refreshing the page." })
+      setMessage({ type: "error", text: "Session expired. Please sign in again." })
       setPhotoUploading(false)
       return
     }
@@ -159,7 +159,7 @@ export function ProfileContent({ initialProfile, initialSettings }: Props) {
     setMessage(null)
 
     if (!accessToken) {
-      setMessage({ type: "error", text: "Session not ready. Try refreshing the page." })
+      setMessage({ type: "error", text: "Session expired. Please sign in again." })
       setPasswordSaving(false)
       return
     }

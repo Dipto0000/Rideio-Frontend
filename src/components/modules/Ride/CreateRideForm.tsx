@@ -59,7 +59,7 @@ export function CreateRideForm() {
       return
     }
     if (!session?.user.accessToken) {
-      setError("Session not ready. Try refreshing the page.")
+      setError("Session expired. Please sign in again.")
       return
     }
     setLoading(true)

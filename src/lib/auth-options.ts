@@ -17,17 +17,23 @@ function getJwtExpiry(token: string): number | null {
 
 /** Call backend to exchange a refresh token for a new access token */
 async function refreshAccessToken(refreshToken: string): Promise<string | null> {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 60_000)
+
   try {
     const res = await fetch(`${BACKEND}/api/v1/auth/refresh-token`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refreshToken }),
+      signal: controller.signal,
     })
     const data = await res.json()
     if (!data.success) return null
     return data.data.accessToken ?? null
   } catch {
     return null
+  } finally {
+    clearTimeout(timeoutId)
   }
 }
 
@@ -185,8 +191,16 @@ export const authOptions: NextAuthOptions = {
             token.accessToken = newAccessToken
             token.accessTokenExpires = getJwtExpiry(newAccessToken) ?? 0
           } else {
-            // Refresh failed — log the user out
-            return { ...token, accessToken: null as unknown as string }
+            // Retry once after 3s delay — handles Render cold starts (~30-60s)
+            await new Promise((resolve) => setTimeout(resolve, 3000))
+            const retryAccessToken = await refreshAccessToken(token.refreshToken)
+            if (retryAccessToken) {
+              token.accessToken = retryAccessToken
+              token.accessTokenExpires = getJwtExpiry(retryAccessToken) ?? 0
+            }
+            // If still fails, keep the old token instead of nulling it —
+            // the API call will fail with "JWT expired" which gives a clearer
+            // error message to the user than "Session not ready"
           }
         }
       }
