@@ -87,13 +87,7 @@ export function Hero() {
 
           {/* Right: BookingCard */}
           <div className="flex justify-center lg:justify-end">
-            <div className="relative">
-              {/* Glow behind card */}
-              <div className="absolute -inset-8 bg-gradient-to-b from-primary/10 via-secondary/5 to-transparent rounded-3xl blur-2xl opacity-60" />
-              <div className="relative">
-                <BookingCard />
-              </div>
-            </div>
+            <BookingCard />
           </div>
         </div>
 
