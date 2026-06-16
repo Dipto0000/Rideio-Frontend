@@ -2,10 +2,9 @@
 
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
-import { Sun, Moon, Monitor } from "lucide-react"
+import { Sun, Moon } from "lucide-react"
 
 const themes = [
-  { value: "system", icon: Monitor, label: "System" },
   { value: "light", icon: Sun, label: "Light" },
   { value: "dark", icon: Moon, label: "Dark" },
 ] as const
@@ -35,11 +34,9 @@ export function ThemeToggle() {
       onClick={() => setTheme(nextTheme.value)}
       className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
       aria-label={`Switch to ${nextTheme.label} mode`}
-      title={`Current: ${theme === "system" ? "System" : theme === "light" ? "Light" : "Dark"}`}
+      title={`Current: ${theme === "light" ? "Light" : "Dark"}`}
     >
-      {theme === "system" ? (
-        <Monitor className="h-4 w-4" />
-      ) : theme === "light" ? (
+      {theme === "light" ? (
         <Sun className="h-4 w-4" />
       ) : (
         <Moon className="h-4 w-4" />

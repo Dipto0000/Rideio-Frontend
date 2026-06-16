@@ -13,18 +13,14 @@ const STATS = [
 export function Hero() {
   return (
     <section className="relative overflow-hidden bg-background py-20 md:py-28 px-6 md:px-12">
-      {/* Spaced dotted background — clean, minimal, recruiter-friendly */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 opacity-[0.12] dark:opacity-[0.15]"
-          style={{
-            backgroundImage: 'radial-gradient(circle, hsl(var(--foreground)) 0.8px, transparent 0.8px)',
-            backgroundSize: '40px 40px',
-            backgroundPosition: '20px 20px',
-          }}
-        />
-        {/* Subtle background fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
-      </div>
+      {/* Dotted background — visible in both light & dark mode */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: 'radial-gradient(circle, hsl(var(--muted-foreground)) 1px, transparent 1px)',
+          backgroundSize: '28px 28px',
+          opacity: 0.25,
+        }}
+      />
 
       <div className="max-w-7xl mx-auto relative">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
