@@ -1,10 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Suspense } from "react"
-import { Skeleton } from "@/components/ui/skeleton"
 import { RiderSignupForm } from "@/components/modules/Auth/RiderSignupForm"
 import { DriverSignupForm } from "@/components/modules/Auth/DriverSignupForm"
-import { DemoLoginForm } from "@/components/modules/Auth/DemoLoginForm"
 
 export const metadata: Metadata = {
   title: "Sign Up",
@@ -35,33 +32,9 @@ export default async function SignupPage(props: {
             : "Create an account to start your ride journey."}
         </p>
       </div>
-
-      {/* Signup Form */}
       <div className="rounded-2xl border border-border/40 bg-card p-6 sm:p-8 shadow-sm">
         {isDriver ? <DriverSignupForm /> : <RiderSignupForm />}
       </div>
-
-      {/* Demo Access - shown between form and footer */}
-      <div className="rounded-2xl border-2 border-dashed border-secondary/30 bg-secondary/[0.03] p-6 sm:p-8 shadow-sm mt-8">
-        <div className="text-center mb-4">
-          <p className="text-sm text-muted-foreground">
-            Want to explore Rideio without signing up?
-          </p>
-        </div>
-        <Suspense
-          fallback={
-            <div className="grid grid-cols-2 gap-3">
-              <Skeleton className="h-16 w-full rounded-xl" />
-              <Skeleton className="h-16 w-full rounded-xl" />
-              <Skeleton className="h-16 w-full rounded-xl" />
-              <Skeleton className="h-16 w-full rounded-xl" />
-            </div>
-          }
-        >
-          <DemoLoginForm />
-        </Suspense>
-      </div>
-
       <p className="text-sm text-center text-muted-foreground mt-6">
         Already have an account?{" "}
         <Link
