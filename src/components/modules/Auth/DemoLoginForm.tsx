@@ -120,7 +120,7 @@ export function DemoLoginForm() {
         Instantly explore all features without signing up
       </p>
 
-      <div className="grid grid-cols-2 gap-2.5">
+      <div className="grid grid-cols-2 gap-3">
         {DEMO_ROLES.map(({ role, label, description, icon: Icon, color }) => (
           <Button
             key={role}
@@ -128,15 +128,15 @@ export function DemoLoginForm() {
             variant="outline"
             disabled={loadingRole !== null}
             onClick={() => handleDemoLogin(role)}
-            className={`flex flex-col items-center gap-1.5 p-3 h-auto rounded-xl border-border/50 transition-all duration-200 hover:border-secondary/30 ${color}`}
+            className={`flex flex-col items-center gap-1.5 py-4 px-3 h-auto min-h-[100px] rounded-xl border-border/50 transition-all duration-200 hover:border-secondary/30 ${color}`}
           >
             {loadingRole === role ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-5 h-5 animate-spin shrink-0" />
             ) : (
-              <Icon className="w-5 h-5" />
+              <Icon className="w-5 h-5 shrink-0" />
             )}
-            <span className="text-xs font-semibold leading-tight">{label}</span>
-            <span className="text-[10px] text-muted-foreground leading-tight text-center">
+            <span className="text-xs font-semibold leading-tight text-center">{label}</span>
+            <span className="text-[10px] text-muted-foreground leading-normal text-center line-clamp-2">
               {description}
             </span>
           </Button>
