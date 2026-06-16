@@ -13,15 +13,6 @@ const STATS = [
 export function Hero() {
   return (
     <section className="relative overflow-hidden bg-background py-20 md:py-28 px-6 md:px-12">
-      {/* Dotted background — visible in both light & dark mode */}
-      <div className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: 'radial-gradient(circle, hsl(var(--muted-foreground)) 1px, transparent 1px)',
-          backgroundSize: '28px 28px',
-          opacity: 0.25,
-        }}
-      />
-
       <div className="max-w-7xl mx-auto relative">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left: Text Content */}
