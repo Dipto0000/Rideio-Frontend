@@ -17,19 +17,25 @@ const DRIVER_FEATURES = [
   "Build your reputation",
 ]
 
-export function RoleSelector() {
+interface RoleSelectorProps {
+  hideHeading?: boolean
+}
+
+export function RoleSelector({ hideHeading = false }: RoleSelectorProps) {
   const router = useRouter()
 
   return (
     <div className="flex flex-col items-center gap-8 w-full">
-      <div className="text-center">
-        <h1 className="text-2xl md:text-3xl font-bold text-primary tracking-tight">
-          Join Rideio
-        </h1>
-        <p className="text-sm text-muted-foreground mt-2">
-          Choose how you want to use Rideio
-        </p>
-      </div>
+      {!hideHeading && (
+        <div className="text-center">
+          <h1 className="text-2xl md:text-3xl font-bold text-primary tracking-tight">
+            Join Rideio
+          </h1>
+          <p className="text-sm text-muted-foreground mt-2">
+            Choose how you want to use Rideio
+          </p>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
         {/* Rider card */}

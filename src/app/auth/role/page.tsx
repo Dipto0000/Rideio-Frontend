@@ -14,17 +14,31 @@ export const metadata: Metadata = {
 export default function RolePage() {
   return (
     <>
-      {/* Mobile: constrained by parent max-w-md. Desktop: full-viewport breakout for side-by-side layout */}
+      {/* Shared heading — above both columns */}
+      <div className="md:w-screen md:relative md:left-1/2 md:-mx-[50vw]">
+        <div className="md:max-w-4xl md:mx-auto md:px-4">
+          <div className="text-center mb-6 md:mb-10">
+            <h1 className="text-2xl md:text-3xl font-bold text-primary tracking-tight">
+              Join Rideio
+            </h1>
+            <p className="text-sm text-muted-foreground mt-2">
+              Choose how you want to use Rideio
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Side-by-side: Role Cards + Demo */}
       <div className="md:w-screen md:relative md:left-1/2 md:-mx-[50vw]">
         <div className="md:max-w-4xl md:mx-auto md:px-4">
           <div className="flex flex-col md:flex-row md:items-start gap-6 md:gap-10">
-            {/* Left: Role Selector */}
+            {/* Left: Role Cards */}
             <div className="w-full md:flex-1 min-w-0">
-              <RoleSelector />
+              <RoleSelector hideHeading />
             </div>
 
             {/* Right: Demo Access */}
-            <div className="w-full md:w-[340px] md:shrink-0 md:sticky md:top-24">
+            <div className="w-full md:w-[340px] md:shrink-0">
               <div className="rounded-2xl border-2 border-dashed border-secondary/30 bg-secondary/[0.03] p-6 sm:p-8 shadow-sm">
                 <div className="text-center mb-4">
                   <p className="text-sm text-muted-foreground">
