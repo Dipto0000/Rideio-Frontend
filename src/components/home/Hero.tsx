@@ -89,7 +89,7 @@ export function Hero() {
         </div>
 
         {/* Stats bar */}
-        <div className="mt-16 md:mt-20 grid grid-cols-3 gap-6 md:gap-8 max-w-2xl mx-auto">
+        <div className="mt-16 md:mt-20 grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 max-w-2xl mx-auto">
           {STATS.map((stat) => (
             <div
               key={stat.label}
