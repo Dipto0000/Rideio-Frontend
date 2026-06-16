@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Trash2, User, Car } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -37,6 +37,7 @@ export function DeletedContent({ initialRecords, initialMeta, accessToken }: Del
   const [meta, setMeta] = useState<PaginationMeta | null>(initialMeta)
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
+  const isFirstRender = useRef(true)
 
   function fetchRecords(p: number) {
     setLoading(true)
@@ -49,11 +50,14 @@ export function DeletedContent({ initialRecords, initialMeta, accessToken }: Del
     })
   }
 
-  // Handle page change (skip initial since data is server-fetched)
+  // Handle page change (skip initial render since data is server-fetched)
   useEffect(() => {
-    if (page === 1) return
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
     fetchRecords(page)
-  }, [page]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [page])
 
   return (
     <div className="space-y-6">

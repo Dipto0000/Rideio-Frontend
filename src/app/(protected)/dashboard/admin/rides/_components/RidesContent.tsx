@@ -54,6 +54,7 @@ export function RidesContent({ initialRides, initialMeta, accessToken }: RidesCo
   const [page, setPage] = useState(1)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
+  const isFirstRender = useRef(true)
 
   const fetchRides = useCallback((p: number, s: string) => {
     setLoading(true)
@@ -68,11 +69,15 @@ export function RidesContent({ initialRides, initialMeta, accessToken }: RidesCo
     })
   }, [accessToken])
 
-  // Handle page change (skip initial since data is server-fetched)
+  // Handle page change (skip initial render since data is server-fetched)
   useEffect(() => {
-    if (page === 1 && search === "") return
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
     fetchRides(page, search)
-  }, [page]) // eslint-disable-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page])
 
   // Debounced search
   function handleSearchChange(value: string) {

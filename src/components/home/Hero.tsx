@@ -12,48 +12,18 @@ const STATS = [
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-primary/[0.04] via-background to-background py-20 md:py-28 px-6 md:px-12">
-      {/* Animated gradient mesh */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Large floating orbs — visible colors with soft blur */}
-        <div className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-secondary/40 via-secondary/20 to-transparent blur-[120px] animate-float-slow" />
-        <div
-          className="absolute top-1/3 -left-48 w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-primary/30 via-primary/15 to-transparent blur-[120px] animate-float-medium"
-          style={{ animationDelay: "-5s" }}
-        />
-        <div
-          className="absolute -bottom-40 right-1/4 w-[400px] h-[400px] rounded-full bg-gradient-to-bl from-amber-500/30 via-purple-500/20 to-transparent blur-[120px] animate-float-medium"
-          style={{ animationDelay: "-12s" }}
-        />
-        <div
-          className="absolute top-1/3 right-1/3 w-[300px] h-[300px] rounded-full bg-gradient-to-r from-secondary/25 to-primary/20 blur-[100px] animate-float-fast"
-          style={{ animationDelay: "-3s" }}
-        />
-
-        {/* Grid pattern overlay */}
-        <div
-          className="absolute inset-0 opacity-[0.08] dark:opacity-[0.1]"
+    <section className="relative overflow-hidden bg-background py-20 md:py-28 px-6 md:px-12">
+      {/* Spaced dotted background — clean, minimal, recruiter-friendly */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 opacity-[0.12] dark:opacity-[0.15]"
           style={{
-            backgroundImage: `
-              linear-gradient(hsl(var(--foreground)) 0.5px, transparent 0.5px),
-              linear-gradient(90deg, hsl(var(--foreground)) 0.5px, transparent 0.5px)
-            `,
-            backgroundSize: '60px 60px',
+            backgroundImage: 'radial-gradient(circle, hsl(var(--foreground)) 0.8px, transparent 0.8px)',
+            backgroundSize: '40px 40px',
+            backgroundPosition: '20px 20px',
           }}
         />
-
-        {/* Dot pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.06] dark:opacity-[0.08]"
-          style={{
-            backgroundImage: 'radial-gradient(circle, hsl(var(--foreground)) 0.5px, transparent 0.5px)',
-            backgroundSize: '20px 20px',
-            backgroundPosition: '10px 10px',
-          }}
-        />
-
-        {/* Top accent light leak */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-gradient-to-b from-primary/8 to-transparent blur-[80px]" />
+        {/* Subtle background fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
       </div>
 
       <div className="max-w-7xl mx-auto relative">

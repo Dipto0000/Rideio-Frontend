@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { CreditCard } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -49,6 +49,7 @@ export function SubscriptionsContent({ initialPayments, initialMeta, accessToken
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
+  const isFirstRender = useRef(true)
 
   function fetchPayments(p: number) {
     setLoading(true)
@@ -61,11 +62,14 @@ export function SubscriptionsContent({ initialPayments, initialMeta, accessToken
     })
   }
 
-  // Handle page change (skip initial since data is server-fetched)
+  // Handle page change (skip initial render since data is server-fetched)
   useEffect(() => {
-    if (page === 1) return
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
     fetchPayments(page)
-  }, [page]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [page])
 
   async function handleStatusUpdate(paymentId: string, status: string) {
     setActionLoading(paymentId)
