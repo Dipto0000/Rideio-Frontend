@@ -11,28 +11,28 @@ const DEMO_ROLES = [
   {
     role: "RIDER",
     label: "Browse as Rider",
-    description: "View rides, create trips, explore the rider experience",
+    subtitle: "Explore the app",
     icon: User,
     color: "bg-primary/10 text-primary hover:bg-primary/15",
   },
   {
     role: "DRIVER",
     label: "Browse as Driver",
-    description: "View available rides, see the driver dashboard",
+    subtitle: "Driver dashboard",
     icon: Car,
     color: "bg-secondary/10 text-secondary hover:bg-secondary/15",
   },
   {
     role: "ADMIN",
     label: "Browse as Admin",
-    description: "View admin panel, manage users & rides",
+    subtitle: "Manage platform",
     icon: Shield,
     color: "bg-indigo-500/10 text-indigo-600 hover:bg-indigo-500/15 dark:text-indigo-400",
   },
   {
     role: "SUPER_ADMIN",
     label: "Browse as Super Admin",
-    description: "Full access — all admin features & settings",
+    subtitle: "Full access",
     icon: Users,
     color: "bg-amber-500/10 text-amber-600 hover:bg-amber-500/15 dark:text-amber-400",
   },
@@ -121,14 +121,14 @@ export function DemoLoginForm() {
       </p>
 
       <div className="grid grid-cols-2 gap-3">
-        {DEMO_ROLES.map(({ role, label, description, icon: Icon, color }) => (
+        {DEMO_ROLES.map(({ role, label, subtitle, icon: Icon, color }) => (
           <Button
             key={role}
             type="button"
             variant="outline"
             disabled={loadingRole !== null}
             onClick={() => handleDemoLogin(role)}
-            className={`flex flex-col items-center gap-1.5 py-4 px-3 h-auto min-h-[100px] rounded-xl border-border/50 transition-all duration-200 hover:border-secondary/30 ${color}`}
+            className={`flex flex-col items-center gap-1 py-3 px-3 h-auto rounded-xl border-border/50 transition-all duration-200 hover:border-secondary/30 ${color}`}
           >
             {loadingRole === role ? (
               <Loader2 className="w-5 h-5 animate-spin shrink-0" />
@@ -136,8 +136,8 @@ export function DemoLoginForm() {
               <Icon className="w-5 h-5 shrink-0" />
             )}
             <span className="text-xs font-semibold leading-tight text-center">{label}</span>
-            <span className="text-[10px] text-muted-foreground leading-normal text-center line-clamp-2">
-              {description}
+            <span className="text-[10px] text-muted-foreground text-center truncate max-w-full">
+              {subtitle}
             </span>
           </Button>
         ))}
