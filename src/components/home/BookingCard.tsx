@@ -31,20 +31,20 @@ export function BookingCard() {
   }
 
   return (
-    <Card className="w-full max-w-md shadow-2xl border border-border/40 bg-card/95 backdrop-blur-sm">
+    <Card className="w-full max-w-md border border-border/40 bg-card">
       <CardContent className="p-6 sm:p-8">
         <Tabs defaultValue="ride" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6 bg-muted/40 rounded-xl p-1">
             <TabsTrigger
               value="ride"
-              className="px-4 py-2.5 text-sm font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=inactive]:text-muted-foreground rounded-lg transition-all duration-200"
+              className="px-4 py-2.5 text-sm font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=inactive]:text-muted-foreground rounded-lg"
             >
               <Navigation className="w-4 h-4 mr-2 inline-block" />
               I need a Ride
             </TabsTrigger>
             <TabsTrigger
               value="drive"
-              className="px-4 py-2.5 text-sm font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=inactive]:text-muted-foreground rounded-lg transition-all duration-200"
+              className="px-4 py-2.5 text-sm font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=inactive]:text-muted-foreground rounded-lg"
             >
               <Car className="w-4 h-4 mr-2 inline-block" />
               I want to Drive
@@ -62,7 +62,7 @@ export function BookingCard() {
               <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 text-primary w-5 h-5 transition-colors group-focus-within:text-secondary pointer-events-none" />
               <Input
                 placeholder="Where are you going?"
-                className="pl-11 h-12 bg-muted/20 border-border/50 focus:border-secondary/50 placeholder:text-muted-foreground/50 text-base font-medium rounded-xl transition-all duration-200 cursor-pointer"
+                className="pl-11 h-12 bg-muted/20 border-border/50 focus:border-secondary/50 placeholder:text-muted-foreground/50 text-base font-medium rounded-xl cursor-pointer"
                 readOnly
               />
             </div>
@@ -77,7 +77,7 @@ export function BookingCard() {
                     <button
                       key={route}
                       onClick={handleFindRide}
-                      className="px-3 py-1.5 text-xs font-medium text-muted-foreground bg-muted/30 hover:bg-muted/60 rounded-lg border border-border/30 transition-all duration-200"
+                      className="px-3 py-1.5 text-xs font-medium text-muted-foreground bg-muted/30 hover:bg-muted/60 rounded-lg border border-border/30"
                     >
                       {route}
                     </button>
@@ -88,7 +88,7 @@ export function BookingCard() {
 
             <Button
               variant="primary"
-              className="w-full h-12 text-base font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200"
+              className="w-full h-12 text-base font-bold rounded-xl"
               onClick={handleFindRide}
             >
               Find a Ride
@@ -112,7 +112,7 @@ export function BookingCard() {
 
             <Button
               variant="primary"
-              className="w-full h-12 text-base font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200"
+              className="w-full h-12 text-base font-bold rounded-xl"
               onClick={handleAcceptRide}
             >
               Find Passengers
