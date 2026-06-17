@@ -12,7 +12,7 @@ const FOOTER_LINKS = [
   {
     title: "Support",
     links: [
-      { label: "Contact Us", href: "mailto:hello@rideio.com" },
+      { label: "Contact Us", href: "mailto:dipto2041@gmail.com" },
     ],
   },
 ]
@@ -39,11 +39,7 @@ export function Footer() {
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 shrink-0" />
-                <span>hello@rideio.com</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-3.5 h-3.5 shrink-0" />
-                <span>Available after sign up</span>
+                <span>dipto2041@gmail.com</span>
               </div>
             </div>
             {/* Social icons */}
