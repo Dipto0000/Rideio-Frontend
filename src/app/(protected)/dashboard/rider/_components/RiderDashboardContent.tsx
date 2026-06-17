@@ -29,6 +29,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { StatsCard } from "@/components/modules/Dashboard/StatsCard"
+import { RideFrequencyChart } from "@/components/charts/RideFrequencyChart"
+import { RideCompletionChart } from "@/components/charts/RideCompletionChart"
 import { cancelRide } from "@/lib/actions/ride.actions"
 import { ReviewDialog } from "@/components/modules/Review/ReviewDialog"
 import { RecentNotificationsCard } from "@/components/modules/Notifications/RecentNotificationsCard"
@@ -219,6 +221,16 @@ export function RiderDashboardContent({ initialData }: Props) {
           label="Cancelled"
           value={data.cancelledRides}
           accentColor="bg-red-500"
+        />
+      </div>
+
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <RideFrequencyChart rides={data.recentRides || []} />
+        <RideCompletionChart
+          completed={data.completedRides}
+          cancelled={data.cancelledRides}
+          active={data.activeRides}
         />
       </div>
 

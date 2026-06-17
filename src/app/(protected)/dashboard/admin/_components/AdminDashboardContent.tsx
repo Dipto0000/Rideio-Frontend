@@ -26,6 +26,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { StatsCard } from "@/components/modules/Dashboard/StatsCard"
+import { StatusDistributionChart } from "@/components/charts/StatusDistributionChart"
 import { getAdminDashboard } from "@/lib/actions/dashboard.actions"
 
 export interface AdminData {
@@ -86,10 +87,6 @@ export function AdminDashboardContent({ initialData }: Props) {
     fetchData()
     setTimeout(() => setRefreshing(false), 500)
   }, [fetchData])
-
-  const totalStatusRides = data.ridesByStatus
-    ? Object.values(data.ridesByStatus).reduce((sum, val) => sum + val, 0)
-    : 0
 
   return (
     <div className="space-y-6">
@@ -200,42 +197,7 @@ export function AdminDashboardContent({ initialData }: Props) {
 
       {/* Rides by Status + Top Rated Drivers */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Rides by Status</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {data.ridesByStatus && Object.keys(data.ridesByStatus).length > 0 ? (
-              <div className="space-y-3">
-                {Object.entries(data.ridesByStatus).map(([status, count]) => {
-                  const percentage = totalStatusRides > 0 ? Math.round((count / totalStatusRides) * 100) : 0
-                  return (
-                    <div key={status} className="space-y-1">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground capitalize">{status.toLowerCase().replace(/_/g, " ")}</span>
-                        <span className="font-medium text-foreground">{count} ({percentage}%)</span>
-                      </div>
-                      <div className="h-2 rounded-full bg-muted overflow-hidden">
-                        <div
-                          className={`h-full rounded-full transition-all duration-500 ${
-                            status === "COMPLETED" ? "bg-emerald-500" :
-                            status === "PENDING" ? "bg-amber-500" :
-                            status === "ACCEPTED" ? "bg-blue-500" :
-                            status === "IN_PROGRESS" ? "bg-purple-500" :
-                            "bg-gray-400"
-                          }`}
-                          style={{ width: `${percentage}%` }}
-                        />
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground py-4 text-center">No ride data available</p>
-            )}
-          </CardContent>
-        </Card>
+        <StatusDistributionChart ridesByStatus={data.ridesByStatus} />
 
         <Card>
           <CardHeader className="pb-3">

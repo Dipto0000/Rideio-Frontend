@@ -32,6 +32,8 @@ import { getDriverDashboard } from "@/lib/actions/dashboard.actions"
 import { getSubscriptionStatus } from "@/lib/actions/subscription.actions"
 import { startRide, completeRide } from "@/lib/actions/ride.actions"
 import { RecentNotificationsCard } from "@/components/modules/Notifications/RecentNotificationsCard"
+import { EarningsTrendChart } from "@/components/charts/EarningsTrendChart"
+import { RideCompletionChart } from "@/components/charts/RideCompletionChart"
 import { RecentReviewsCard } from "@/components/modules/Review/RecentReviewsCard"
 
 interface RideItem {
@@ -363,6 +365,17 @@ export function DriverDashboardContent({ initialData, initialSub }: Props) {
           </CardContent>
         </Card>
       )}
+
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <EarningsTrendChart rides={data.recentRides || []} />
+        <RideCompletionChart
+          completed={data.recentRides?.filter((r) => r.status === "COMPLETED").length || 0}
+          cancelled={data.recentRides?.filter((r) => r.status === "CANCELLED").length || 0}
+          active={data.recentRides?.filter((r) => r.status !== "COMPLETED" && r.status !== "CANCELLED").length || 0}
+          totalLabel="Recent Rides"
+        />
+      </div>
 
       {/* Notification Card */}
       <RecentNotificationsCard accessToken={accessToken || ""} />
